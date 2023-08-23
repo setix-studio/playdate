@@ -9,6 +9,7 @@ import "scripts/libraries/AnimatedSprite"
 import "scripts/libraries/LDtk"
 
 import "scripts/gameScene"
+import "scripts/Player"
 
 GameScene()
 
