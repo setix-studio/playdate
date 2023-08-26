@@ -15,6 +15,10 @@ import "scripts/gameScene"
 import "scripts/ability"
 import "scripts/spike"
 import "scripts/spikeball"
+import "scripts/candle"
+import "scripts/door"
+
+
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics

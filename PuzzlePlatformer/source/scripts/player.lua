@@ -1,6 +1,7 @@
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+local ldtk <const> = LDtk
 
 class('Player').extends(AnimatedSprite)
 
@@ -11,10 +12,12 @@ function Player:init(x, y, gameManager)
     local playerImageTable = gfx.imagetable.new("images/player-table-16-16")
     Player.super.init(self, playerImageTable)
 
-    self:addState("idle", 1, 1)
-    self:addState("run", 1, 3, {tickStep = 4})
-    self:addState("jump", 4, 4)
-    self:addState("dash", 4, 4)
+    self:addState("idle", 1, 2, {tickStep = 4})
+    self:addState("run", 3, 6, {tickStep = 4})
+    self:addState("jump", 6, 6)
+    self:addState("dash", 7, 7)
+    self:addState("reverse", 7, 7)
+
     self:playAnimation()
 
     -- Sprite properties
@@ -44,7 +47,7 @@ function Player:init(x, y, gameManager)
 
     -- Dash
     self.dashAvailable = true
-    self.dashSpeed = 8
+    self.dashSpeed = 10
     self.dashMinimumSpeed = 3
     self.dashDrag = 0.8
 
@@ -53,6 +56,7 @@ function Player:init(x, y, gameManager)
     self.touchingCeiling = false
     self.touchingWall = false
     self.dead = false
+    self.hasKey = false
 end
 
 function Player:collisionResponse(other)
@@ -118,7 +122,7 @@ function Player:handleMovementAndCollisions()
     self.touchingCeiling = false
     self.touchingWall = false
     local died = false
-
+    
     for i=1,length do
         local collision = collisions[i]
         local collisionType = collision.type
@@ -142,6 +146,12 @@ function Player:handleMovementAndCollisions()
             died = true
         elseif collisionTag == TAGS.Pickup then
             collisionObject:pickUp(self)
+        elseif collisionTag == TAGS.Door and self.hasKey == true then
+
+            collisionObject.fields.unlocked = true
+          
+            collisionObject.remove(collisionObject)
+            self.hasKey = false
         end
     end
 
@@ -165,6 +175,7 @@ function Player:handleMovementAndCollisions()
         self:die()
     end
 end
+
 
 function Player:die()
     self.xVelocity = 0
@@ -250,11 +261,15 @@ function Player:changeToDashState()
     self:changeState("dash")
 end
 
+
+
 -- Physics Helper Functions
 function Player:applyGravity()
+    
     self.yVelocity += self.gravity
     if self.touchingGround or self.touchingCeiling then
         self.yVelocity = 0
+
     end
 end
 

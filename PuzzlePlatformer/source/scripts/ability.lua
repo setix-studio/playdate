@@ -26,7 +26,10 @@ function Ability:pickUp(player)
         player.doubleJumpAbility = true
     elseif self.abilityName == "Dash" then
         player.dashAbility = true
+    elseif self.abilityName == "Key" then
+        player.hasKey = true
     end
+    
     self.fields.pickedUp = true
     self:remove()
 end

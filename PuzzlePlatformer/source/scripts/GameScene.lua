@@ -6,11 +6,15 @@ local ldtk <const> = LDtk
 TAGS = {
     Pickup = 1,
     Player = 2,
-    Hazard = 3
+    Hazard = 3,
+    Prop = 4,
+    Door = 5
 }
 
 Z_INDEXES = {
+    Prop = 18,
     Hazard = 20,
+    Door = 65,
     Pickup = 50,
     Player = 100
 }
@@ -27,7 +31,7 @@ class('GameScene').extends()
 
 function GameScene:init()
     self:goToLevel("Level_0")
-    self.spawnX = 3 * 16
+    self.spawnX = 12 * 16
     self.spawnY = 11 * 16
 
     self.player = Player(self.spawnX, self.spawnY, self)
@@ -43,13 +47,13 @@ function GameScene:enterRoom(direction)
     self.player:add()
     local spawnX, spawnY
     if direction == "north" then
-        spawnX, spawnY = self.player.x, 240
+        spawnX, spawnY = self.player.x, 220
     elseif direction == "south" then
-        spawnX, spawnY = self.player.x, 0
+        spawnX, spawnY = self.player.x, 24
     elseif direction == "east" then
-        spawnX, spawnY = 0, self.player.y
+        spawnX, spawnY = 24, self.player.y
     elseif direction == "west" then
-        spawnX, spawnY = 400, self.player.y
+        spawnX, spawnY = 380, self.player.y
     end
     self.player:moveTo(spawnX, spawnY)
     self.spawnX = spawnX
@@ -90,6 +94,10 @@ function GameScene:goToLevel(levelName)
             Spike(entityX, entityY)
         elseif entityName == "Spikeball" then
             Spikeball(entityX, entityY, entity)
+        elseif entityName == "Candle" then
+            Candle(entityX, entityY, entity)
+        elseif entityName == "Door" then
+                Door(entityX, entityY, entity)    
         end
     end
 end
