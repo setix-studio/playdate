@@ -8,14 +8,16 @@ TAGS = {
     Player = 2,
     Hazard = 3,
     Prop = 4,
-    Door = 5
+    Door = 5,
+    Platform = 6
 }
 
 Z_INDEXES = {
     Prop = 18,
     Hazard = 20,
-    Door = 65,
     Pickup = 50,
+    Door = 65,
+    Platform = 90,
     Player = 100
 }
 
@@ -31,8 +33,8 @@ class('GameScene').extends()
 
 function GameScene:init()
     self:goToLevel("Level_0")
-    self.spawnX = 12 * 16
-    self.spawnY = 11 * 16
+    self.spawnX = 7 * 16
+    self.spawnY = 10 * 16
 
     self.player = Player(self.spawnX, self.spawnY, self)
 end
@@ -97,7 +99,9 @@ function GameScene:goToLevel(levelName)
         elseif entityName == "Candle" then
             Candle(entityX, entityY, entity)
         elseif entityName == "Door" then
-                Door(entityX, entityY, entity)    
+            Door(entityX, entityY, entity)    
+        elseif entityName == "MovingPlatform" then
+            Movingplatform(entityX, entityY, entity)  
         end
     end
 end

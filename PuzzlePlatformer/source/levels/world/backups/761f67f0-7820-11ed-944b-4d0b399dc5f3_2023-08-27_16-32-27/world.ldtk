@@ -1323,25 +1323,6 @@
 								{ "__identifier": "xVelocity", "__type": "Float", "__value": 1, "__tile": null, "defUid": 76, "realEditorValues": [{ "id": "V_Float", "params": [1] }] },
 								{ "__identifier": "yVelocity", "__type": "Float", "__value": 0, "__tile": null, "defUid": 77, "realEditorValues": [] }
 							]
-						},
-						{
-							"__identifier": "MovingPlatform",
-							"__grid": [17,10],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#43BBD7",
-							"__worldX": 272,
-							"__worldY": 160,
-							"iid": "34e38f70-3b70-11ee-8d58-9b9c75df60f2",
-							"width": 16,
-							"height": 16,
-							"defUid": 75,
-							"px": [272,160],
-							"fieldInstances": [
-								{ "__identifier": "xVelocity", "__type": "Float", "__value": 0, "__tile": null, "defUid": 76, "realEditorValues": [] },
-								{ "__identifier": "yVelocity", "__type": "Float", "__value": 1, "__tile": null, "defUid": 77, "realEditorValues": [{ "id": "V_Float", "params": [1] }] }
-							]
 						}
 					]
 				},

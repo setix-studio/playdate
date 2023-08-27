@@ -17,6 +17,7 @@ import "scripts/spike"
 import "scripts/spikeball"
 import "scripts/candle"
 import "scripts/door"
+import "scripts/movingplatform"
 
 
 

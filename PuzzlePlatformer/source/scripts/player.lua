@@ -12,11 +12,11 @@ function Player:init(x, y, gameManager)
     local playerImageTable = gfx.imagetable.new("images/player-table-16-16")
     Player.super.init(self, playerImageTable)
 
-    self:addState("idle", 1, 2, {tickStep = 4})
+    self:addState("idle", 1, 2, {tickStep = 8})
     self:addState("run", 3, 6, {tickStep = 4})
     self:addState("jump", 6, 6)
     self:addState("dash", 7, 7)
-    self:addState("reverse", 7, 7)
+    self:addState("platform", 1, 2, {tickStep = 8})
 
     self:playAnimation()
 
@@ -121,6 +121,7 @@ function Player:handleMovementAndCollisions()
     self.touchingGround = false
     self.touchingCeiling = false
     self.touchingWall = false
+    self.onPlatform = false
     local died = false
     
     for i=1,length do
@@ -129,21 +130,50 @@ function Player:handleMovementAndCollisions()
         local collisionObject = collision.other
         local collisionTag = collisionObject:getTag()
         if collisionType == gfx.sprite.kCollisionTypeSlide then
-            if collision.normal.y == -1 then
-                self.touchingGround = true
-                self.doubleJumpAvailable = true
-                self.dashAvailable = true
-            elseif collision.normal.y == 1 then
-                self.touchingCeiling = true
-            end
+            
+                if collision.normal.y == -1 then
+                    self.touchingGround = true
+                    self.doubleJumpAvailable = true
+                    self.dashAvailable = true
+                elseif collision.normal.y == 1 then
+                    self.touchingCeiling = true
+                end
 
-            if collision.normal.x ~= 0 then
-                self.touchingWall = true
+                if collision.normal.x ~= 0 then
+                    self.touchingWall = true
+                end
+
+                if not  pd.buttonIsPressed(pd.kButtonA)  then 
+                if not  pd.buttonIsPressed(pd.kButtonLeft)  then 
+                    if not pd.buttonIsPressed(pd.kButtonRight) then   
+                        if collisionTag == TAGS.Platform  and collision.normal.y == -1  then
+                            self.onPlatform = true
+                            if collision.other.xVelocity > 0 or collision.other.xVelocity < 0 then
+                                 self.xVelocity = collision.other.xVelocity 
+                            elseif collision.other.yVelocity > 0 or collision.other.yVelocity < 0 then
+                                self.yVelocity = collision.other.yVelocity 
+                            end
+                            self:changeToPlatformState() 
+                           
+                            
+                       end
+                    else
+                        self:changeToRunState("right")  
+                        self:changeState("run")
+                    end
+                else
+                    self:changeToRunState("left")    
+                    self:changeState("run")
+                end
+            else
+                self:changeToRunState("jump")    
+                self:changeState("jump")
             end
         end
 
         if collisionTag == TAGS.Hazard then
             died = true
+       
         elseif collisionTag == TAGS.Pickup then
             collisionObject:pickUp(self)
         elseif collisionTag == TAGS.Door and self.hasKey == true then
@@ -173,6 +203,18 @@ function Player:handleMovementAndCollisions()
 
     if died then
         self:die()
+    end
+
+    if onPlatform == true then
+        if self:playerJumped() then
+            self:changeToJumpState()
+        elseif pd.buttonJustPressed(pd.kButtonB) and self.dashAvailable and self.dashAbility then
+            self:changeToDashState()
+        elseif pd.buttonIsPressed(pd.kButtonLeft) then
+            self:changeToRunState("left")
+        elseif pd.buttonIsPressed(pd.kButtonRight) then
+            self:changeToRunState("right")
+        end
     end
 end
 
@@ -242,6 +284,13 @@ end
 
 function Player:changeToFallState()
     self:changeState("jump")
+end
+
+function Player:changeToPlatformState()
+    
+    self:changeState("platform")
+    
+    
 end
 
 function Player:changeToDashState()
