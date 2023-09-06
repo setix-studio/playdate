@@ -9,7 +9,10 @@ TAGS = {
     Hazard = 3,
     Prop = 4,
     Door = 5,
-    Platform = 6
+    Platform = 6,
+    Textbox = 7,
+    Laser = 8,
+    Spikes = 9
 }
 
 Z_INDEXES = {
@@ -18,7 +21,8 @@ Z_INDEXES = {
     Pickup = 50,
     Door = 65,
     Platform = 90,
-    Player = 100
+    Player = 100,
+    Textbox = 900
 }
 
 local usePrecomputedLevels = not pd.isSimulator
@@ -33,10 +37,11 @@ class('GameScene').extends()
 
 function GameScene:init()
     self:goToLevel("Level_0")
-    self.spawnX = 7 * 16
-    self.spawnY = 10 * 16
+    self.spawnX = 6 * 16
+    self.spawnY = 9 * 16
 
     self.player = Player(self.spawnX, self.spawnY, self)
+    
 end
 
 function GameScene:resetPlayer()
@@ -47,6 +52,8 @@ function GameScene:enterRoom(direction)
     local level = ldtk.get_neighbours(self.levelName, direction)[1]
     self:goToLevel(level)
     self.player:add()
+   
+    HUD:createHUD()
     local spawnX, spawnY
     if direction == "north" then
         spawnX, spawnY = self.player.x, 220
@@ -60,6 +67,8 @@ function GameScene:enterRoom(direction)
     self.player:moveTo(spawnX, spawnY)
     self.spawnX = spawnX
     self.spawnY = spawnY
+    
+    
 end
 
 function GameScene:goToLevel(levelName)
@@ -68,7 +77,7 @@ function GameScene:goToLevel(levelName)
     self.levelName = levelName
 
     gfx.sprite.removeAll()
-
+    
     for layerName, layer in pairs(ldtk.get_layers(levelName)) do
         if layer.tiles then
             local tilemap = ldtk.create_tilemap(levelName, layerName)
@@ -84,6 +93,7 @@ function GameScene:goToLevel(levelName)
             if emptyTiles then
                 gfx.sprite.addWallSprites(tilemap, emptyTiles)
             end
+            
         end
     end
 
@@ -98,10 +108,14 @@ function GameScene:goToLevel(levelName)
             Spikeball(entityX, entityY, entity)
         elseif entityName == "Candle" then
             Candle(entityX, entityY, entity)
+        elseif entityName == "Camera" then
+            Camera(entityX, entityY, entity)
         elseif entityName == "Door" then
             Door(entityX, entityY, entity)    
         elseif entityName == "MovingPlatform" then
             Movingplatform(entityX, entityY, entity)  
+        
         end
     end
 end
+

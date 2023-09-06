@@ -1,0 +1,9 @@
+﻿pdft/.vs/
+pdft/src/pdft.vcxproj.user
+pdft/build/
+Source/fonts
+PDFontTool.pdx
+test-data/
+test-dst/
+
+

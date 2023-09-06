@@ -1,18 +1,18 @@
 local gfx <const> = playdate.graphics
 
-local movingplatformImage <const> = gfx.image.new("images/Key")
+local movingplatformImage <const> = gfx.image.new("images/platform")
 
 class('Movingplatform').extends(gfx.sprite)
 
 function Movingplatform:init(x, y, entity)
-    self:setZIndex(Z_INDEXES.Hazard)
+    self:setZIndex(Z_INDEXES.Platform)
     self:setImage(movingplatformImage)
     self:setCenter(0, 0)
     self:moveTo(x, y)
     self:add()
-
+    assert(movingplatformImage)
     self:setTag(TAGS.Platform)
-    self:setCollideRect(4, 4, 8, 8)
+    self:setCollideRect(2, 2, 12, 12)
 
     local fields = entity.fields
     self.xVelocity = fields.xVelocity

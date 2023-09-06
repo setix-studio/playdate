@@ -11,7 +11,7 @@ function Spikeball:init(x, y, entity)
     self:moveTo(x, y)
     self:add()
 
-    self:setTag(TAGS.Hazard)
+    self:setTag(TAGS.Laser)
     self:setCollideRect(4, 4, 8, 8)
 
     local fields = entity.fields

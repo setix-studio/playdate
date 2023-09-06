@@ -11,6 +11,6 @@ function Spike:init(x, y)
     self:moveTo(x, y)
     self:add()
 
-    self:setTag(TAGS.Hazard)
+    self:setTag(TAGS.Spikes)
     self:setCollideRect(2, 9, 12, 7)
 end
