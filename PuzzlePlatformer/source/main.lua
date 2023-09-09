@@ -20,7 +20,7 @@ import "scripts/camera"
 import "scripts/door"
 import "scripts/movingplatform"
 import "scripts/pdDialogue"
-import "scripts/hud"
+-- import "scripts/hud"
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
@@ -39,7 +39,7 @@ function pd.update()
     gfx.sprite.update()
     pd.timer.updateTimers()
     pdDialogue.update()
-  
+    
 
 end
 

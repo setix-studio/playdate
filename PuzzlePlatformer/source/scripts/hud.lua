@@ -58,7 +58,7 @@ function Healthbar:init(x, y, maxHealth, currentHealth)
     self.maxHealth = maxHealth
     _G.health = maxHealth
     self.currentHealth = _G.health
-    currentHealth = self.currentHealth
+    currentHealth = self.maxHealth
     self:moveTo(x, y)
     self:updateHealth(maxHealth)
     self:add()

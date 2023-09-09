@@ -10,17 +10,19 @@ function Spikeball:init(x, y, entity)
     self:setCenter(0, 0)
     self:moveTo(x, y)
     self:add()
-
+    
     self:setTag(TAGS.Laser)
     self:setCollideRect(4, 4, 8, 8)
 
     local fields = entity.fields
     self.xVelocity = fields.xVelocity
     self.yVelocity = fields.yVelocity
+    
 end
 
 function Spikeball:collisionResponse(other)
-    if other:getTag() == TAGS.Player then
+    local tag = other:getTag()
+    if tag == TAGS.Player or tag == TAGS.Pickup or tag == TAGS.Hazard or tag == TAGS.Camera or tag == TAGS.Prop then
         return gfx.sprite.kCollisionTypeOverlap
     end
     return gfx.sprite.kCollisionTypeBounce
@@ -41,3 +43,4 @@ function Spikeball:update()
         self.yVelocity *= -1
     end
 end
+

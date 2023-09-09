@@ -12,7 +12,8 @@ TAGS = {
     Platform = 6,
     Textbox = 7,
     Laser = 8,
-    Spikes = 9
+    Spikes = 9,
+    Camera = 10
 }
 
 Z_INDEXES = {
@@ -25,13 +26,9 @@ Z_INDEXES = {
     Textbox = 900
 }
 
-local usePrecomputedLevels = not pd.isSimulator
+ldtk.load("levels/world.ldtk")
 
-ldtk.load("levels/world.ldtk", usePrecomputedLevels)
 
-if pd.isSimulator then
-    ldtk.export_to_lua_files()
-end
 
 class('GameScene').extends()
 
@@ -41,8 +38,10 @@ function GameScene:init()
     self.spawnY = 9 * 16
 
     self.player = Player(self.spawnX, self.spawnY, self)
-    
+   
 end
+
+
 
 function GameScene:resetPlayer()
     self.player:moveTo(self.spawnX, self.spawnY)
@@ -53,7 +52,7 @@ function GameScene:enterRoom(direction)
     self:goToLevel(level)
     self.player:add()
    
-    HUD:createHUD()
+
     local spawnX, spawnY
     if direction == "north" then
         spawnX, spawnY = self.player.x, 220
@@ -78,6 +77,7 @@ function GameScene:goToLevel(levelName)
 
     gfx.sprite.removeAll()
     
+    _G.isMoving = false
     for layerName, layer in pairs(ldtk.get_layers(levelName)) do
         if layer.tiles then
             local tilemap = ldtk.create_tilemap(levelName, layerName)
@@ -103,7 +103,7 @@ function GameScene:goToLevel(levelName)
         if entityName == "Ability" then
             Ability(entityX, entityY, entity)
         elseif entityName == "Spike" then
-            Spike(entityX, entityY)
+            Spike(entityX, entityY, entity)
         elseif entityName == "Spikeball" then
             Spikeball(entityX, entityY, entity)
         elseif entityName == "Candle" then

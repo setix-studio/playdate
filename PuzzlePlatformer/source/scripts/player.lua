@@ -9,7 +9,7 @@ function Player:init(x, y, gameManager)
     self.gameManager = gameManager
 
     -- State Machine
-    local playerImageTable = gfx.imagetable.new("images/player-table-16-16")
+    local playerImageTable = gfx.imagetable.new("images/norman-table-16-16")
     Player.super.init(self, playerImageTable)
 
     self:addState("idle", 1, 2, { tickStep = 8 })
@@ -17,7 +17,7 @@ function Player:init(x, y, gameManager)
     self:addState("jump", 6, 6)
     self:addState("dash", 7, 7)
     self:addState("platform", 1, 2, { tickStep = 8 })
-    self:addState("ceiling", 1, 2, { tickStep = 8 })
+    self:addState("ceiling", 8, 8, { tickStep = 8 })
     self:addState("floor", 1, 2, { tickStep = 8 })
 
     self:playAnimation()
@@ -25,7 +25,7 @@ function Player:init(x, y, gameManager)
     -- Sprite properties
     self:moveTo(x, y)
     self:setZIndex(Z_INDEXES.Player)
-    self:setCollideRect(2, 2, 12, 12)
+    self:setCollideRect(2, 2, 12, 14)
     self:setTag(TAGS.Player)
 
     -- Physics properties
@@ -43,6 +43,7 @@ function Player:init(x, y, gameManager)
     -- Abilities
     self.doubleJumpAbility = false
     self.dashAbility = false
+    self.ceilingCling = false
 
     -- Double Jump
     self.doubleJumpAvailable = true
@@ -61,20 +62,21 @@ function Player:init(x, y, gameManager)
     self.dead = false
     self.hasKey = false
     gfx.setColor(gfx.kColorWhite)
+    self.cameraRange = false
 
 
-    
     self.TextboxShow = false
-    self.ceilingCling = false
     _G.keyTotal = 0
     _G.paused = false
 
-    HUD:createHUD()
+
+    --SFX
+    sfxRun = pd.sound.fileplayer.new('assets/sounds/sfx/footstep')
 end
 
 function Player:collisionResponse(other)
     local tag = other:getTag()
-    if tag == TAGS.Pickup or tag == TAGS.Hazard then
+    if tag == TAGS.Pickup or tag == TAGS.Hazard or tag == TAGS.Camera or tag == TAGS.Prop or tag == TAGS.Laser then
         return gfx.sprite.kCollisionTypeOverlap
     end
     return gfx.sprite.kCollisionTypeSlide
@@ -84,36 +86,42 @@ function Player:update()
     if self.dead then
         return
     end
+
     
-    self:updateAnimation()
 
     self:updateJumpBuffer()
 
     if _G.paused == false then
         self:handleState()
         self:handleMovementAndCollisions()
+        self:updateAnimation()
+       
     else
         self:changeToIdleState()
     end
     self:cameraFollow()
+end
+
+function Player:cameraFollow()
+    if self.cameraRange == true then
+        
     
+        if self.x < _G.cameraX - 20   then
+            frameCount = 1
+        elseif self.x < _G.cameraX - 20 then
+                frameCount = 1
+        elseif self.x > _G.cameraX + 30  then
+            frameCount = 5
+        elseif self.x < _G.cameraX - 10   then
+            frameCount = 2
+        elseif self.x > _G.cameraX + 20  then
+            frameCount = 4
+        else
+            frameCount = 3
+        end
     
 end
 
-
-function Player:cameraFollow()
-    if self.x < _G.cameraX - 20 then
-        frameCount = 1
-    elseif self.x > _G.cameraX + 30 then
-        frameCount = 5
-    elseif self.x < _G.cameraX - 10 then
-        frameCount = 2
-    elseif self.x > _G.cameraX + 20 then
-        frameCount = 4
-   
-    else
-        frameCount = 3
-    end
 end
 
 function Player:updateJumpBuffer()
@@ -124,20 +132,23 @@ function Player:updateJumpBuffer()
     if pd.buttonJustPressed(pd.kButtonA) then
         self.jumpBuffer = self.jumpBufferAmount
     end
+    if self.gravity == -1 then
+        self:setImageFlip(gfx.kImageFlippedY)
+    end
 end
 
 function Player:playerJumped()
     return self.jumpBuffer > 0
 end
 
-
-
-
 function Player:handleState()
     if self.currentState == "idle" then
         self:applyGravity()
         self:handleGroundInput()
     elseif self.currentState == "run" then
+        self:applyGravity()
+        self:handleGroundInput()
+    elseif self.currentState == "ceiling" then
         self:applyGravity()
         self:handleGroundInput()
     elseif self.currentState == "jump" then
@@ -175,18 +186,18 @@ function Player:handleMovementAndCollisions()
                 self.doubleJumpAvailable = true
                 self.dashAvailable = true
             elseif collision.normal.y == 1 then
+                self.touchingGround = true
                 self.touchingCeiling = true
                 if self.gravity == -1 then
-                    self.touchingGround = true
-                self.doubleJumpAvailable = true
-                self.dashAvailable = true
+                    self.doubleJumpAvailable = true
+                    self.dashAvailable = true
                 end
             end
 
             if collision.normal.x ~= 0 then
                 self.touchingWall = true
             end
-            
+
             if not pd.buttonIsPressed(pd.kButtonA) then
                 if not pd.buttonIsPressed(pd.kButtonLeft) then
                     if not pd.buttonIsPressed(pd.kButtonRight) then
@@ -206,20 +217,25 @@ function Player:handleMovementAndCollisions()
                 else
                     self:changeToRunState("left")
                     self:changeState("run")
-                    
                 end
             else
                 self:changeToRunState("jump")
                 self:changeState("jump")
             end
         end
+      
+        if collisionTag == TAGS.Camera then
 
+            self.cameraRange = true
+        elseif  collisionTag ~= TAGS.Camera then
+            self.cameraRange = false
+        end
         if collisionTag == TAGS.Laser then
-            self:damage(1)
-            if _G.health <= 0 then
-                _G.health = 0
-                died = true
-            end
+            -- self:damage(1)
+            -- if _G.health <= 0 then
+            --     _G.health = 0
+            --     died = true
+            -- end
         elseif collisionTag == TAGS.Spikes then
             self:die()
         elseif collisionTag == TAGS.Pickup then
@@ -227,7 +243,7 @@ function Player:handleMovementAndCollisions()
         elseif collisionTag == TAGS.Door and self.hasKey == true then
             collisionObject.fields.unlocked = true
             collisionObject.remove(collisionObject)
-            
+
             _G.keyTotal -= 1
             if _G.keyTotal <= 0 then
                 self.hasKey = false
@@ -252,13 +268,14 @@ function Player:handleMovementAndCollisions()
     if died then
         self:die()
     end
+end
+
+
+function Player:damage(amount)
     
 end
-function Player:damage(amount)
-    self.healthBar:damage(amount)
-    
- end
- function Player:die()
+
+function Player:die()
     self.xVelocity = 0
     self.yVelocity = 0
     self.dead = true
@@ -267,45 +284,41 @@ function Player:damage(amount)
         self:setCollisionsEnabled(true)
         self.gameManager:resetPlayer()
         self.dead = false
-        self.healthBar = Healthbar(hbX, hbY, hbMax)
+
     end)
 end
 
 -- Input Helper Functions
 function Player:handleGroundInput(direction)
-    self.clingToCeiling = false
-
     if self:playerJumped() then
         self:changeToJumpState()
-    elseif  pd.buttonIsPressed(pd.kButtonLeft) and pd.buttonJustPressed(pd.kButtonB) and self.dashAvailable and self.dashAbility then
+    elseif pd.buttonIsPressed(pd.kButtonLeft) and pd.buttonJustPressed(pd.kButtonB) and self.dashAvailable and self.dashAbility then
         self:changeToDashState()
-    elseif  pd.buttonIsPressed(pd.kButtonRight) and pd.buttonJustPressed(pd.kButtonB) and self.dashAvailable and self.dashAbility then
+    elseif pd.buttonIsPressed(pd.kButtonRight) and pd.buttonJustPressed(pd.kButtonB) and self.dashAvailable and self.dashAbility then
         self:changeToDashState()
     elseif pd.buttonIsPressed(pd.kButtonLeft) then
         self:changeToRunState("left")
     elseif pd.buttonIsPressed(pd.kButtonRight) then
         self:changeToRunState("right")
-    elseif pd.buttonIsPressed(pd.kButtonUp) and pd.buttonJustPressed(pd.kButtonB)  and self.ceilingCling then
+    elseif pd.buttonIsPressed(pd.kButtonUp) and pd.buttonJustPressed(pd.kButtonB) and self.ceilingCling then
         self.gravity = -self.gravity
-        if self.gravity == 1 then
-            self:setRotation(0)
-        else
-               
-                
-        end
+        self:changeToCeilingState()
     else
         self:changeToIdleState()
     end
-
-    
 end
-    
 
 function Player:handleAirInput()
     if self:playerJumped() and self.doubleJumpAvailable and self.doubleJumpAbility then
         self.doubleJumpAvailable = false
+        if self.gravity == -1 then
+            self:setImageFlip(gfx.kImageFlippedY)
+        end
         self:changeToJumpState()
     elseif pd.buttonJustPressed(pd.kButtonB) and self.dashAvailable and self.dashAbility then
+        if self.gravity == -1 then
+            self:setImageFlip(gfx.kImageFlippedY)
+        end
         self:changeToDashState()
     elseif pd.buttonIsPressed(pd.kButtonLeft) then
         self.xVelocity = -self.maxSpeed
@@ -317,48 +330,53 @@ end
 -- State transitions
 function Player:changeToIdleState()
     self.xVelocity = 0
-    if self.gravity == -1 then  
-        
-       
-    end
+
     self:changeState("idle")
+    if self.gravity == -1 then
+        self:changeState("ceiling")
+    end
 end
 
+function Player:changeToCeilingState()
+    self.xVelocity = 0
+    self:changeState("ceiling")
+end
 
 function Player:changeToRunState(direction)
     if direction == "left" then
         self.dir = -1
         self.xVelocity = -self.maxSpeed
         self.globalFlip = 1
-        if self.gravity == -1 then  
-            self:setImageFlip(gfx.kImageFlippedX)
-            
+        if self.gravity == -1 then
+            self:setImageFlip(gfx.kImageFlippedXY)
         end
-
     elseif direction == "right" then
         self.dir = 1
         self.xVelocity = self.maxSpeed
         self.globalFlip = 0
-    
+        if self.gravity == -1 then
+            self:setImageFlip(gfx.kImageFlippedY)
+        end
     end
-    
+
     self:changeState("run")
 end
 
 function Player:changeToJumpState()
-        
-        if self.gravity == -1 then
-            self.yVelocity = -self.jumpVelocity
-            self:setRotation(180)
-        else
-            self.yVelocity = self.jumpVelocity
-        end
+    if self.gravity == -1 then
+        self.yVelocity = -self.jumpVelocity
+        self:setImageFlip(gfx.kImageFlippedY)
+    else
+        self.yVelocity = self.jumpVelocity
+    end
     self.jumpBuffer = 0
     self:changeState("jump")
 end
 
 function Player:changeToFallState()
-
+    if self.gravity == -1 then
+        self:setImageFlip(gfx.kImageFlippedY)
+    end
     self:changeState("jump")
 end
 

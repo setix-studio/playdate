@@ -12,11 +12,14 @@ function Movingplatform:init(x, y, entity)
     self:add()
     assert(movingplatformImage)
     self:setTag(TAGS.Platform)
-    self:setCollideRect(2, 2, 12, 12)
+    self:setCollideRect(1, 1, 14, 14)
 
-    local fields = entity.fields
-    self.xVelocity = fields.xVelocity
-    self.yVelocity = fields.yVelocity
+    self.fields = entity.fields
+    self.isMoving = false
+    self.xVelocity = 0
+    self.yVelocity = 0
+    self:Moving()
+    hitWall = false
 end
 
 function Movingplatform:collisionResponse(other)
@@ -24,23 +27,43 @@ function Movingplatform:collisionResponse(other)
         Player.xVelocity = self.xVelocity
         Player.yVelocity = self.yVelocity
         return gfx.sprite.kCollisionTypeSlide
-
     end
     return gfx.sprite.kCollisionTypeBounce
 end
 
 function Movingplatform:update()
+    if _G.isMoving == true then
+
+        self:Moving()
+    
+    end
+end
+
+function Movingplatform:Moving()
     local _, _, collisions, length = self:moveWithCollisions(self.x + self.xVelocity, self.y + self.yVelocity)
-    local hitWall = false
-    for i=1,length do
+    
+    for i = 1, length do
         local collision = collisions[i]
         if collision.other:getTag() ~= TAGS.Player then
             hitWall = true
         end
+        
     end
+    if hitWall == true and self.xVelocity == -1 then
+        self.xVelocity = self.xVelocity * -1
+        self.yVelocity = self.yVelocity * -1
+        hitWall = false
+        
+    elseif hitWall  == true and self.xVelocity == 1 then
+        self.xVelocity = self.xVelocity * -1
+        self.yVelocity = self.yVelocity * -1
+        hitWall = false
 
-    if hitWall then
-        self.xVelocity *= -1
-        self.yVelocity *= -1
+    elseif hitWall == false  and self.xVelocity == 0 then
+        self.xVelocity = self.fields.xVelocity
+         self.yVelocity = self.fields.yVelocity
+        
     end
+    print(self.xVelocity)
+    
 end
