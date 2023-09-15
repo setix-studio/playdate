@@ -19,6 +19,8 @@ function Door:init(x, y, entity)
 
     self:setTag(TAGS.Door)
     self:setCollideRect(0, 0, self:getSize())
+
+    _G.doorType = self.fields.KeyType
 end
 
 

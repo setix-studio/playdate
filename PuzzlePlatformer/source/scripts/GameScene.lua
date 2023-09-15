@@ -21,7 +21,7 @@ Z_INDEXES = {
     Hazard = 20,
     Pickup = 50,
     Door = 65,
-    Platform = 90,
+    Platform = 90,      
     Player = 100,
     Textbox = 900
 }
@@ -36,7 +36,9 @@ function GameScene:init()
     self:goToLevel("Level_0")
     self.spawnX = 6 * 16
     self.spawnY = 9 * 16
-
+    _G.currentKeys = 0
+    _G.keyTotal = _G.currentKeys
+    _G.paused = false
     self.player = Player(self.spawnX, self.spawnY, self)
    
 end
@@ -51,6 +53,7 @@ function GameScene:enterRoom(direction)
     local level = ldtk.get_neighbours(self.levelName, direction)[1]
     self:goToLevel(level)
     self.player:add()
+    
    
 
     local spawnX, spawnY
@@ -66,7 +69,7 @@ function GameScene:enterRoom(direction)
     self.player:moveTo(spawnX, spawnY)
     self.spawnX = spawnX
     self.spawnY = spawnY
-    
+    _G.currentKeys = _G.keyTotal
     
 end
 
@@ -76,6 +79,7 @@ function GameScene:goToLevel(levelName)
     self.levelName = levelName
 
     gfx.sprite.removeAll()
+   
     
     _G.isMoving = false
     for layerName, layer in pairs(ldtk.get_layers(levelName)) do
@@ -99,9 +103,11 @@ function GameScene:goToLevel(levelName)
 
     for _, entity in ipairs(ldtk.get_entities(levelName)) do
         local entityX, entityY = entity.position.x, entity.position.y
+        self.fields = entity.fields
         local entityName = entity.name
         if entityName == "Ability" then
             Ability(entityX, entityY, entity)
+            _G.keyTotal = _G.keyTotal
         elseif entityName == "Spike" then
             Spike(entityX, entityY, entity)
         elseif entityName == "Spikeball" then
@@ -118,4 +124,5 @@ function GameScene:goToLevel(levelName)
         end
     end
 end
+
 

@@ -9,7 +9,7 @@ function Player:init(x, y, gameManager)
     self.gameManager = gameManager
 
     -- State Machine
-    local playerImageTable = gfx.imagetable.new("images/norman-table-16-16")
+    local playerImageTable = gfx.imagetable.new("images/norman-table-24-24")
     Player.super.init(self, playerImageTable)
 
     self:addState("idle", 1, 2, { tickStep = 8 })
@@ -25,14 +25,14 @@ function Player:init(x, y, gameManager)
     -- Sprite properties
     self:moveTo(x, y)
     self:setZIndex(Z_INDEXES.Player)
-    self:setCollideRect(2, 2, 12, 14)
+    self:setCollideRect(4, 2, 18, 22)
     self:setTag(TAGS.Player)
 
     -- Physics properties
     self.xVelocity = 0
     self.yVelocity = 0
     self.gravity = 1.0
-    self.maxSpeed = 2
+    self.maxSpeed = 3
     self.jumpVelocity = -6
     self.drag = 0.1
     self.minimumAirSpeed = 0.5
@@ -51,7 +51,7 @@ function Player:init(x, y, gameManager)
     -- Dash
     self.dashAvailable = true
     self.dashSpeed = 10
-    self.dashMinimumSpeed = 3
+    self.dashMinimumSpeed = 5
     self.dashDrag = 0.8
 
     -- Player State
@@ -61,14 +61,10 @@ function Player:init(x, y, gameManager)
     self.touchingWall = false
     self.dead = false
     self.hasKey = false
-    gfx.setColor(gfx.kColorWhite)
-    self.cameraRange = false
-
-
+    self.hasAlphaKey = false
+   
     self.TextboxShow = false
-    _G.keyTotal = 0
-    _G.paused = false
-
+    
 
     --SFX
     sfxRun = pd.sound.fileplayer.new('assets/sounds/sfx/footstep')
@@ -87,7 +83,7 @@ function Player:update()
         return
     end
 
-    
+    _G.keyTotal = _G.keyTotal
 
     self:updateJumpBuffer()
 
@@ -95,33 +91,28 @@ function Player:update()
         self:handleState()
         self:handleMovementAndCollisions()
         self:updateAnimation()
-       
     else
         self:changeToIdleState()
     end
     self:cameraFollow()
+
 end
+
 
 function Player:cameraFollow()
-    if self.cameraRange == true then
-        
-    
-        if self.x < _G.cameraX - 20   then
-            frameCount = 1
-        elseif self.x < _G.cameraX - 20 then
-                frameCount = 1
-        elseif self.x > _G.cameraX + 30  then
-            frameCount = 5
-        elseif self.x < _G.cameraX - 10   then
-            frameCount = 2
-        elseif self.x > _G.cameraX + 20  then
-            frameCount = 4
-        else
-            frameCount = 3
-        end
-    
-end
-
+    if self.x < _G.cameraX - 20 then
+        frameCount = 1
+    elseif self.x < _G.cameraX - 20 then
+        frameCount = 1
+    elseif self.x > _G.cameraX + 30 then
+        frameCount = 5
+    elseif self.x < _G.cameraX - 10 then
+        frameCount = 2
+    elseif self.x > _G.cameraX + 20 then
+        frameCount = 4
+    else
+        frameCount = 3
+    end
 end
 
 function Player:updateJumpBuffer()
@@ -186,12 +177,7 @@ function Player:handleMovementAndCollisions()
                 self.doubleJumpAvailable = true
                 self.dashAvailable = true
             elseif collision.normal.y == 1 then
-                self.touchingGround = true
                 self.touchingCeiling = true
-                if self.gravity == -1 then
-                    self.doubleJumpAvailable = true
-                    self.dashAvailable = true
-                end
             end
 
             if collision.normal.x ~= 0 then
@@ -203,6 +189,8 @@ function Player:handleMovementAndCollisions()
                     if not pd.buttonIsPressed(pd.kButtonRight) then
                         if collisionTag == TAGS.Platform and collision.normal.y == -1 then
                             self.onPlatform = true
+                            self.doubleJumpAvailable = true
+                            self.dashAvailable = true
                             if collision.other.xVelocity > 0 or collision.other.xVelocity < 0 then
                                 self.xVelocity = collision.other.xVelocity
                             elseif collision.other.yVelocity > 0 or collision.other.yVelocity < 0 then
@@ -223,14 +211,14 @@ function Player:handleMovementAndCollisions()
                 self:changeState("jump")
             end
         end
-      
-        if collisionTag == TAGS.Camera then
 
+        if collisionTag == TAGS.Camera then
             self.cameraRange = true
-        elseif  collisionTag ~= TAGS.Camera then
+        elseif collisionTag ~= TAGS.Camera then
             self.cameraRange = false
         end
         if collisionTag == TAGS.Laser then
+            self:die()
             -- self:damage(1)
             -- if _G.health <= 0 then
             --     _G.health = 0
@@ -240,10 +228,38 @@ function Player:handleMovementAndCollisions()
             self:die()
         elseif collisionTag == TAGS.Pickup then
             collisionObject:pickUp(self)
-        elseif collisionTag == TAGS.Door and self.hasKey == true then
+        elseif collisionTag == TAGS.Door and self.hasKey == true and self.hasAlphaKey == true and _G.doorType == "Alpha" then
+            if _G.doorType == "Alpha" then
+                collisionObject.fields.unlocked = true
+                collisionObject.remove(collisionObject)
+                self.hasAlphaKey = false
+                _G.keyTotal -= 1
+                if _G.keyTotal <= 0 then
+                    self.hasKey = false
+                end
+            end
+        elseif collisionTag == TAGS.Door and self.hasKey == true and self.hasBetaKey == true and _G.doorType == "Beta" then
+            if _G.doorType == "Beta" then
+                collisionObject.fields.unlocked = true
+                collisionObject.remove(collisionObject)
+                self.hasBetaKey = false
+                _G.keyTotal -= 1
+                if _G.keyTotal <= 0 then
+                    self.hasKey = false
+                end
+            end
+        elseif collisionTag == TAGS.Door and self.hasKey == true and self.hasSigmaKey == true and _G.doorType == "Sigma" then
             collisionObject.fields.unlocked = true
             collisionObject.remove(collisionObject)
-
+            self.hasSigmaKey = false
+            _G.keyTotal -= 1
+            if _G.keyTotal <= 0 then
+                self.hasKey = false
+            end
+        elseif collisionTag == TAGS.Door and self.hasKey == true and self.hasGammaKey == true and _G.doorType == "Gamma" then
+            collisionObject.fields.unlocked = true
+            collisionObject.remove(collisionObject)
+            self.hasGammaKey = false
             _G.keyTotal -= 1
             if _G.keyTotal <= 0 then
                 self.hasKey = false
@@ -270,9 +286,8 @@ function Player:handleMovementAndCollisions()
     end
 end
 
-
 function Player:damage(amount)
-    
+
 end
 
 function Player:die()
@@ -284,7 +299,6 @@ function Player:die()
         self:setCollisionsEnabled(true)
         self.gameManager:resetPlayer()
         self.dead = false
-
     end)
 end
 
@@ -300,9 +314,6 @@ function Player:handleGroundInput(direction)
         self:changeToRunState("left")
     elseif pd.buttonIsPressed(pd.kButtonRight) then
         self:changeToRunState("right")
-    elseif pd.buttonIsPressed(pd.kButtonUp) and pd.buttonJustPressed(pd.kButtonB) and self.ceilingCling then
-        self.gravity = -self.gravity
-        self:changeToCeilingState()
     else
         self:changeToIdleState()
     end
@@ -332,31 +343,15 @@ function Player:changeToIdleState()
     self.xVelocity = 0
 
     self:changeState("idle")
-    if self.gravity == -1 then
-        self:changeState("ceiling")
-    end
-end
-
-function Player:changeToCeilingState()
-    self.xVelocity = 0
-    self:changeState("ceiling")
 end
 
 function Player:changeToRunState(direction)
     if direction == "left" then
-        self.dir = -1
         self.xVelocity = -self.maxSpeed
         self.globalFlip = 1
-        if self.gravity == -1 then
-            self:setImageFlip(gfx.kImageFlippedXY)
-        end
     elseif direction == "right" then
-        self.dir = 1
         self.xVelocity = self.maxSpeed
         self.globalFlip = 0
-        if self.gravity == -1 then
-            self:setImageFlip(gfx.kImageFlippedY)
-        end
     end
 
     self:changeState("run")

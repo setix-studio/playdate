@@ -14,7 +14,7 @@ function Spike:init(x, y, entity)
     self:setTag(TAGS.Spikes)
     self:setCollideRect(2, 9, 12, 7)
     self.fields = entity.fields
-    self:setRotation(0)
+    self:setRotation(self.fields.Rotate)
     if self.fields.Rotate == 180 then
         self:moveTo(x + 16, y + 16)
         self:setCollideRect(2, 0, 12, 7)

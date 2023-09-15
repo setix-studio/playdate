@@ -15,8 +15,6 @@ function Ability:init(x, y, entity)
         imagetable = gfx.imagetable.new("images/DoubleJump-table-16-16")
     elseif self.abilityName == "Dash" then
         imagetable = gfx.imagetable.new("images/Dash-table-16-16")
-    elseif self.abilityName == "CeilingCling" then
-        imagetable = gfx.imagetable.new("images/CeilingCling-table-16-16")
     elseif self.abilityName == "Key" then
         imagetable = gfx.imagetable.new("images/Key-table-16-16")
     elseif self.abilityName == "PlatformSwitch" then
@@ -38,8 +36,10 @@ function Ability:init(x, y, entity)
 
     self:setZIndex(Z_INDEXES.Pickup)
     self:setTag(TAGS.Pickup)
-    self:setCollideRect(0, 0, self:getSize())
+    self:setCollideRect(2, 2, 10, 12)
     self:interactable()
+
+    _G.keyType = self.fields.KeyType
 end
 
 function Ability:update()
@@ -58,52 +58,62 @@ end
 function Ability:pickUp(player)
     if self.abilityName == "DoubleJump" then
         player.doubleJumpAbility = true
+        self.fields.pickedUp = true
         pdDialogue.say("GOT DOUBLE JUMP! NOW YOU CAN GET THE KEY!",
-            { width = self.fields.Width, height = self.fields.Height, x = 0, y = 160, padding = 10 })
+            { width = 260, height = 40, x = 70, y = 190, padding = 10 })
         self:remove()
     elseif self.abilityName == "Dash" then
         player.dashAbility = true
+        self.fields.pickedUp = true
         pdDialogue.say("GOT DASH! NOW YOU MOVE FAST FOR SHORT SPRINTS!",
-            { width = self.fields.Width, height = self.fields.Height, x = 0, y = 160, padding = 10 })
-        self:remove()
-    elseif self.abilityName == "CeilingCling" then
-        player.ceilingCling = true
-        pdDialogue.say("GOT Ceiling Cling! NOW YOU can hang upside down!",
-            { width = self.fields.Width, height = self.fields.Height, x = 0, y = 160, padding = 10 })
+            { width = 260, height = 40, x = 70, y = 190, padding = 10 })
         self:remove()
     elseif self.abilityName == "Key" then
         player.hasKey = true
-        
+        _G.keyTotal += 1
+        _G.keyType = self.fields.KeyType
         self.fields.pickedUp = true
+        if _G.keyType == "Alpha" then
+            player.hasAlphaKey = true
+            print("got Alpha key")
+        elseif _G.keyType == "Beta" then
+            player.hasBetaKey = true
+            print("got Beta key")
+        elseif _G.keyType == "Sigma" then
+            player.hasSigmaKey = true
+        elseif _G.keyType == "Gamma" then
+            player.hasGammaKey = true
+        end
         self:remove()
     end
+
     if self.abilityName == "TextBox" then
         if pd.buttonIsPressed(pd.kButtonUp) then
             pdDialogue.say(self.fields.Copy,
-                { width = self.fields.Width - 20, height = self.fields.Height - 20, x = 10, y = 170, padding = 10 })
+                { width = 260, height = 40, x = 70, y = 190, padding = 10 })
         end
     end
     if self.abilityName == "PlatformSwitch" then
         if pd.buttonIsPressed(pd.kButtonUp) then
-           if self.fields.platformOn == false then
-            pdDialogue.say("Platform Activated!",
-                { width = self.fields.Width - 20, height = self.fields.Height - 20, x = 10, y = 170, padding = 10 })
-            self.fields.platformOn = true
-            self.platformOn = true
-            self.imagetable = gfx.imagetable.new("images/switchon-table-16-16")
-            if self.platformOn == true then
-                _G.isMoving = true
-            end
-        else
+            if self.fields.platformOn == false then
+                pdDialogue.say("Platform Activated!",
+                    { width = 260, height = 40, x = 70, y = 190, padding = 10 })
+                self.fields.platformOn = true
+                self.platformOn = true
+                self.imagetable = gfx.imagetable.new("images/switchon-table-16-16")
+                if self.platformOn == true then
+                    _G.isMoving = true
+                end
+            else
                 pdDialogue.say("Platform Deactivated!",
-                    { width = self.fields.Width - 20, height = self.fields.Height - 20, x = 10, y = 170, padding = 10 })
+                    { width = 260, height = 40, x = 70, y = 190, padding = 10 })
                 self.fields.platformOn = false
                 self.platformOn = false
                 self.imagetable = gfx.imagetable.new("images/switchoff-table-16-16")
                 if self.platformOn == false then
                     _G.isMoving = false
                 end
+            end
         end
-    end
     end
 end

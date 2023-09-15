@@ -1,37 +1,49 @@
 local gfx <const> = playdate.graphics
 
-local spikeballImage <const> = gfx.image.new("images/spikeball")
 
-class('Spikeball').extends(gfx.sprite)
+
+class('Spikeball').extends(AnimatedSprite)
+
 
 function Spikeball:init(x, y, entity)
+    imagetable = gfx.imagetable.new("images/burst-table-16-16")
     self:setZIndex(Z_INDEXES.Hazard)
-    self:setImage(spikeballImage)
+    Spikeball.super.init(self, imagetable)
+    self:addState("idle")
+    self.currentState = "idle"
+    self.platformOn = false
+    self:setImage(image)
     self:setCenter(0, 0)
     self:moveTo(x, y)
     self:add()
-    
+
+    self:playAnimation()
+
+
     self:setTag(TAGS.Laser)
     self:setCollideRect(4, 4, 8, 8)
 
     local fields = entity.fields
     self.xVelocity = fields.xVelocity
     self.yVelocity = fields.yVelocity
-    
 end
 
 function Spikeball:collisionResponse(other)
     local tag = other:getTag()
-    if tag == TAGS.Player or tag == TAGS.Pickup or tag == TAGS.Hazard or tag == TAGS.Camera or tag == TAGS.Prop then
+    if tag == TAGS.Player then
         return gfx.sprite.kCollisionTypeOverlap
+    end
+    if tag == TAGS.Pickup or tag == TAGS.Hazard or tag == TAGS.Camera or tag == TAGS.Prop then
+        return gfx.sprite.kCollisionTypeSlide
     end
     return gfx.sprite.kCollisionTypeBounce
 end
 
 function Spikeball:update()
+    self:updateAnimation()
     local _, _, collisions, length = self:moveWithCollisions(self.x + self.xVelocity, self.y + self.yVelocity)
     local hitWall = false
-    for i=1,length do
+    for i = 1, length do
         local collision = collisions[i]
         if collision.other:getTag() ~= TAGS.Player then
             hitWall = true
@@ -43,4 +55,3 @@ function Spikeball:update()
         self.yVelocity *= -1
     end
 end
-
