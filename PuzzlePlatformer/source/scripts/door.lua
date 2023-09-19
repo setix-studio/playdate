@@ -16,6 +16,8 @@ function Door:init(x, y, entity)
     self:setCenter(0, 0)
     self:moveTo(x, y)
     self:add()
+    self:add()
+    self:add()
 
     self:setTag(TAGS.Door)
     self:setCollideRect(0, 0, self:getSize())

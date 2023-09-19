@@ -21,7 +21,7 @@ Z_INDEXES = {
     Hazard = 20,
     Pickup = 50,
     Door = 65,
-    Platform = 90,      
+    Platform = 90,
     Player = 100,
     Textbox = 900
 }
@@ -40,10 +40,7 @@ function GameScene:init()
     _G.keyTotal = _G.currentKeys
     _G.paused = false
     self.player = Player(self.spawnX, self.spawnY, self)
-   
 end
-
-
 
 function GameScene:resetPlayer()
     self.player:moveTo(self.spawnX, self.spawnY)
@@ -53,8 +50,8 @@ function GameScene:enterRoom(direction)
     local level = ldtk.get_neighbours(self.levelName, direction)[1]
     self:goToLevel(level)
     self.player:add()
-    
-   
+
+
 
     local spawnX, spawnY
     if direction == "north" then
@@ -70,7 +67,6 @@ function GameScene:enterRoom(direction)
     self.spawnX = spawnX
     self.spawnY = spawnY
     _G.currentKeys = _G.keyTotal
-    
 end
 
 function GameScene:goToLevel(levelName)
@@ -79,8 +75,8 @@ function GameScene:goToLevel(levelName)
     self.levelName = levelName
 
     gfx.sprite.removeAll()
-   
-    
+
+
     _G.isMoving = false
     for layerName, layer in pairs(ldtk.get_layers(levelName)) do
         if layer.tiles then
@@ -97,7 +93,6 @@ function GameScene:goToLevel(levelName)
             if emptyTiles then
                 gfx.sprite.addWallSprites(tilemap, emptyTiles)
             end
-            
         end
     end
 
@@ -117,12 +112,9 @@ function GameScene:goToLevel(levelName)
         elseif entityName == "Camera" then
             Camera(entityX, entityY, entity)
         elseif entityName == "Door" then
-            Door(entityX, entityY, entity)    
+            Door(entityX, entityY, entity)
         elseif entityName == "MovingPlatform" then
-            Movingplatform(entityX, entityY, entity)  
-        
+            Movingplatform(entityX, entityY, entity)
         end
     end
 end
-
-

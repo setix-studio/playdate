@@ -1906,18 +1906,18 @@
 						},
 						{
 							"__identifier": "Ability",
-							"__grid": [8,8],
+							"__grid": [8,6],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#2CE8F5",
 							"__worldX": 128,
-							"__worldY": 128,
+							"__worldY": 96,
 							"iid": "ec6430d0-3b70-11ee-9f6f-1314d92fb466",
 							"width": 16,
 							"height": 16,
 							"defUid": 52,
-							"px": [128,128],
+							"px": [128,96],
 							"fieldInstances": [
 								{ "__identifier": "ability", "__type": "LocalEnum.Abilities", "__value": "Key", "__tile": null, "defUid": 54, "realEditorValues": [{
 									"id": "V_String",
@@ -1952,99 +1952,6 @@
 							"fieldInstances": [
 								{ "__identifier": "xVelocity", "__type": "Float", "__value": 0, "__tile": null, "defUid": 49, "realEditorValues": [] },
 								{ "__identifier": "yVelocity", "__type": "Float", "__value": 1, "__tile": null, "defUid": 50, "realEditorValues": [{ "id": "V_Float", "params": [1] }] }
-							]
-						},
-						{
-							"__identifier": "Ability",
-							"__grid": [6,8],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"__worldX": 96,
-							"__worldY": 128,
-							"iid": "7a9f68f0-3b70-11ee-b0f1-f7c89b66ff6a",
-							"width": 16,
-							"height": 16,
-							"defUid": 52,
-							"px": [96,128],
-							"fieldInstances": [
-								{ "__identifier": "ability", "__type": "LocalEnum.Abilities", "__value": "Key", "__tile": null, "defUid": 54, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Key"]
-								}] },
-								{ "__identifier": "pickedUp", "__type": "Bool", "__value": false, "__tile": null, "defUid": 55, "realEditorValues": [] },
-								{ "__identifier": "Copy", "__type": "String", "__value": null, "__tile": null, "defUid": 82, "realEditorValues": [] },
-								{ "__identifier": "Width", "__type": "Int", "__value": 400, "__tile": null, "defUid": 131, "realEditorValues": [] },
-								{ "__identifier": "Height", "__type": "Int", "__value": 80, "__tile": null, "defUid": 132, "realEditorValues": [] },
-								{ "__identifier": "platformOn", "__type": "Bool", "__value": false, "__tile": null, "defUid": 140, "realEditorValues": [] },
-								{ "__identifier": "KeyType", "__type": "LocalEnum.KeyType", "__value": "Beta", "__tile": null, "defUid": 143, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Beta"]
-								}] },
-								{ "__identifier": "Hidden", "__type": "Bool", "__value": false, "__tile": null, "defUid": 149, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Ability",
-							"__grid": [10,8],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"__worldX": 160,
-							"__worldY": 128,
-							"iid": "805581d0-3b70-11ee-b0f1-558e6d0c9e3c",
-							"width": 16,
-							"height": 16,
-							"defUid": 52,
-							"px": [160,128],
-							"fieldInstances": [
-								{ "__identifier": "ability", "__type": "LocalEnum.Abilities", "__value": "Key", "__tile": null, "defUid": 54, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Key"]
-								}] },
-								{ "__identifier": "pickedUp", "__type": "Bool", "__value": false, "__tile": null, "defUid": 55, "realEditorValues": [] },
-								{ "__identifier": "Copy", "__type": "String", "__value": null, "__tile": null, "defUid": 82, "realEditorValues": [] },
-								{ "__identifier": "Width", "__type": "Int", "__value": 400, "__tile": null, "defUid": 131, "realEditorValues": [] },
-								{ "__identifier": "Height", "__type": "Int", "__value": 80, "__tile": null, "defUid": 132, "realEditorValues": [] },
-								{ "__identifier": "platformOn", "__type": "Bool", "__value": false, "__tile": null, "defUid": 140, "realEditorValues": [] },
-								{ "__identifier": "KeyType", "__type": "LocalEnum.KeyType", "__value": "Sigma", "__tile": null, "defUid": 143, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Sigma"]
-								}] },
-								{ "__identifier": "Hidden", "__type": "Bool", "__value": false, "__tile": null, "defUid": 149, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Ability",
-							"__grid": [15,8],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"__worldX": 240,
-							"__worldY": 128,
-							"iid": "840ac1a0-3b70-11ee-b0f1-b7a7a670d80c",
-							"width": 16,
-							"height": 16,
-							"defUid": 52,
-							"px": [240,128],
-							"fieldInstances": [
-								{ "__identifier": "ability", "__type": "LocalEnum.Abilities", "__value": "Key", "__tile": null, "defUid": 54, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Key"]
-								}] },
-								{ "__identifier": "pickedUp", "__type": "Bool", "__value": false, "__tile": null, "defUid": 55, "realEditorValues": [] },
-								{ "__identifier": "Copy", "__type": "String", "__value": null, "__tile": null, "defUid": 82, "realEditorValues": [] },
-								{ "__identifier": "Width", "__type": "Int", "__value": 400, "__tile": null, "defUid": 131, "realEditorValues": [] },
-								{ "__identifier": "Height", "__type": "Int", "__value": 80, "__tile": null, "defUid": 132, "realEditorValues": [] },
-								{ "__identifier": "platformOn", "__type": "Bool", "__value": false, "__tile": null, "defUid": 140, "realEditorValues": [] },
-								{ "__identifier": "KeyType", "__type": "LocalEnum.KeyType", "__value": "Gamma", "__tile": null, "defUid": 143, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Gamma"]
-								}] },
-								{ "__identifier": "Hidden", "__type": "Bool", "__value": false, "__tile": null, "defUid": 149, "realEditorValues": [] }
 							]
 						}
 					]
@@ -6674,20 +6581,43 @@
 						},
 						{
 							"__identifier": "MovingPlatform",
-							"__grid": [9,8],
+							"__grid": [4,8],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#43BBD7",
-							"__worldX": 2544,
+							"__worldX": 2464,
 							"__worldY": 128,
 							"iid": "3f370f20-3b70-11ee-96a5-5fa4f8f5eb49",
 							"width": 16,
 							"height": 16,
 							"defUid": 75,
-							"px": [144,128],
+							"px": [64,128],
 							"fieldInstances": [
 								{ "__identifier": "xVelocity", "__type": "Float", "__value": 1, "__tile": null, "defUid": 76, "realEditorValues": [{ "id": "V_Float", "params": [1] }] },
+								{ "__identifier": "yVelocity", "__type": "Float", "__value": 0, "__tile": null, "defUid": 77, "realEditorValues": [] },
+								{ "__identifier": "isMoving", "__type": "Bool", "__value": false, "__tile": null, "defUid": 139, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ false ]
+								}] }
+							]
+						},
+						{
+							"__identifier": "MovingPlatform",
+							"__grid": [13,8],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#43BBD7",
+							"__worldX": 2608,
+							"__worldY": 128,
+							"iid": "3fb36b10-3b70-11ee-96a5-7ba5ae25716a",
+							"width": 16,
+							"height": 16,
+							"defUid": 75,
+							"px": [208,128],
+							"fieldInstances": [
+								{ "__identifier": "xVelocity", "__type": "Float", "__value": -1, "__tile": null, "defUid": 76, "realEditorValues": [{ "id": "V_Float", "params": [-1] }] },
 								{ "__identifier": "yVelocity", "__type": "Float", "__value": 0, "__tile": null, "defUid": 77, "realEditorValues": [] },
 								{ "__identifier": "isMoving", "__type": "Bool", "__value": false, "__tile": null, "defUid": 139, "realEditorValues": [{
 									"id": "V_Bool",

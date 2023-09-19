@@ -27,7 +27,10 @@ function Movingplatform:collisionResponse(other)
         Player.xVelocity = self.xVelocity
         Player.yVelocity = self.yVelocity
         return gfx.sprite.kCollisionTypeSlide
+    elseif other:getTag() == TAGS.Hazard then
+        return gfx.sprite.kCollisionTypeOverlap
     end
+
     return gfx.sprite.kCollisionTypeBounce
 end
 

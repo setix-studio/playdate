@@ -40,6 +40,9 @@ function Ability:init(x, y, entity)
     self:interactable()
 
     _G.keyType = self.fields.KeyType
+    if self.fields.Hidden == true then
+        self:setZIndex(-900)
+    end
 end
 
 function Ability:update()
@@ -75,14 +78,18 @@ function Ability:pickUp(player)
         self.fields.pickedUp = true
         if _G.keyType == "Alpha" then
             player.hasAlphaKey = true
+            _G.AlphaKey = true
             print("got Alpha key")
         elseif _G.keyType == "Beta" then
             player.hasBetaKey = true
+            _G.BetaKey = true
             print("got Beta key")
         elseif _G.keyType == "Sigma" then
             player.hasSigmaKey = true
+            _G.SigmaKey = true
         elseif _G.keyType == "Gamma" then
             player.hasGammaKey = true
+            _G.GammaKey = true
         end
         self:remove()
     end

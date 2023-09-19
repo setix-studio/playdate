@@ -1,0 +1,6 @@
+name=Steamed Roller
+author=Setix Studio
+description=Steamroll the moles!
+bundleID=com.setixstudio.package
+version=0.1.0
+buildNumber=1

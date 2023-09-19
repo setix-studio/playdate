@@ -62,10 +62,13 @@ function Player:init(x, y, gameManager)
     self.dead = false
     self.hasKey = false
     self.hasAlphaKey = false
-   
-    self.TextboxShow = false
-    
 
+    self.TextboxShow = false
+
+    _G.AlphaKey = false
+    _G.BetaKey = false
+    _G.SigmaKey = false
+    _G.GammaKey = false
     --SFX
     sfxRun = pd.sound.fileplayer.new('assets/sounds/sfx/footstep')
 end
@@ -95,9 +98,7 @@ function Player:update()
         self:changeToIdleState()
     end
     self:cameraFollow()
-
 end
-
 
 function Player:cameraFollow()
     if self.x < _G.cameraX - 20 then
@@ -233,6 +234,7 @@ function Player:handleMovementAndCollisions()
                 collisionObject.fields.unlocked = true
                 collisionObject.remove(collisionObject)
                 self.hasAlphaKey = false
+                _G.AlphaKey = false
                 _G.keyTotal -= 1
                 if _G.keyTotal <= 0 then
                     self.hasKey = false
@@ -243,6 +245,7 @@ function Player:handleMovementAndCollisions()
                 collisionObject.fields.unlocked = true
                 collisionObject.remove(collisionObject)
                 self.hasBetaKey = false
+                _G.BetaKey = false
                 _G.keyTotal -= 1
                 if _G.keyTotal <= 0 then
                     self.hasKey = false
@@ -252,6 +255,7 @@ function Player:handleMovementAndCollisions()
             collisionObject.fields.unlocked = true
             collisionObject.remove(collisionObject)
             self.hasSigmaKey = false
+            _G.SigmaKey = false
             _G.keyTotal -= 1
             if _G.keyTotal <= 0 then
                 self.hasKey = false
@@ -260,6 +264,7 @@ function Player:handleMovementAndCollisions()
             collisionObject.fields.unlocked = true
             collisionObject.remove(collisionObject)
             self.hasGammaKey = false
+            _G.GammaKey = false
             _G.keyTotal -= 1
             if _G.keyTotal <= 0 then
                 self.hasKey = false
