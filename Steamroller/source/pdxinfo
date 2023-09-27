@@ -1,6 +1,9 @@
-name=Steamed Roller
-author=Setix Studio
-description=Steamroll the moles!
-bundleID=com.setixstudio.package
-version=0.1.0
-buildNumber=1
+name=Steam'd Roller Demo
+author=setix studio 
+description=How many moles can you roll?
+bundleID=com.setixstudio.steamdrollerdemo
+version=0.3.0b
+buildNumber=3
+imagePath=assets/images
+launchSoundPath=assets/sounds
+contentWarning=This game contains mild fantasy violence.
