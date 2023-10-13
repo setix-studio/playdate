@@ -1,9 +1,6 @@
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
-import "scripts/gameOverScene"
-
-import "scripts/collision"
-import "scripts/barrel"
+import "scripts/libraries/LDtk"
 local ldtk <const> = LDtk
 TAGS = {
     Pickup = 1,
@@ -11,22 +8,21 @@ TAGS = {
     Prop = 6,
     Enemy = 3,
     Collision = 4,
-    Building = 5,
+    Steam = 5,
     Textbox = 10
 }
 
 Z_INDEXES = {
     BG = -100,
-    Prop = 20,
-    Enemy = 20,
+    Prop = 5,
+    Enemy = 5,
     Pickup = 50,
-    Player = 30,
-    Building = 150,
+    Player = 10,
+    Steam = 800,
     Collision = 200,
     Textbox = 900
 }
 
-ldtk.load("levels/world.ldtk")
 
 
 class('GameScene').extends(Room)
@@ -34,8 +30,10 @@ class('GameScene').extends(Room)
 playdate.ui.crankIndicator:start()
 
 function GameScene:init()
+    gfx.setBackgroundColor(gfx.kColorWhite)
     remainingTime = 30
-    self:goToLevel("Level_" .. math.random(0, 3))
+
+    self:goToLevel("Level_" .. levelNum)
     self.spawnX = 12 * 16
     self.spawnY = 4 * 16
     self.player = Player(self.spawnX, self.spawnY, self)
@@ -47,9 +45,22 @@ function GameScene:init()
     currentMilliseconds = playdate.getCurrentTimeMilliseconds()
     elapsedTime = playdate.getElapsedTime()
     levelTime = 30
+    if levelNum >= 0 and levelNum <= 9 then
+        gameloop = pd.sound.fileplayer.new('assets/sounds/junkyard')
+    elseif levelNum >= 10 and levelNum <= 19 then
+        gameloop = pd.sound.fileplayer.new('assets/sounds/construction')
+    elseif levelNum >= 20 and levelNum <= 29 then
+        gameloop = pd.sound.fileplayer.new('assets/sounds/neighborhood')
+    elseif levelNum >= 30 and levelNum <= 39 then
+        gameloop = pd.sound.fileplayer.new('assets/sounds/crypt')
+    elseif levelNum >= 40 and levelNum <= 49 then
+        gameloop = pd.sound.fileplayer.new('assets/sounds/moon')
+    else
+        gameloop = pd.sound.fileplayer.new('assets/sounds/junkyard')
+    end
 
-    music:setVolume(0.2)
-    music:play(0)
+    gameloop:setVolume(0.5)
+    gameloop:play(0)
 end
 
 function GameScene:resetPlayer()
@@ -131,10 +142,6 @@ function GameScene:update()
         score = 0
     end
 
-
-
-
-
     if remainingTime <= 0 then
         remainingTime = 0
 
@@ -149,8 +156,8 @@ function GameScene:update()
         sfxDrive:stop()
         sfxMole:stop()
         sfxSquish:stop()
-
-        manager:push(GameOverScene())
+        gameloop:stop()
+        manager:enter(GameOverScene())
 
 
         stopSpawner()
@@ -166,14 +173,27 @@ end
 function HUD()
     gfx.setColor(gfx.kColorWhite)
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    gfx.setFont(font1)
-    gfx.drawText("Score: " .. score, 12, -2, font1)
+    gfx.setFont(font2)
+    gfx.drawText("Score: " .. score, 12, 0)
 
-    --gfx.drawText("Angle: " .. angle, 230, 2)
+    gfx.drawRoundRect(320, 3, 68, 10, 4)
+    gfx.fillRoundRect(322, 5, remainingTime * 2, 6, 4)
 
-    gfx.drawRoundRect(325, 0, 68, 12, 4)
-    gfx.fillRoundRect(327, 2, remainingTime * 2, 8, 4)
-
+    --gfx.drawText("Level: " .. angle, 170, 2, font1)
 
     --gfx.drawText("" .. math.floor(remainingTime), 370, 2, font1)
 end
+
+local sysMenu = playdate.getSystemMenu()
+
+local menuItem, error = sysMenu:addMenuItem("Main Menu", function()
+    music:stop()
+    sfxBackup:stop()
+    sfxDrive:stop()
+    sfxMole:stop()
+    sfxSquish:stop()
+    gameloop:stop()
+    stopSpawner()
+    spawnTimer:pause()
+    manager:enter(HomeScene())
+end)

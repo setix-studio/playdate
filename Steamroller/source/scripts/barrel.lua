@@ -5,8 +5,14 @@ local gfx <const> = playdate.graphics
 class('Barrel').extends(AnimatedSprite)
 
 function Barrel:init(x, y)
-    local barrelImageTable = gfx.imagetable.new("assets/images/barrel-table-32-32")
-    Barrel.super.init(self, barrelImageTable)
+    if levelNum >= 40 and levelNum <= 49 then
+        barrelImageTable = gfx.imagetable.new("assets/images/barrel2-table-32-32")
+        Barrel.super.init(self, barrelImageTable)
+        else
+            barrelImageTable = gfx.imagetable.new("assets/images/barrel-table-32-32")
+            Barrel.super.init(self, barrelImageTable)
+        end
+    
     self:addState("idle", 1, 1)
     self:addState("destroy", 2, 3, { tickStep = 4 })
     self.currentState = "idle"

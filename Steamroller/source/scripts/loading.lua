@@ -1,15 +1,22 @@
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
-
-
+import "scripts/gameScene"
+import "scripts/libraries/LDtk"
+local ldtk <const> = LDtk
 class('LoadingScene').extends(Room)
 
 function LoadingScene:init()
+    gfx.sprite.removeAll()
     LoadingSceneImage()
     music:stop()
 
     score = currentScore
     spawnTimer = pd.timer.performAfterDelay(6000, function()
+        if levelNum >= 0 and levelNum <= 29 then
+            ldtk.load("levels/world.ldtk")
+        elseif levelNum >= 30 and levelNum <= 59 then
+            ldtk.load("levels/world2.ldtk")
+        end
         manager:push(GameScene())
     end)
 end

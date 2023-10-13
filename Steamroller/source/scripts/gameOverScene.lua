@@ -18,6 +18,7 @@ function GameOverScene:update()
     gfx.fillRoundRect(215, 140, 22, 22, 50)
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     width = 400
+    gfx.setFont(font1)
     gfx.drawTextAligned("Game Over", width / 2, 80, kTextAlignment.center)
     gfx.drawTextAligned("High Score: " .. HIGH_SCORE, width / 2, 100, kTextAlignment.center)
     gfx.drawTextAligned("Your Score: " .. score, width / 2, 120, kTextAlignment.center)
@@ -25,7 +26,9 @@ function GameOverScene:update()
 end
 
 function GameOverScene:AButtonDown()
-    manager:push(HomeScene())
+    spawnTimer = pd.timer.performAfterDelay(1000, function()
+        manager:enter(HomeScene())
+    end)  
 end
 
 class('GameOverSceneImage').extends(gfx.sprite)

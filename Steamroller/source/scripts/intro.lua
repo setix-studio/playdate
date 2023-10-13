@@ -5,21 +5,29 @@ local gfx <const> = playdate.graphics
 class('IntroScene').extends(Room)
 
 function IntroScene:init()
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(0, 0, 400, 240)
     IntroSceneImage()
-    music:stop()
+    
+   
     sfxLogo = pd.sound.fileplayer.new('assets/sounds/setixstudio')
 
-    logoTimer = pd.timer.performAfterDelay(1700, function()
+    logoTimer = pd.timer.performAfterDelay(2000, function()
         sfxLogo:play(1)
     end)
 
-    spawnTimer = pd.timer.performAfterDelay(4000, function()
+    slideAmount = 0
+
+    spawnTimer = pd.timer.performAfterDelay(3500, function()
+
+
+        
         manager:push(HomeScene())
     end)
 end
 
 function IntroScene:update()
-
+gfx.setBackgroundColor(playdate.graphics.kColorBlack)
 end
 
 class('IntroSceneImage').extends(gfx.sprite)
@@ -40,6 +48,7 @@ function IntroSceneImage:update()
     if self.y >= 0 then
         self.y = 0
     end
+    
 
     self:moveTo(self.x, self.y)
 end

@@ -6,9 +6,15 @@ class('Enemy').extends(AnimatedSprite)
 function Enemy:init(x, y, gameManager)
     self.gameManager = gameManager
 
+    
     -- State Machine
-    local playerImageTable = gfx.imagetable.new("assets/images/enemy-table-16-16")
-    Player.super.init(self, playerImageTable)
+    if levelNum >= 40 and levelNum <= 49 then
+    enemyImageTable = gfx.imagetable.new("assets/images/enemy2-table-16-16")
+    else
+        enemyImageTable = gfx.imagetable.new("assets/images/enemy-table-16-16")
+
+    end
+    Enemy.super.init(self, enemyImageTable)
 
     self:addState("idle", 1, 1, { tickStep = 4 })
     self:addState("active", 2, 5, { tickStep = 4 })

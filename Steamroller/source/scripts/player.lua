@@ -19,7 +19,7 @@ function Player:init(x, y, gameManager)
 
     self:moveTo(x, y)
     self:setZIndex(Z_INDEXES.Player)
-    self:setCenter(0, 0)
+    self:setCenter(0, 1)
     --self:setCollideRect(8, 10, 28, 28)
     self:setCollideRect(0, 0, self:getSize())
     self:setTag(TAGS.Player)
@@ -49,16 +49,6 @@ function Player:update()
         self:handleMovementAndCollisions()
         self:updateAnimation()
         self:setCollideRect(0, 0, self:getSize())
-        --  if angle <= 359  and angle >= 181 then
-        --      self:setCollideRect(20, 20, 28, 28)
-        --  elseif angle <= 180  and angle >= 100 then
-        --      self:setCollideRect(20, 20, 28, 28)
-        -- elseif angle <= 179  and angle >= 91 then
-        --     self:setCollideRect(20, 20, 28, 28)
-        --end
-        if enemyCounter >= 10 then
-
-        end
     end
 end
 
@@ -69,12 +59,11 @@ function Player:handleMovementAndCollisions()
         self.x = 390
     elseif self.y <= 10 then
         self.y = 10
-    elseif self.y >= 210 then
-        self.y = 210
+    elseif self.y >= 230 then
+        self.y = 230
     end
 
     angle = pd.getCrankPosition()
-
     local x = self.x + self.speed * math.cos(math.rad(angle))
     local y = self.y + self.speed * math.sin(math.rad(angle))
     angle = angle
