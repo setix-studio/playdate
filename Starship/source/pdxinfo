@@ -1,8 +1,8 @@
-name=Tango's Taco Truck in Space!
+name=Cosmo Nash: Galactic Courier 
 author=setix studio 
 description=space
-bundleID=com.setixstudio.tango
-version=0.0.1a
-buildNumber=1
+bundleID=com.setixstudio.cosmo
+version=0.0.5a
+buildNumber=2
 imagePath=assets/image
 launchSoundPath=assets/sound

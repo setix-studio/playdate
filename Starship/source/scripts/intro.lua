@@ -6,22 +6,29 @@ class('IntroScene').extends(Room)
 
 function IntroScene:init()
     gfx.sprite.removeAll()
+    playdate.datastore.read("items")
 
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(0, 0, 400, 240)
     IntroSceneImage()
     sfxLogo = pd.sound.fileplayer.new('assets/sounds/setixstudio')
-
+    saveData = saveData
     logoTimer = pd.timer.performAfterDelay(2000, function()
         sfxLogo:play(1)
-        ShipTakeoff()
     end)
 
 
 
 
     shipTimer = pd.timer.performAfterDelay(4000, function()
-        manager:enter(LoadingScene())
+        loadGameData()
+        if saveData == nil then
+            saveData = false
+        else
+            saveData = saveData
+        end
+        print(saveData)
+        manager:enter(HomeScene())
     end)
 end
 
@@ -31,7 +38,6 @@ end
 
 class('IntroSceneImage').extends(gfx.sprite)
 function IntroSceneImage:init(x, y)
-    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     local loadingImage = gfx.image.new("assets/images/setixstudio")
 
     self:setImage(loadingImage)

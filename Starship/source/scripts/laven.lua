@@ -5,12 +5,12 @@ local ldtk <const> = LDtk
 
 class('LavenSceneImage').extends(gfx.sprite)
 function LavenSceneImage:init(x, y)
-    homeImage = gfx.image.new("assets/images/laven-2")
-    self.speed = 0.25
-    self.x = 0
+    local homeImage = gfx.image.new("assets/images/laven-2")
+    self.speed = 0.125
+    self.x = -50
     self.y = 0
     self:setImage(homeImage)
-    self:setZIndex(-900)
+    self:setZIndex(-930)
     self:setCenter(0, 0)
     self:add()
 end
@@ -23,22 +23,15 @@ function LavenSceneImage:update()
         self.x -= self.speed
         self:moveTo(self.x, self.y)
     end
-
-    if self.x > 10 then
-        self.x = 10
-    end
-    if self.x < -10 then
-        self.x = -10
-    end
 end
 
 class('LavenBackImage').extends(gfx.sprite)
 function LavenBackImage:init(x, y)
-    homeImage = gfx.image.new("assets/images/laven-1")
-    self.speed = 0.125
-    self.x = 0
+    local backImage = gfx.image.new("assets/images/laven-1")
+    self.speed = 0.25
+    self.x = -50
     self.y = 0
-    self:setImage(homeImage)
+    self:setImage(backImage)
     self:setZIndex(-920)
     self:setCenter(0, 0)
     self:add()
@@ -52,13 +45,6 @@ function LavenBackImage:update()
         self.x -= self.speed
         self:moveTo(self.x, self.y)
     end
-
-    if self.x > 10 then
-        self.x = 10
-    end
-    if self.x < -10 then
-        self.x = -10
-    end
 end
 
 class('Laven').extends(Room)
@@ -67,26 +53,29 @@ function Laven:init()
     gfx.setBackgroundColor(gfx.kColorWhite)
 
     print("On Laven")
+    planetGrav = 0.7
+
     levelNum = 2
+    self.spawnX = 16 * 16
+    self.spawnY = 16 * 16
+
+    gfx.setDrawOffset(0, 0)
+
+    lavenmusic:play(0)
+    paused = false
     self:goToLevel("Level_" .. levelNum)
     LavenSceneImage()
     LavenBackImage()
-    Sidekick()
-    ChefInteractBtn()
-
-    self.spawnX = 17 * 16
-    self.spawnY = 7 * 16
-    gfx.setDrawOffset(0, 0)
-    lavenmusic:play(0)
-    _G.paused = false
-    self.chef = Chef(self.spawnX, self.spawnY, self)
-
+    CosmoInteractBtn()
+    self.cosmo = Cosmo(self.spawnX, self.spawnY, self)
+    levelX = 0
+    --pdDialogue.say("Welcome to Laven!", { width = 400, height = 80, x = 0, y = 80, padding = 10 })
 
     --fluid = Fluid.new(50, 100, 200, 240 - 180)
 end
 
-function Laven:resetChef()
-    self.chef:moveTo(self.spawnX, self.spawnY)
+function Laven:resetCosmo()
+    self.cosmo:moveTo(self.spawnX, self.spawnY)
 end
 
 function Laven:update()
@@ -96,30 +85,22 @@ function Laven:update()
     -- gfx.setDitherPattern(0.5)
     -- fluid:fill()
 
-
     -- fluid:update()
+    for v in ipairs(hudItemTable) do
+        Items:hudItemText()
+    end
 end
 
 function Laven:enterRoom(direction)
     local level = ldtk.get_neighbours(self.levelName, direction)[1]
     self:goToLevel(level)
-    self.chef:add()
-    Sidekick()
-    ChefInteractBtn()
-    LavenBackImage()
-    LavenSceneImage()
+    self.cosmo:add()
+
 
     local spawnX, spawnY
-    if direction == "north" then
-        spawnX, spawnY = self.chef.x, 220
-    elseif direction == "south" then
-        spawnX, spawnY = self.chef.x, 24
-    elseif direction == "east" then
-        spawnX, spawnY = 24, self.chef.y
-    elseif direction == "west" then
-        spawnX, spawnY = 380, self.chef.y
-    end
-    self.chef:moveTo(spawnX, spawnY)
+    spawnX, spawnY = self.cosmo.x, self.cosmo.y
+    -- spawnX, spawnY = self.cosmo.x, 220
+    self.cosmo:moveTo(spawnX, spawnY)
     self.spawnX = spawnX
     self.spawnY = spawnY
     _G.currentKeys = _G.keyTotal
@@ -158,7 +139,6 @@ function Laven:goToLevel(levelName)
         local entityName = entity.name
         if entityName == "Items" then
             Items(entityX, entityY, entity)
-            _G.keyTotal = _G.keyTotal
         elseif entityName == "Spike" then
             Spike(entityX, entityY, entity)
         elseif entityName == "Spikeball" then

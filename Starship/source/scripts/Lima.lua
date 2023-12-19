@@ -3,139 +3,84 @@ local gfx <const> = playdate.graphics
 
 local ldtk <const> = LDtk
 
-class('LimaSceneImage').extends(gfx.sprite)
-function LimaSceneImage:init(x, y)
-    homeImage = gfx.image.new("assets/images/laven-2")
-    self.speed = 0.25
-    self.x = 0
-    self.y = 0
-    self:setImage(homeImage)
-    self:setZIndex(-900)
-    self:setCenter(0, 0)
-    self:add()
-end
-
-function LimaSceneImage:update()
-    if posX == true then
-        self.x += self.speed
-        self:moveTo(self.x, self.y)
-    elseif negX == true then
-        self.x -= self.speed
-        self:moveTo(self.x, self.y)
-    end
-
-    if self.x > 10 then
-        self.x = 10
-    end
-    if self.x < -10 then
-        self.x = -10
-    end
-end
-
-class('LimaBackImage').extends(gfx.sprite)
-function LimaBackImage:init(x, y)
-    homeImage = gfx.image.new("assets/images/laven-1")
-    self.speed = 0.125
-    self.x = 0
-    self.y = 0
-    self:setImage(homeImage)
-    self:setZIndex(-920)
-    self:setCenter(0, 0)
-    self:add()
-end
-
-function LimaBackImage:update()
-    if posX == true then
-        self.x += self.speed
-        self:moveTo(self.x, self.y)
-    elseif negX == true then
-        self.x -= self.speed
-        self:moveTo(self.x, self.y)
-    end
-
-    if self.x > 10 then
-        self.x = 10
-    end
-    if self.x < -10 then
-        self.x = -10
-    end
-end
-
 class('Lima').extends(Room)
 
-function Lima:init()
+function Lima:enter()
     gfx.setBackgroundColor(gfx.kColorWhite)
+    gfx.setColor(gfx.kColorWhite)
 
-    print("On Lima")
-   
-   
-    if firstContact == nil then 
-        firstContact = true
+ 
+    if cosmoX == nil then
+        self.spawnX = 44 * 16
+    else
+        self.spawnX = cosmoX
     end
-if firstContact == true then
-    levelNum = 1
-    self.spawnX = 11 * 16
-    self.spawnY = 7 * 16
-    firstContact = false
-else
-            levelNum = 3
-        self.spawnX = 11 * 16
-        self.spawnY = 7 * 16
-end
+    if cosmoY == nil then
+        self.spawnY = 14 * 16
+    else
+        self.spawnY = cosmoY
+    end
+    hudShow = true
+    cosmoHUD()
+
+    levelX = levelWidth
     gfx.setDrawOffset(0, 0)
     limamusic:play(0)
-    _G.paused = false
-    self:goToLevel("Level_" .. levelNum)
-    LimaSceneImage()
-    LimaBackImage()
-    Sidekick()
-    ChefInteractBtn()
-    self.chef = Chef(self.spawnX, self.spawnY, self)
+    limamusic:setVolume(0.5)
 
-    --pdDialogue.say("Welcome to Lima!", { width = 400, height = 80, x = 0, y = 80, padding = 10 })
+    paused = false
+    self.levelName = levelName
+    if returnRoomNumber == nil then
+        roomNumber = 1
+    else
+        roomNumber = returnRoomNumber
+    end
 
-    --fluid = Fluid.new(50, 100, 200, 240 - 180)
+    -- level room numbers - iterates through all rooms in a level
+    for i = 20, 1, -1 do
+        if levelName == "Level_" .. i then
+            roomNumber = i
+        end
+    end
+
+
+    self:goToLevel("Level_" .. roomNumber)
+    self.cosmo = Cosmo(self.spawnX, self.spawnY, self)
+    last_frame_time = 0
 end
 
-function Lima:resetChef()
-    self.chef:moveTo(self.spawnX, self.spawnY)
+function Lima:resetCosmo()
+    self.cosmo:moveTo(self.spawnX, self.spawnY)
 end
 
 function Lima:update()
-   
-    -- gfx.setColor(gfx.kColorWhite)
-    -- fluid:fill()
-    -- gfx.setColor(gfx.kColorBlack)
-    -- gfx.setDitherPattern(0.5)
-    -- fluid:fill()
-
-    -- fluid:update()
+    cosmoHUD()
 end
 
 function Lima:enterRoom(direction)
     local level = ldtk.get_neighbours(self.levelName, direction)[1]
     self:goToLevel(level)
-    self.chef:add()
-    Sidekick()
-    ChefInteractBtn()
+    self.cosmo:add()
+    CosmoInteractBtn()
+    bMenu()
+    hudShow = true
 
-    LimaSceneImage()
-    LimaBackImage()
-
+    cosmoHUD()
     local spawnX, spawnY
+    spawnX, spawnY = cosmoX, cosmoY
+
     if direction == "north" then
-        spawnX, spawnY = self.chef.x, 220
+        spawnX, spawnY = self.cosmo.x, levelHeight - 24
     elseif direction == "south" then
-        spawnX, spawnY = self.chef.x, 24
+        spawnX, spawnY = self.cosmo.x, 24
     elseif direction == "east" then
-        spawnX, spawnY = 24, self.chef.y
+        spawnX, spawnY = 24, self.cosmo.y
     elseif direction == "west" then
-        spawnX, spawnY = 380, self.chef.y
+        spawnX, spawnY = levelWidth - 24, self.cosmo.y
     end
-    self.chef:moveTo(spawnX, spawnY)
+    self.cosmo:moveTo(spawnX, spawnY)
     self.spawnX = spawnX
     self.spawnY = spawnY
-    _G.currentKeys = _G.keyTotal
 end
 
 function Lima:goToLevel(levelName)
@@ -146,17 +91,30 @@ function Lima:goToLevel(levelName)
     gfx.sprite.removeAll()
 
 
+
     _G.isMoving = false
     for layerName, layer in pairs(ldtk.get_layers(levelName)) do
         if layer.tiles then
             local tilemap = ldtk.create_tilemap(levelName, layerName)
-
+            if levelName == "Level_1" then
+                roomNumber = 1
+            elseif levelName == "Level_2" then
+                roomNumber = 2
+            elseif levelName == "Level_3" then
+                roomNumber = 3
+            elseif levelName == "Level_4" then
+                roomNumber = 4
+            elseif levelName == "Level_5" then
+                roomNumber = 5
+            end
             local layerSprite = gfx.sprite.new()
             layerSprite:setTilemap(tilemap)
             layerSprite:moveTo(0, 0)
             layerSprite:setCenter(0, 0)
             layerSprite:setZIndex(layer.zIndex)
             layerSprite:add()
+            levelWidth = layerSprite.width
+            levelHeight = layerSprite.height
 
             local emptyTiles = ldtk.get_empty_tileIDs(levelName, "Solid", layerName)
             if emptyTiles then
@@ -166,24 +124,30 @@ function Lima:goToLevel(levelName)
     end
 
     for _, entity in ipairs(ldtk.get_entities(levelName)) do
+        if levelName == "Level_1" then
+            roomNumber = 1
+        elseif levelName == "Level_2" then
+            roomNumber = 2
+        elseif levelName == "Level_3" then
+            roomNumber = 3
+        elseif levelName == "Level_4" then
+            roomNumber = 4
+        elseif levelName == "Level_5" then
+            roomNumber = 5
+        end
+        print(levelName)
+        print(roomNumber)
         local entityX, entityY = entity.position.x, entity.position.y
         self.fields = entity.fields
         local entityName = entity.name
         if entityName == "Items" then
             Items(entityX, entityY, entity)
-            _G.keyTotal = _G.keyTotal
-        elseif entityName == "Spike" then
-            Spike(entityX, entityY, entity)
-        elseif entityName == "Spikeball" then
-            Spikeball(entityX, entityY, entity)
+        elseif entityName == "Building" then
+            Building(entityX, entityY, entity)
+        elseif entityName == "Objects" then
+            Objects(entityX, entityY, entity)
         elseif entityName == "Ship" then
             Ship(entityX, entityY, entity)
-        elseif entityName == "Camera" then
-            Camera(entityX, entityY, entity)
-        elseif entityName == "Door" then
-            Door(entityX, entityY, entity)
-        elseif entityName == "MovingPlatform" then
-            Movingplatform(entityX, entityY, entity)
         end
     end
 end

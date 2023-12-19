@@ -5,14 +5,17 @@ local gfx <const> = playdate.graphics
 class('Ship').extends(AnimatedSprite)
 
 function Ship:init(x, y)
-    local shipImageTable = gfx.imagetable.new("assets/images/ship2-table-96-96")
+    shipImageTable = gfx.imagetable.new("assets/images/bus-table-96-96")
+
     Ship.super.init(self, shipImageTable)
     self:addState("idle", 1, 4, { tickStep = math.random(4, 6) })
     self.currentState = "idle"
-    self:setZIndex(Z_INDEXES.Ship)
+    self:setZIndex(10)
 
 
-    self:setCenter(0, 0)
+
+
+    self:setCenter(0.5, 0.5)
     self:moveTo(x, y)
     self:add()
     self:setCollideRect(0, 0, 96, 90)
@@ -28,14 +31,12 @@ end
 
 function Ship:update()
     self:updateAnimation()
-
-    sightLine = pd.geometry.distanceToPoint(self.x - 128, self.y - 64, newX, newY)
-
-    if sightLine <= 40 then
+    sightLine = pd.geometry.distanceToPoint(self.x, self.y, newX, newY)
+    if sightLine <= 32 then
         showIntBtn = true
     else
         showIntBtn = false
     end
+
+    cosmoSortOrder(self)
 end
-
-

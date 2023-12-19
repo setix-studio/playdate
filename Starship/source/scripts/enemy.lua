@@ -7,12 +7,12 @@ function Enemy:init(x, y, gameManager)
     self.gameManager = gameManager
 
     -- State Machine
-    local enemyImageTable = gfx.imagetable.new("assets/images/asteroid-table-32-32")
+    local enemyImageTable = gfx.imagetable.new("assets/images/asteroids-table-128-128")
     Enemy.super.init(self, enemyImageTable)
-
-    self:addState("idle", 1, 1, { tickStep = 4 })
-    self:addState("active", 1, 4, { tickStep = 4 })
-    self:addState("dead", 1, 4, { tickStep = 4 })
+    asteroidFrame = math.random(1,5)
+    self:addState("idle", asteroidFrame, asteroidFrame)
+    self:addState("active", asteroidFrame, asteroidFrame)
+    self:addState("dead", asteroidFrame, asteroidFrame)
     self.currentState = "idle"
     self:changeToIdleState()
     self:playAnimation()

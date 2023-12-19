@@ -20,7 +20,8 @@ function pdDialogue.wrap(lines, width, font)
     lines: an array of strings
     width: the maximum width of each line (in pixels)
     font: the font to use (optional, uses default font if not provided)
-    ]]--
+    ]]
+       --
     font = font or gfx.getFont()
 
     local result = {}
@@ -62,11 +63,12 @@ function pdDialogue.window(text, startIndex, height, font)
     startIndex: the row index to start the window
     height: the height (in pixels) of the window
     font: the font to use (optional, uses default font if not provided)
-    ]]--
-    
+    ]]
+       --
+
     font = font or gfx.getFont()
-    
-    local result = {text[start_index]}
+
+    local result = { text[start_index] }
     local rows = pdDialogue.getRows(height, font) - 1
 
     for index = 1, rows do
@@ -86,7 +88,8 @@ function pdDialogue.paginate(lines, height, font)
         lines: array of strings (pre-wrapped)
         height: height to limit text (in pixels)
         font: optional, will get current font if not provided
-    ]]--
+    ]]
+       --
 
     local result = {}
     local currentLine = {}
@@ -130,7 +133,8 @@ function pdDialogue.process(text, width, height, font)
     width: width to limit text (in pixels)
     height: height to limit text (in pixels)
     font: optional, will get current font if not provided
-    ]]--
+    ]]
+       --
     local lines = {}
     font = font or gfx.getFont()
 
@@ -169,10 +173,11 @@ class("pdDialogueSprite").extends(gfx.sprite)
 function pdDialogueSprite:init(dialogue)
     --[[
         dialogue: an instance of pdDialogueBox
-    ]]--
+    ]]
+       --
     pdDialogueSprite.super.init(self)
-	self.image = gfx.image.new(dialogue.width, dialogue.height)
-	self:setImage(self.image)
+    self.image = gfx.image.new(dialogue.width, dialogue.height)
+    self:setImage(self.image)
     self.dialogue = dialogue
     -- Remove sprite when dialogue is closed
     local onClose = self.dialogue.onClose
@@ -183,23 +188,23 @@ function pdDialogueSprite:init(dialogue)
 end
 
 function pdDialogueSprite:add()
-	pdDialogueSprite.super.add(self)
-	if not self.dialogue.enabled then
-		self.dialogue:enable()
-	end
+    pdDialogueSprite.super.add(self)
+    if not self.dialogue.enabled then
+        self.dialogue:enable()
+    end
 end
 
 function pdDialogueSprite:update()
     pdDialogueSprite.super.update(self)
     -- Redraw dialogue if it has changed (update returns true)
-	if self.dialogue:update() then
-		self.image:clear(gfx.kColorClear)
-		gfx.pushContext(self.image)
-			self.dialogue:draw(0, 0)
-            gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-            gfx.getSystemFont():drawText("Ⓐ", self.x, self.y - 20)
-		self:markDirty()
-	end
+    if self.dialogue:update() then
+        self.image:clear(gfx.kColorClear)
+        gfx.pushContext(self.image)
+        self.dialogue:draw(0, 0)
+        gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+        gfx.getSystemFont():drawText("Ⓐ", self.x - 20, self.y - 20)
+        self:markDirty()
+    end
 end
 
 ----------------------------------------------------------------------------
@@ -210,8 +215,8 @@ class("pdDialogueBox").extends()
 
 function pdDialogueBox.buttonPrompt(x, y)
     gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-    playdate.graphics.setFont(font1)
-    gfx.drawText("Ⓐ", x, y)
+    playdate.graphics.setFont(font2)
+    gfx.drawText("Ⓐ", x - 5, y - 2)
 end
 
 function pdDialogueBox.arrowPrompt(x, y, color)
@@ -229,7 +234,8 @@ function pdDialogueBox:init(text, width, height, font)
         width: width of dialogue box (in pixels)
         height: height of dialogue box (in pixels)
         font: font to use for drawing text
-    ]]--
+    ]]
+       --
 
     pdDialogueBox.super.init(self)
     self.speed = 0.5 -- char per frame
@@ -281,14 +287,14 @@ end
 function pdDialogueBox:enable()
     self.enabled = true
     self:onOpen()
-    _G.paused= true
+    _G.paused = true
 end
 
 function pdDialogueBox:disable()
     self.enabled = false
     self:onClose()
-    
-    _G.paused= false
+
+    _G.paused = false
 end
 
 function pdDialogueBox:setText(text)
@@ -526,7 +532,7 @@ function pdPortraitDialogueBox:init(name, drawable, text, width, height, font)
         end
     end
     pdDialogueBox.init(self, text, width - self.portrait_width, height, font)
-	self:setAlignment(kTextAlignment.left)
+    self:setAlignment(kTextAlignment.left)
 end
 
 function pdPortraitDialogueBox:setAlignment(alignment)
@@ -543,7 +549,7 @@ function pdPortraitDialogueBox:getAlignment()
 end
 
 function pdPortraitDialogueBox:draw(x, y)
-	local offset = self.alignment == kTextAlignment.left and self.portrait_width or 0
+    local offset = self.alignment == kTextAlignment.left and self.portrait_width or 0
     pdPortraitDialogueBox.super.draw(self, x + offset, y)
 end
 
@@ -575,75 +581,75 @@ end
 ----------------------------------------------------------------------------
 -- #Section: dialogue box used in pdDialogue
 ----------------------------------------------------------------------------
-pdDialogue.DialogueBox_x,  pdDialogue.DialogueBox_y = 5, 186
+pdDialogue.DialogueBox_x, pdDialogue.DialogueBox_y = 5, 186
 pdDialogue.DialogueBox = pdDialogueBox(nil, 390, 48)
 pdDialogue.DialogueBox_Callbacks = {}
 pdDialogue.DialogueBox_Say_Default = nil
 pdDialogue.DialogueBox_Say_Nils = nil
 pdDialogue.DialogueBox_KeyValueMap = {
-    width={
-        set=function(value) pdDialogue.DialogueBox:setWidth(value) end,
-        get=function() return pdDialogue.DialogueBox:getWidth() end
+    width = {
+        set = function(value) pdDialogue.DialogueBox:setWidth(value) end,
+        get = function() return pdDialogue.DialogueBox:getWidth() end
     },
-    height={
-        set=function(value) pdDialogue.DialogueBox:setHeight(value) end,
-        get=function() return pdDialogue.DialogueBox:getHeight() end
+    height = {
+        set = function(value) pdDialogue.DialogueBox:setHeight(value) end,
+        get = function() return pdDialogue.DialogueBox:getHeight() end
     },
-    x={
-        set=function(value)  pdDialogue.DialogueBox_x = value end,
-        get=function() return  pdDialogue.DialogueBox_x end
+    x = {
+        set = function(value) pdDialogue.DialogueBox_x = value end,
+        get = function() return pdDialogue.DialogueBox_x end
     },
-    y={
-        set=function(value)  pdDialogue.DialogueBox_y = value end,
-        get=function() return  pdDialogue.DialogueBox_y end
+    y = {
+        set = function(value) pdDialogue.DialogueBox_y = value end,
+        get = function() return pdDialogue.DialogueBox_y end
     },
-    padding={
-        set=function(value) pdDialogue.DialogueBox:setPadding(value) end,
-        get=function() return pdDialogue.DialogueBox:getPadding() end
+    padding = {
+        set = function(value) pdDialogue.DialogueBox:setPadding(value) end,
+        get = function() return pdDialogue.DialogueBox:getPadding() end
     },
-    font={
-        set=function(value) pdDialogue.DialogueBox:setFont(value) end,
-        get=function() return pdDialogue.DialogueBox:getFont() end
+    font = {
+        set = function(value) pdDialogue.DialogueBox:setFont(value) end,
+        get = function() return pdDialogue.DialogueBox:getFont() end
     },
-    fontFamily={
-        set=function(value) pdDialogue.DialogueBox.fontFamily = value end,
-        get=function() return pdDialogue.DialogueBox.fontFamily end
+    fontFamily = {
+        set = function(value) pdDialogue.DialogueBox.fontFamily = value end,
+        get = function() return pdDialogue.DialogueBox.fontFamily end
     },
-    nineSlice={
-        set=function(value) pdDialogue.DialogueBox:setNineSlice(value) end,
-        get=function() return pdDialogue.DialogueBox:getNineSlice() end
+    nineSlice = {
+        set = function(value) pdDialogue.DialogueBox:setNineSlice(value) end,
+        get = function() return pdDialogue.DialogueBox:getNineSlice() end
     },
-    speed={
-        set=function(value) pdDialogue.DialogueBox:setSpeed(value) end,
-        get=function() return pdDialogue.DialogueBox:getSpeed() end
+    speed = {
+        set = function(value) pdDialogue.DialogueBox:setSpeed(value) end,
+        get = function() return pdDialogue.DialogueBox:getSpeed() end
     },
-    drawBackground={
-        set=function(func) pdDialogue.DialogueBox_Callbacks["drawBackground"] = func end,
-        get=function() return pdDialogue.DialogueBox_Callbacks["drawBackground"] end
+    drawBackground = {
+        set = function(func) pdDialogue.DialogueBox_Callbacks["drawBackground"] = func end,
+        get = function() return pdDialogue.DialogueBox_Callbacks["drawBackground"] end
     },
-    drawText={
-        set=function(func) pdDialogue.DialogueBox_Callbacks["drawText"] = func end,
-        get=function() return pdDialogue.DialogueBox_Callbacks["drawText"] end
+    drawText = {
+        set = function(func) pdDialogue.DialogueBox_Callbacks["drawText"] = func end,
+        get = function() return pdDialogue.DialogueBox_Callbacks["drawText"] end
     },
-    drawPrompt={
-        set=function(func) pdDialogue.DialogueBox_Callbacks["drawPrompt"] = func end,
-        get=function() return pdDialogue.DialogueBox_Callbacks["drawPrompt"] end
+    drawPrompt = {
+        set = function(func) pdDialogue.DialogueBox_Callbacks["drawPrompt"] = func end,
+        get = function() return pdDialogue.DialogueBox_Callbacks["drawPrompt"] end
     },
-    onOpen={
-        set=function(func) pdDialogue.DialogueBox_Callbacks["onOpen"] = func end,
-        get=function() return pdDialogue.DialogueBox_Callbacks["onOpen"] end
+    onOpen = {
+        set = function(func) pdDialogue.DialogueBox_Callbacks["onOpen"] = func end,
+        get = function() return pdDialogue.DialogueBox_Callbacks["onOpen"] end
     },
-    onPageComplete={
-        set=function(func) pdDialogue.DialogueBox_Callbacks["onPageComplete"] = func end,
-        get=function() return pdDialogue.DialogueBox_Callbacks["onPageComplete"] end
+    onPageComplete = {
+        set = function(func) pdDialogue.DialogueBox_Callbacks["onPageComplete"] = func end,
+        get = function() return pdDialogue.DialogueBox_Callbacks["onPageComplete"] end
     },
-    onDialogueComplete={
-        set=function(func) pdDialogue.DialogueBox_Callbacks["onDialogueComplete"] = func end,
-        get=function() return pdDialogue.DialogueBox_Callbacks["onDialogueComplete"] end
+    onDialogueComplete = {
+        set = function(func) pdDialogue.DialogueBox_Callbacks["onDialogueComplete"] = func end,
+        get = function() return pdDialogue.DialogueBox_Callbacks["onDialogueComplete"] end
     },
-    onClose={
-        set=function(func) pdDialogue.DialogueBox_Callbacks["onClose"] = func end,
-        get=function() return pdDialogue.DialogueBox_Callbacks["onClose"] end
+    onClose = {
+        set = function(func) pdDialogue.DialogueBox_Callbacks["onClose"] = func end,
+        get = function() return pdDialogue.DialogueBox_Callbacks["onClose"] end
     }
 }
 function pdDialogue.DialogueBox:drawBackground(x, y)
@@ -653,13 +659,15 @@ function pdDialogue.DialogueBox:drawBackground(x, y)
         pdDialogue.DialogueBox.super.drawBackground(self, x, y)
     end
 end
-function pdDialogue.DialogueBox:drawText(x, y ,text)
+
+function pdDialogue.DialogueBox:drawText(x, y, text)
     if pdDialogue.DialogueBox_Callbacks["drawText"] ~= nil then
         pdDialogue.DialogueBox_Callbacks["drawText"](dialogue, x, y, text)
     else
         pdDialogue.DialogueBox.super.drawText(self, x, y, text)
     end
 end
+
 function pdDialogue.DialogueBox:drawPrompt(x, y)
     if pdDialogue.DialogueBox_Callbacks["drawPrompt"] ~= nil then
         pdDialogue.DialogueBox_Callbacks["drawPrompt"](dialogue, x, y)
@@ -667,22 +675,26 @@ function pdDialogue.DialogueBox:drawPrompt(x, y)
         pdDialogue.DialogueBox.super.drawPrompt(self, x, y)
     end
 end
+
 function pdDialogue.DialogueBox:onOpen()
     pd.inputHandlers.push(self:getInputHandlers(), true)
     if pdDialogue.DialogueBox_Callbacks["onOpen"] ~= nil then
         pdDialogue.DialogueBox_Callbacks["onOpen"]()
     end
 end
+
 function pdDialogue.DialogueBox:onPageComplete()
     if pdDialogue.DialogueBox_Callbacks["onPageComplete"] ~= nil then
         pdDialogue.DialogueBox_Callbacks["onPageComplete"]()
     end
 end
+
 function pdDialogue.DialogueBox:onDialogueComplete()
     if pdDialogue.DialogueBox_Callbacks["onDialogueComplete"] ~= nil then
         pdDialogue.DialogueBox_Callbacks["onDialogueComplete"]()
     end
 end
+
 function pdDialogue.DialogueBox:onClose()
     -- Make a backup of the current onClose callback
     local current = pdDialogue.DialogueBox_Callbacks["onClose"]
@@ -714,7 +726,7 @@ function pdDialogue.set(key, value)
         pdDialogue.DialogueBox_KeyValueMap[key].set(value)
         return backup
     end
-    
+
     return nil
 end
 
@@ -731,14 +743,14 @@ function pdDialogue.setup(config)
         end
     end
     return backup, nils
-    
 end
 
 function pdDialogue.say(text, config)
     --[[
     text: string (can be multiline) to say
     config: optional table, will provide temporary overrides for this one dialogue box
-    ]]--
+    ]]
+       --
     if config ~= nil then
         pdDialogue.DialogueBox_Say_Default, pdDialogue.DialogueBox_Say_Nils = pdDialogue.setup(config)
     end

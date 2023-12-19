@@ -5,27 +5,47 @@ class('Items').extends(AnimatedSprite)
 
 function Items:init(x, y, entity)
     self.fields = entity.fields
+
     if self.fields.pickedUp then
         return
     end
 
     self.itemName = self.fields.item
 
-    if self.itemName == "KebuMeat" then
-        imagetable = gfx.imagetable.new("images/DoubleJump-table-16-16")
-    elseif self.itemName == "Beans" then
-        imagetable = gfx.imagetable.new("images/Dash-table-16-16")
-    elseif self.itemName == "Key" then
-        imagetable = gfx.imagetable.new("images/Key-table-16-16")
-    elseif self.itemName == "PlatformSwitch" then
-        imagetable = gfx.imagetable.new("images/switchoff-table-16-16")
+
+    if self.itemName == "MeatyStalk" then
+        itemChance = 50
+        imagetable = gfx.imagetable.new("assets/images/meatstalk-table-16-16")
+        self:setCollideRect(2, 2, 10, 12)
+
+        self.enemyName = "Meaty"
+    elseif self.itemName == "Berries" then
+        itemChance = 20
+        imagetable = gfx.imagetable.new("assets/images/crema-table-32-32")
+        self:setCollideRect(6, 11, 20, 10)
+
+        self.enemyName = "Bush"
+    elseif self.itemName == "Tomas" then
+        itemChance = 70
+        imagetable = gfx.imagetable.new("assets/images/tomas-table-16-16")
+        self:setCollideRect(2, 2, 10, 12)
+
+        self.enemyName = "Tilly Toma"
     else
         imagetable = gfx.imagetable.new("images/interactUp-table-16-16")
+    end
+    self.chance = math.random(0, 100)
+
+    if itemChance == nil then
+        itemChance = 50
+    end
+    if self.chance <= itemChance then
+        self.fields.Hidden = true
     end
     Items.super.init(self, imagetable)
     self:addState("idle", 1, 4, { tickStep = math.random(6, 8) })
     self.currentState = "idle"
-    self.platformOn = false
+
     self:setImage(image)
     self:setCenter(0, 0)
     self:moveTo(x, y)
@@ -33,95 +53,183 @@ function Items:init(x, y, entity)
 
     self:playAnimation()
 
+    textMove = 20
 
     self:setZIndex(Z_INDEXES.Pickup)
     self:setTag(TAGS.Pickup)
-    self:setCollideRect(2, 2, 10, 12)
     self:interactable()
 
     _G.keyType = self.fields.KeyType
     if self.fields.Hidden == true then
         self:setZIndex(-900)
+        self:remove()
     end
+
+
+
+    hudItemTable = {}
 end
 
 function Items:update()
     self:updateAnimation()
+    cosmoSortOrder(self)
 end
 
 function Items:interactable()
     if self.itemName == "TextBox" then
         self:setCenter(0, 0)
-        self:moveTo(self.x, self.y - 15)
+        self:moveTo(self.x, self.y - 20)
         self:setCollideRect(0, 20, 12, 12)
         self:add()
     end
 end
 
-function Items:pickUp(chef)
-    if self.itemName == "KebuMeat" then
-        for i in pairs(items) do
-            if items[i]["ID"] == "Kebu Meat" then
-                items[i]["found"] = true
-                items[i]["name"] = "Kebu Meat"
-                items[i]["quantity"] = items[i]["quantity"] + 1
-            end
-        end
-        self.fields.pickedUp = true
-        self:remove()
-    elseif self.itemName == "Beans" then
-        for i in pairs(items) do
-            if items[i]["ID"] == "Beans" then
-                items[i]["found"] = true
-                items[i]["name"] = "Beans"
-                items[i]["quantity"] = items[i]["quantity"] + 1
-            end
-        end
-        self.fields.pickedUp = true
-        self:remove()
-    elseif self.itemName == "Key" then
-        chef.hasKey = true
-        _G.keyTotal += 1
-        _G.keyType = self.fields.KeyType
-        self.fields.pickedUp = true
-        if _G.keyType == "Alpha" then
-            chef.hasAlphaKey = true
-            _G.AlphaKey = true
-            print("got Alpha key")
-        elseif _G.keyType == "Beta" then
-            chef.hasBetaKey = true
-            _G.BetaKey = true
-            print("got Beta key")
-        elseif _G.keyType == "Sigma" then
-            chef.hasSigmaKey = true
-            _G.SigmaKey = true
-        elseif _G.keyType == "Gamma" then
-            chef.hasGammaKey = true
-            _G.GammaKey = true
-        end
-        self:remove()
-    end
+function Items:hudItemText()
+    textMove += 1
 
-    if self.itemName == "TextBox" then
-        if pd.buttonIsPressed(pd.kButtonUp) then
-            pdDialogue.say(self.fields.Copy,
-                { width = 260, height = 40, x = 70, y = 190, padding = 10 })
+    gfx.drawTextAligned(itemName .. " + 1", cosmoX, cosmoY - textMove, kTextAlignment.center)
+    if textMove == 40 then
+        table.remove(hudItemTable, v)
+
+        textMove = 20
+    end
+end
+
+function Items:pickUp()
+    limamusic:stop()
+    lavenmusic:stop()
+    paused = true
+    BattleFadeImage()
+    BattleTimer()
+    enemyName = self.enemyName
+    enemyItem = self.itemName
+    self.fields.pickedUp = true
+
+    self:remove()
+end
+
+function Items:addItem(enemyItem, itemQty)
+    self.itemName = enemyItem
+
+
+    if self.itemName == "MeatyStalk" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "MEATY STALK" then
+                items[i]["found"] = true
+                items[i]["name"] = "MEATY STALK"
+                items[i]["description"] = "Nice stalk of meat, probably beef."
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+                itemName = items[i]["name"]
+            end
         end
+
+
+
+        table.insert(hudItemTable, self)
+    elseif self.itemName == "Berries" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "Berries" then
+                items[i]["found"] = true
+                items[i]["name"] = "Berries"
+                items[i]["description"] = "Sweet and Juicy"
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+                itemName = items[i]["name"]
+            end
+        end
+
+
+        table.insert(hudItemTable, self)
+    elseif self.itemName == "Tomas" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "TOMAS" then
+                items[i]["found"] = true
+                items[i]["name"] = "TOMAS"
+                items[i]["description"] = "ROUND, RED, and ROBUST FLAVOR. USED AS TOPPING"
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+                itemName = items[i]["name"]
+            end
+        end
+
+        table.insert(hudItemTable, self)
     end
 end
 
 --inventory
 
 items = {
-    { ["category"] = "food", ["found"] = true,  ["name"] = "Salt",         ["ID"] = "Salt",         ["quantity"] = 5 },
-    { ["category"] = "food", ["found"] = false, ["name"] = "Beans",        ["ID"] = "Beans",        ["quantity"] = 0 },
-    { ["category"] = "food", ["found"] = true,  ["name"] = "Hot Spices",   ["ID"] = "Hot Spices",   ["quantity"] = 0 },
-    { ["category"] = "food", ["found"] = true,  ["name"] = "Tangy Spices", ["ID"] = "Tangy Spices", ["quantity"] = 0 },
-    { ["category"] = "food", ["found"] = true,  ["name"] = "Kebu Meat",    ["ID"] = "Kebu Meat",    ["quantity"] = 0 },
-    { ["category"] = "food", ["found"] = true,  ["name"] = "Tortilla",     ["ID"] = "Tortilla",     ["quantity"] = 0 },
-    { ["category"] = "food", ["found"] = true,  ["name"] = "Flying Fish",  ["ID"] = "Flying Fish",  ["quantity"] = 0 },
-    { ["category"] = "food", ["found"] = true,  ["name"] = "Cheese",       ["ID"] = "Cheese",       ["quantity"] = 0 },
-    { ["category"] = "food", ["found"] = true,  ["name"] = "Lime",         ["ID"] = "Lime",         ["quantity"] = 0 },
-    { ["category"] = "food", ["found"] = true,  ["name"] = "Tortilla",     ["ID"] = "Tortilla",     ["quantity"] = 0 },
+    {
+        ["category"] = "toppings",
+        ["found"] = false,
+        ["name"] = "Berries",
+        ["ID"] = "Berries",
+        ["description"] = "Sweet and juicy.",
+        ["quantity"] = 0
+    },
+    {
+        ["category"] = "spices",
+        ["found"] = false,
+        ["name"] = "HOT SPICES",
+        ["ID"] = "HOT SPICES",
+        ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
+        ["quantity"] = 0
+    },
+    {
+        ["category"] = "spices",
+        ["found"] = false,
+        ["name"] = "TANGY SPICES",
+        ["ID"] = "TANGY SPICES",
+        ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
+        ["quantity"] = 0
+    },
+    {
+        ["category"] = "meat",
+        ["found"] = false,
+        ["name"] = "MEATY STALK",
+        ["ID"] = "MEATY STALK",
+        ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
+        ["quantity"] = 0
+    },
+    {
+        ["category"] = "meat",
+        ["found"] = false,
+        ["name"] = "SHROOMAS",
+        ["ID"] = "SHROOMAS",
+        ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
+        ["quantity"] = 0
+    },
+    {
+        ["category"] = "meat",
+        ["found"] = false,
+        ["name"] = "FLYING FISH",
+        ["ID"] = "FLYING FISH",
+        ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
+        ["quantity"] = 0
+    },
+    {
+        ["category"] = "toppings",
+        ["found"] = false,
+        ["name"] = "CHEESE",
+        ["ID"] = "CHEESE",
+        ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
+        ["quantity"] = 0
+    },
+    {
+        ["category"] = "toppings",
+        ["found"] = false,
+        ["name"] = "LIME",
+        ["ID"] = "LIME",
+        ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
+        ["quantity"] = 0
+    },
+    {
+        ["category"] = "toppings",
+        ["found"] = false,
+        ["name"] = "TOMAS",
+        ["ID"] = "TOMAS",
+        ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
+        ["quantity"] = 0
+    },
 
 }

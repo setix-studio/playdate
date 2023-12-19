@@ -1,24 +1,27 @@
-local pd <const> = playdate
-local gfx <const> = playdate.graphics
-
+local pd <const>   = playdate
+local gfx <const>  = playdate.graphics
+local geo <const>  = pd.geometry
 local ldtk <const> = LDtk
-TAGS = {
+TAGS               = {
     Pickup = 1,
     Player = 5,
-    Chef = 5,
+    Cosmo = 5,
     Prop = 6,
     Enemy = 3,
     Planet = 21,
     Collision = 5,
     Textbox = 10,
-    Ship = 7
+    Ship = 7,
+    Building = 8,
+    Shop = 9,
+    Object = 11
 }
 
-Z_INDEXES = {
+Z_INDEXES          = {
     BG = -100,
     Prop = 5,
     Enemy = 5,
-    Pickup = 50,
+    Pickup = 500,
     Player = 15,
     Steam = 800,
     Planet = 10,
@@ -35,11 +38,10 @@ class('GameScene').extends(Room)
 
 playdate.ui.crankIndicator:start()
 
-function GameScene:init()
-    startSpawner()
+function GameScene:enter()
+    --startSpawner()
     gfx.setBackgroundColor(gfx.kColorBlack)
     self:goToLevel("Level_" .. levelNum)
-
     if currentPlanetX == nil then
         currentPlanetX = 75 * 16
     else
@@ -54,12 +56,32 @@ function GameScene:init()
     self.spawnX = currentPlanetX
     self.spawnY = currentPlanetY
     self.player = Player(self.spawnX, self.spawnY, self)
+    shipX = self.player.x
+    shipY = self.player.y
     angle = 0
     paused = false
 
-
+    if shipSpeed == nil then
+        shipSpeed = 0
+    end
+    landing = false
     spacemusic:setVolume(0.5)
     spacemusic:play(0)
+    limaAngle = 0
+    lavenAngle = 0
+    mushrooAngle = 0
+    garlielAngle = 0
+    hudShow = true
+    shipParticleX = 0
+    shipParticleY = 0
+    limasightRadius = 0
+    lavensightRadius = 0
+    garlielsightRadius = 0
+    mushroosightRadius = 0
+    SpaceImage()
+    StarImage()
+    LimaNavArrow()
+    scene = GameScene()
 end
 
 function GameScene:resetPlayer()
@@ -130,56 +152,157 @@ function GameScene:goToLevel(levelName)
 end
 
 function GameScene:update()
-    if levelNum == 0 then
-        HUD()
+    if landing == false then
+        gfx.setColor(gfx.kColorWhite)
+        gfx.setFont(fontHud)
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+        gfx.drawTextAligned(string.upper(location), 346 + newX, 198 + newY, kTextAlignment.center)
     end
     if pd.isCrankDocked() then
         pd.ui.crankIndicator:update()
     end
 end
 
-function HUD()
-    gfx.setColor(gfx.kColorWhite)
+-- function HUD()
+--     -- gfx.setColor(gfx.kColorWhite)
+
+--     -- gfx.fillRect(-1 + newX, 209 + newY, 400, 40)
+--     -- gfx.setColor(gfx.kColorBlack)
+
+--     -- gfx.fillRect(0 + newX, 210 + newY, 400, 40)
+--     -- gfx.setColor(gfx.kColorWhite)
+--     -- gfx.setFont(font2)
+--     -- gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+--     -- gfx.drawTextAligned("THRUST", 200 + newX, 218 + newY, kTextAlignment.center)
+--     -- gfx.setLineWidth(1)
+--     -- gfx.drawArc(newX + 200, newY + 120, 50, 0, 360)
+--     -- gfx.drawText("-", newX + 130, newY + 220)
+--     -- gfx.fillRect(newX + 200, newY + 228, 10 * shipSpeed, 4)
+--     -- gfx.fillRect(newX + 140, newY + 233, 2, 2)
+--     -- gfx.fillRect(newX + 199, newY + 233, 2, 2)
+--     -- gfx.fillRect(newX + 258, newY + 233, 2, 2)
+--     -- gfx.fillRect(newX + 140, newY + 235, 120, 1)
+--     -- gfx.drawText("+", newX + 263, newY + 220)
+--     -- gfx.drawTextAligned("THRUST", 200 + newX, 218 + newY, kTextAlignment.center)
+
+
+--     -- gfx.setLineWidth(4)
+--     --gfx.drawArc(newX + 200, newY + 120, limasightRadius, limaAngle + 85, limaAngle + 95)
+--     -- gfx.drawArc(newX + 200, newY + 120, lavensightRadius, lavenAngle + 85, lavenAngle + 95)
+--     -- gfx.drawArc(newX + 200, newY + 120, garlielsightRadius, garlielAngle + 85, garlielAngle + 95)
+--     -- gfx.drawArc(newX + 200, newY + 120, mushroosightRadius, mushrooAngle + 85, mushrooAngle + 95)
 
 
 
-    gfx.fillRect(-1 + newX, 219 + newY, 400, 20)
-    gfx.setColor(gfx.kColorBlack)
-    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+--     --gfx.drawText(string.upper(location), 12 + newX, 222 + newY)
+--     --gfx.drawTextAligned(newX .. ", " .. newY, 380 + newX, 222 + newY, kTextAlignment.right)
+--     --gfx.drawTextAligned(tostring(location), 200 + newX, 222 + newY, kTextAlignment.center)
 
-    gfx.fillRect(0 + newX, 220 + newY, 400, 20)
-    gfx.setColor(gfx.kColorWhite)
-    gfx.setFont(font2)
-    gfx.drawText("Thrust: " .. shipSpeed, 12 + newX, 222 + newY)
-    gfx.drawTextAligned(newX .. ", " .. newY, 380 + newX, 222 + newY, kTextAlignment.right)
-    gfx.drawTextAligned(tostring(location), 200 + newX, 222 + newY, kTextAlignment.center)
+-- end
+
+
+
+class('LimaNavArrow').extends(gfx.sprite)
+function LimaNavArrow:init(x, y)
+    local navImage = gfx.image.new("assets/images/navArrow")
+
+    self:setImage(navImage)
+    nearestPlanet = 0
+
+    self.y = 0
+    self.x = 0
+    self:setRotation(nearestPlanet)
+    self:setCenter(0.5, 0.5)
+    self:add()
+    self:setZIndex(100)
+end
+
+function LimaNavArrow:update()
+    if limaText or lavenText or garlielText or mushrooText then
+        self:setRotation(nearestPlanet)
+        self:moveTo(newX + 200, newY + 120)
+    else
+        self:setRotation(0)
+        self:moveTo(-200, -200)
+    end
+end
+
+class('SpaceImage').extends(gfx.sprite)
+function SpaceImage:init(x, y)
+    local loadingImage = gfx.image.new("assets/images/SpaceBackground")
+
+    self:setImage(loadingImage)
+    self.counter = 0
+    self.y = 0
+    self.x = 0
+    self:moveTo(newX, newY)
+    self:setRotation(180)
+    self:setCenter(0.5, 0.5)
+    self:add()
+    self:setZIndex(-900)
+end
+
+function SpaceImage:update()
+    if shipSpeed > 0 and angle < 180 then
+        self.counter -= 0.5
+        if self.counter < -400 then
+            self.counter = -400
+        end
+    elseif shipSpeed > 0 and angle > 180 then
+        self.counter += 0.5
+        if self.counter > 400 then
+            self.counter = 400
+        end
+    end
+
+    self:moveTo(newX + self.counter, newY + self.counter)
+end
+
+class('StarImage').extends(gfx.sprite)
+function StarImage:init(x, y)
+    local loadingImage = gfx.image.new("assets/images/StarBackground")
+
+    self:setImage(loadingImage)
+    self.counter = 0
+    self.y = 0
+    self.x = 0
+    self:moveTo(newX, newY)
+
+    self:setCenter(0.5, 0.5)
+    self:add()
+    self:setZIndex(-800)
+end
+
+function StarImage:update()
+    if shipSpeed > 0 and angle < 180 then
+        self.counter -= 0.25
+        if self.counter < -400 then
+            self.counter = -400
+        end
+    elseif shipSpeed > 0 and angle > 180 then
+        self.counter += 0.25
+        if self.counter > 400 then
+            self.counter = 400
+        end
+    end
+
+    self:moveTo(newX + self.counter, newY + self.counter)
 end
 
 function playdate.gameWillPause()
-    if levelNum == 0 then
-        local img = gfx.getDisplayImage()
-        gfx.lockFocus(img)
-        local bgRect = playdate.geometry.rect.new(20, 20, 160, 200)
-        local textRect = playdate.geometry.rect.new(30, 30, 140, 180)
-        gfx.setColor(gfx.kColorWhite)
-        gfx.fillRoundRect(bgRect, 10)
-        gfx.setColor(gfx.kColorBlack)
-        gfx.drawRoundRect(bgRect, 10)
+    local img = gfx.getDisplayImage()
+    gfx.lockFocus(img)
+    local bgRect = playdate.geometry.rect.new(10, 10, 180, 220)
+    local textRect = playdate.geometry.rect.new(30, 30, 140, 180)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(bgRect, 5)
+    gfx.setLineWidth(1)
+    gfx.setColor(gfx.kColorBlack)
 
-        -- this is the important bit here.
-        -- You can of course create this string however you like,
-        -- including adding a score or level or whathaveyou.
-        local text = "Planets\
-Laven:" .. lavenX .. ", " .. lavenY .. "\
-Lima:" .. limaX .. ", " .. limaY .. "\
-Garliel:" .. garlielX .. ", " .. garlielY .. "\
-Mushroo:" .. mushrooX .. ", " .. mushrooY
-
-        -- this line actually draws the text. You only need the first two parameters.
-        -- See https://sdk.play.date/1.11.1/Inside%20Playdate.html#f-graphics.drawTextInRect for more details.
-        gfx.drawTextInRect(text, textRect, 0, "...", kTextAlignment.left)
-
-        gfx.unlockFocus()
-        playdate.setMenuImage(img, 0)
+    for i in pairs(items) do
+        gfx.drawText(tostring(items[i]["name"]) .. ": ", 30, 16 * i, kTextAlignment.left)
+        gfx.drawText(tostring(items[i]["quantity"]), 160, 16 * i, kTextAlignment.right)
     end
+    gfx.unlockFocus()
+    playdate.setMenuImage(img, 0)
 end

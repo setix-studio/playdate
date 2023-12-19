@@ -2,7 +2,7 @@ local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
 
-local gridview = pd.ui.gridview.new(128, 32)
+local gridview = pd.ui.gridview.new(180, 32)
 
 
 
@@ -31,14 +31,14 @@ function HomeScene:update()
     gfx.setBackgroundColor(playdate.graphics.kColorWhite)
     gfx.setColor(gfx.kColorBlack)
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    gfx.setFont(font1)
+    gfx.setFont(font2)
     gfx.drawTextAligned("High Score: " .. HIGH_SCORE, 383, 5, kTextAlignment.right)
     if demo == true then
         gfx.drawTextAligned("Demo", 15, 5, kTextAlignment.left)
     end
-    gfx.setFont(font2)
+    gfx.setFont(font1)
 
-    gridview:drawInRect(219, 136, 144, 87)
+    gridview:drawInRect(190, 136, 195, 87)
 end
 
 class('HomeSceneImage').extends(gfx.sprite)

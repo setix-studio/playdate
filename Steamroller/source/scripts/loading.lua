@@ -12,12 +12,16 @@ function LoadingScene:init()
 
     score = currentScore
     spawnTimer = pd.timer.performAfterDelay(6000, function()
-        if levelNum >= 0 and levelNum <= 29 then
+        if levelNum >= 0 and levelNum <= 9 then
             ldtk.load("levels/world.ldtk")
+        elseif levelNum >= 10 and levelNum <= 19 then
+                ldtk.load("levels/world3.ldtk")
+            elseif levelNum >= 20 and levelNum <= 29 then
+                    ldtk.load("levels/world4.ldtk")
         elseif levelNum >= 30 and levelNum <= 59 then
             ldtk.load("levels/world2.ldtk")
         end
-        manager:push(GameScene())
+        manager:enter(GameScene())
     end)
 end
 

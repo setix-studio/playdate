@@ -25,8 +25,8 @@ import "scripts/sceneManager"
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
-font1 = gfx.font.new("font/calistoga")
-font2 = gfx.font.new("font/calistogascore")
+font1 = gfx.font.new("font/Sasser-Slab")
+font2 = gfx.font.new("font/Sasser-Slab-Bold")
 loadGameData()
 manager = Manager()
 manager:hook()

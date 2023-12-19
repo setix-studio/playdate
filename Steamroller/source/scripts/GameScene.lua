@@ -131,6 +131,7 @@ end
 function GameScene:update()
     HUD()
     if pd.isCrankDocked() then
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
         pd.ui.crankIndicator:update()
     end
     currentMilliseconds = pd.getCurrentTimeMilliseconds()

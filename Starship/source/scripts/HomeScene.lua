@@ -1,51 +1,59 @@
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
+
 local gridview = pd.ui.gridview.new(128, 32)
 
 
 class('HomeScene').extends(Room)
 
 function HomeScene:init()
-    -- HomeSceneImage()
-    -- music:setVolume(0.8)
-    -- music:play(0)
+    gfx.sprite.removeAll()
+    HomeSceneImage()
 end
 
 function HomeScene:update()
     gfx.setBackgroundColor(playdate.graphics.kColorWhite)
-    gfx.setColor(gfx.kColorBlack)
-    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    gfx.setColor(gfx.kColorWhite)
+
+  
     gfx.setFont(font2)
-    gfx.drawTextAligned("by setix studio", 383, 169, kTextAlignment.right)
-end
 
-function HomeScene:BButtonDown()
-    gfx.sprite.removeAll()
-    manager:pop()
+    gridview:drawInRect(125, 136, 150, 87)
 end
+options = { "New Game" }
+class('HomeSceneImage').extends(AnimatedSprite)
 
-class('HomeSceneImage').extends(gfx.sprite)
 function HomeSceneImage:init(x, y)
-    homeImage = gfx.image.new("assets/images/mainhomescene")
+  
 
+    local homeImageTable = gfx.imagetable.new("assets/images/home-table-400-240")
+    HomeSceneImage.super.init(self, homeImageTable)
+    self:addState("idle", 1, 4, { tickStep = 8 })
+    self.currentState = "idle"
+    self:setZIndex(0)
 
-    self:setImage(homeImage)
-
+    self:moveTo(0, 0)
     self:setCenter(0, 0)
     self:add()
+    self:playAnimation()
+    self:setTag(TAGS.Ship)
+    if saveData == false then
+        options = { "New Game" }
+        gridview:setNumberOfRows(#options)
+    else
+        options = { "Continue", "Clear Save"}
+        gridview:setNumberOfRows(#options)
+        
+    end
+    
 end
 
-demo = false
-if demo == false then
-    homelist = { "All Levels", "Junk Yard", "Construction Site", "Neighborhood", "Crypt", "Reset High Score" }
-else
-    homelist = { "Junk Yard", "Construction Site", "Neighborhood", "Reset High Score" }
-end
-gridview:setNumberOfRows(#homelist)
+
+
 gridview:setCellPadding(2, 2, 2, 2)
 
-gridview.backgroundImage = gfx.nineSlice.new("assets/images/gridBackground", 7, 7, 18, 18)
+--gridview.backgroundImage = gfx.nineSlice.new("assets/images/gridBackground", 6, 7, 18, 18)
 gridview:setContentInset(5, 5, 5, 5)
 
 local gridviewSprite = gfx.sprite.new()
@@ -56,12 +64,12 @@ gridviewSprite:add()
 function gridview:drawCell(section, row, column, selected, x, y, width, height)
     if selected then
         gfx.fillRoundRect(x, y, width, height, 4)
-        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+        gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
     else
-        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     end
     local fontHeight = gfx.getSystemFont():getHeight()
-    gfx.drawTextInRect(options[row], x, y + (height / 2 - fontHeight / 2) + 2, width, height, nil, nil,
+    gfx.drawTextInRect(options[row], x, y + (height / 2 - fontHeight / 2) + 5, width, height, nil, nil,
         kTextAlignment.center)
 end
 
@@ -72,43 +80,29 @@ function HomeSceneImage:update()
         gridview:selectNextRow(true)
     end
 
-    if demo == false then
-        if pd.buttonJustPressed(pd.kButtonA) then
+
+    if pd.buttonJustReleased(pd.kButtonA) then
+        if saveData == false then
+            
             if gridview:getSelectedRow() == 1 then
-                levelNum = math.random(0, 39)
-                manager:push(LoadingScene())
-            elseif gridview:getSelectedRow() == 2 then
-                levelNum = math.random(0, 9)
-                manager:push(LoadingScene())
-            elseif gridview:getSelectedRow() == 3 then
-                levelNum = math.random(10, 19)
-                manager:push(LoadingScene())
-            elseif gridview:getSelectedRow() == 4 then
-                levelNum = math.random(20, 29)
-                manager:push(LoadingScene())
-            elseif gridview:getSelectedRow() == 5 then
-                levelNum = math.random(30, 39)
-                manager:push(LoadingScene())
-            elseif gridview:getSelectedRow() == 6 then
-                HIGH_SCORE = 0
+                manager:enter(LoadingScene())
             end
-        end
-    else
-        if pd.buttonJustPressed(pd.kButtonA) then
+        else
             if gridview:getSelectedRow() == 1 then
-                levelNum = math.random(0, 1)
-                manager:push(LoadingScene())
+                manager:enter(LoadingScene())
             elseif gridview:getSelectedRow() == 2 then
-                levelNum = math.random(12, 13)
-                manager:push(LoadingScene())
-            elseif gridview:getSelectedRow() == 3 then
-                levelNum = math.random(25, 26)
-                manager:push(LoadingScene())
-            elseif gridview:getSelectedRow() == 4 then
-                HIGH_SCORE = 0
+                saveData = false
+                options = { "New Game" }
+        gridview:selectNextRow(true)
+
+        gridview:setNumberOfRows(#options)
+
+                pd.datastore.delete(data)
             end
         end
     end
+
+
 
 
     local crankTicks = pd.getCrankTicks(2)
@@ -125,7 +119,7 @@ function HomeSceneImage:update()
         gfx.popContext()
         gridviewSprite:setImage(gridviewImage)
     end
-
+    self:updateAnimation()
     gfx.sprite.update()
     pd.timer.updateTimers()
 end

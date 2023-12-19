@@ -1,5 +1,6 @@
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+local geo <const> = playdate.geometry
 import 'CoreLibs/animator'
 import 'CoreLibs/graphics'
 
@@ -14,48 +15,48 @@ function Planet:init(x, y, entity)
     if newY == nil then
         newY = 0
     end
-    local planetImage = gfx.imagetable.new("assets/images/planet1-table-128-128")
-    Planet.super.init(self, planetImage)
-
-    self:addState("lima", 2, 2)
-    self:addState("laven", 3, 3)
-    self:addState("garliel", 4, 4)
-    self:addState("mushroo", 5, 5)
-
-
-    self.currentState = "lima"
-    self:playAnimation()
-
-    self:setCollideRect(0, 0, 128, 128)
-    self:setTag(TAGS.Planet)
-    self:setZIndex(Z_INDEXES.Planet)
-    self:setCenter(0, 0)
-
-    inOrbit = false
-
 
     self.fields = entity.fields
     self.planetX = self.fields.xPos + 32
     self.planetY = self.fields.yPos + 32
     self.staticX = self.planetX
     self.staticY = self.planetY
-
     self.planetName = self.fields.planetName
-    location = "Space"
+    if self.planetName == "Lima" then
+        planetImage = gfx.imagetable.new("assets/images/lima-table-128-128")
+    elseif self.planetName == "Laven" then
+        planetImage = gfx.imagetable.new("assets/images/laven-table-160-160")
+    elseif self.planetName == "Garliel" then
+        planetImage = gfx.imagetable.new("assets/images/garliel-table-288-288")
+    elseif self.planetName == "Mushroo" then
+        planetImage = gfx.imagetable.new("assets/images/mushroo-table-120-120")
+    else
+        planetImage = gfx.imagetable.new("assets/images/lima-table-128-128")
+    end
+    Planet.super.init(self, planetImage)
+
+    self:addState("spin", 1, 50, { tickStep = 4 })
+
+
+
+    self.currentState = "spin"
+    self:playAnimation()
+
+    self:setCollideRect(0, 0, self:getSize())
+
+    self:setTag(TAGS.Planet)
+    self:setZIndex(self.y)
+    self:setCenter(0.5, 0.5)
+
+    inOrbit = false
+
+
+
+
+    location = "SPACE"
     self:moveTo(self.planetX, self.planetY)
     self:add()
-    
-    if self.planetName == "Lima" then
-        self:changeState("lima")
-    elseif self.planetName == "Laven" then
-        self:changeState("laven")
-    elseif self.planetName == "Garliel" then
-        self:changeState("garliel")
-    elseif self.planetName == "Mushroo" then
-        self:changeState("mushroo")
-    else
-        self:changeState("lima")  
-    end  
+
 
     limaText = false
     lavenX = 0
@@ -66,6 +67,9 @@ function Planet:init(x, y, entity)
     garlielY = 0
     mushrooX = 0
     mushrooY = 0
+
+    playerVector = geo.vector2D.new(newX, newY)
+    limaVector = geo.vector2D.new(limaX, limaY)
 end
 
 function Planet:update()
@@ -76,50 +80,72 @@ function Planet:update()
     else
         inOrbit = false
         showBtn = false
-        location = "Space"
+        location = "SPACE"
     end
 
+
+    lavenAngle = math.deg(math.atan2(lavenY - newY, lavenX - newX)) % 360
+
+    limaAngle = math.deg(math.atan2(limaY - newY, limaX - newX)) % 360
+
+    garlielAngle = math.deg(math.atan2(garlielY - newY, garlielX - newX)) % 360
+
+    mushrooAngle = math.deg(math.atan2(mushrooY - newY, mushrooX - newX)) % 360
+
+
     if self.fields.planetName == "Laven" then
-        lavenX = self.staticX - 128
-        lavenY = self.staticY - 64
+        lavenX = self.staticX - 260
+        lavenY = self.staticY - 150
     elseif self.fields.planetName == "Lima" then
-        limaX = self.staticX - 128
-        limaY = self.staticY - 64
+        limaX = self.staticX - 150
+        limaY = self.staticY - 128
     elseif self.fields.planetName == "Garliel" then
-        garlielX = self.staticX - 128
-        garlielY = self.staticY - 64
+        garlielX = self.staticX - 182
+        garlielY = self.staticY - 128
     elseif self.fields.planetName == "Mushroo" then
-        mushrooX = self.staticX - 128
-        mushrooY = self.staticY - 64
+        mushrooX = self.staticX - 182
+        mushrooY = self.staticY - 128
     end
 
 
     limaLine = pd.geometry.distanceToPoint(limaX, limaY, newX, newY)
-    if limaLine <= 200 then
+    if limaLine <= 400 then
         limaText = true
+        limasightRadius = 300
+        nearestPlanet = limaAngle
     else
+        limasightRadius = 75
         limaText = false
     end
 
 
     lavenLine = pd.geometry.distanceToPoint(lavenX, lavenY, newX, newY)
-    if lavenLine <= 200 then
+    if lavenLine <= 400 then
         lavenText = true
+        lavensightRadius = 300
+        nearestPlanet = lavenAngle
     else
+        lavensightRadius = 75
         lavenText = false
     end
 
     garlielLine = pd.geometry.distanceToPoint(garlielX, garlielY, newX, newY)
-    if garlielLine <= 200 then
+    if garlielLine <= 400 then
         garlielText = true
+        garlielsightRadius = 300
+        nearestPlanet = garlielAngle
     else
+        garlielsightRadius = 75
         garlielText = false
     end
 
     mushrooLine = pd.geometry.distanceToPoint(mushrooX, mushrooY, newX, newY)
-    if mushrooLine <= 200 then
+    if mushrooLine <= 400 then
         mushrooText = true
+        mushroosightRadius = 300
+        nearestPlanet = mushrooAngle
     else
+        mushroosightRadius = 75
         mushrooText = false
     end
     -- if inOrbit == true then
