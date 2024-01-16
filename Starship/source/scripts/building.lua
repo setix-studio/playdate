@@ -33,8 +33,12 @@ function Building:init(x, y, entity)
     self:add()
     self:playAnimation()
     newX = 0
-    newY = 0
+    newY = 0    
     textboxActive = false
+    if self.buildingType ~= "Shop" then
+    doorWay(self.x, self.y)
+    end
+    doorWayName = "Interior_1"
 end
 
 function Building:collisionResponse(other)
@@ -72,7 +76,7 @@ function ShopText()
 
     textboxActive = true
 
-
+    hudShow = false
     pdDialogue.say("Hello and welcome to Lima! Our shop will be open soon!",
         {
             width = 360,
@@ -84,6 +88,7 @@ function ShopText()
             onClose = function()
                 textboxTimer = pd.timer.performAfterDelay(1000, function()
                     textboxActive = false
+                    hudShow = true
                 end)
             end
         })
@@ -95,4 +100,20 @@ function ShopText()
     --     end)
     --     playdate.inputHandlers.pop()
     -- end
+end
+
+class('doorWay').extends(AnimatedSprite)
+
+function doorWay:init(x, y)
+    self:setCenter(0, 0)
+    self:moveTo(x, y)
+    self:add()
+    self:setTag(TAGS.Door)
+
+    self:setCollideRect(-16, 16, 16, 16)
+
+end
+
+function doorWay:collisionResponse(other)
+    return "overlap"
 end

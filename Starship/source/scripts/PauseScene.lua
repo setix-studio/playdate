@@ -5,13 +5,29 @@ local gridview = pd.ui.gridview.new(128, 32)
 
 
 
-
-gridview:setNumberOfRows(#items)
+gridview:setNumberOfSections(4)
+gridview:setNumberOfRowsInSection(1, #filter(items, { category = "Meat" }))
+gridview:setNumberOfRowsInSection(2, #filter(items, { category = "Fruits and Vegetables" }))
+gridview:setNumberOfRowsInSection(3, #filter(items, { category = "Bread and Dairy" }))
+gridview:setNumberOfRowsInSection(4, #filter(items, { category = "Flavors" }))
+gridview:setSectionHeaderHeight(10)
 gridview:setCellPadding(2, 2, 2, 2)
 
 gridview.backgroundImage = gfx.nineSlice.new("assets/images/menuBackground", 7, 7, 18, 18)
 gridview:setContentInset(5, 5, 5, 5)
 
+function gridview:drawSectionHeader(section, x, y, width, height)
+    if section == 1 then
+        categoryTitle = "Meat"
+    elseif section == 2 then
+        categoryTitle = "Fruits and Vegetables"
+    elseif section == 3 then
+        categoryTitle = "Bread and Dairy"
+    elseif section == 4 then
+        categoryTitle = "Flavors"
+    end
+    gfx.drawText(categoryTitle, x + 10, y)
+end
 
 local gridviewSprite = gfx.sprite.new()
 gridviewSprite:setCenter(0, 0)
@@ -22,7 +38,7 @@ class('PauseScene').extends(PauseRoom)
 
 function PauseScene:init()
     gfx.setDrawOffset(0, 0)
-
+    printTable(filter(items, { category = "Bread and Dairy" }))
     for i in pairs(items) do
         if items[i]["found"] == true then
             items[i]["name"] = items[i]["name"]
@@ -32,6 +48,12 @@ function PauseScene:init()
             items[i]["description"] = "??????"
         end
     end
+
+    itemsMeat = filter(items, { categoryID = 1 })
+    itemsFV = filter(items, { categoryID = 2 })
+    itemsDairy = filter(items, { categoryID = 3 })
+    itemsFlavor = filter(items, { categoryID = 4 })
+
 end
 
 function PauseScene:update()
@@ -119,15 +141,55 @@ function gridview:drawCell(section, row, column, selected, x, y, width, height)
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
     end
 
+    function ownedItem(first, second)
+        return first.found and not second.found
+    end
 
-    gfx.drawTextInRect(string.upper(items[row]["name"]) .. " ....  " .. tostring(items[row]["quantity"]), x - 10,
+    table.sort(items, ownedItem)
+  
+
+    -- gfx.drawTextInRect(filter(items, { categoryID = section })[row]["name"] .. " ....  " .. tostring(filter(items, { categoryID = section })[row]["quantity"]), x - 10,
+    --     y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
+    --     kTextAlignment.right)
+    if section == 1 then
+        
+        gfx.drawTextInRect(itemsMeat[row]["name"] .. " ....  " .. tostring(itemsMeat[row]["quantity"]), x - 10,
         y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
         kTextAlignment.right)
+  
+    elseif section == 2 then 
+        gfx.drawTextInRect(itemsFV[row]["name"] .. " ....  " .. tostring(itemsFV[row]["quantity"]), x - 10,
+        y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
+        kTextAlignment.right)
+    elseif section == 3 then 
+        gfx.drawTextInRect(itemsDairy[row]["name"] .. " ....  " .. tostring(itemsDairy[row]["quantity"]), x - 10,
+        y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
+        kTextAlignment.right)
+    elseif section == 4 then 
+        gfx.drawTextInRect(itemsFlavor[row]["name"] .. " ....  " .. tostring(itemsFlavor[row]["quantity"]), x - 10,
+        y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
+        kTextAlignment.right)
+    end
+   
     if selected then
         gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-
-        gfx.drawTextInRect(string.upper(items[row]["description"]), 160,
+        
+        if section == 1 then
+        gfx.drawTextInRect(itemsMeat[row]["description"], 160,
             170, 220, 70, nil, nil,
             kTextAlignment.left)
+        elseif section == 2 then
+            gfx.drawTextInRect(itemsFV[row]["description"], 160,
+                170, 220, 70, nil, nil,
+                kTextAlignment.left)
+        elseif section == 3 then
+                    gfx.drawTextInRect(itemsDairy[row]["description"], 160,
+                        170, 220, 70, nil, nil,
+                        kTextAlignment.left)
+        elseif section == 4 then
+                            gfx.drawTextInRect(itemsFlavor[row]["description"], 160,
+                                170, 220, 70, nil, nil,
+                                kTextAlignment.left)
+        end
     end
 end

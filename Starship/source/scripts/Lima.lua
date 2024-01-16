@@ -8,34 +8,42 @@ class('Lima').extends(Room)
 function Lima:enter()
     gfx.setBackgroundColor(gfx.kColorWhite)
     gfx.setColor(gfx.kColorWhite)
-
- 
-    if cosmoX == nil then
-        self.spawnX = 44 * 16
+    if returnX == nil then
+        self.spawnX = 15 * 16
     else
-        self.spawnX = cosmoX
+        self.spawnX = returnX
     end
-    if cosmoY == nil then
-        self.spawnY = 14 * 16
+    if returnY == nil then
+        self.spawnY = 10 * 16
     else
-        self.spawnY = cosmoY
-    end
+        self.spawnY = returnY
+    end   
     hudShow = true
-    cosmoHUD()
+
+    doorEnter = false
 
     levelX = levelWidth
     gfx.setDrawOffset(0, 0)
     limamusic:play(0)
     limamusic:setVolume(0.5)
+    print (returnX, returnY)
 
     paused = false
     self.levelName = levelName
-    if returnRoomNumber == nil then
-        roomNumber = 1
-    else
-        roomNumber = returnRoomNumber
-    end
+    if levelName == nil then
+        levelName = "Level_1"
+        
 
+
+    else
+        levelName = levelName
+    end
+    if returnRoomNumber == nil then
+        returnRoomNumber = 1
+    else
+        returnRoomNumber = roomNumber
+    end
+    location = "Lima"
     -- level room numbers - iterates through all rooms in a level
     for i = 20, 1, -1 do
         if levelName == "Level_" .. i then
@@ -43,10 +51,9 @@ function Lima:enter()
         end
     end
 
-
-    self:goToLevel("Level_" .. roomNumber)
+    self:goToLevel("Level_" .. returnRoomNumber)
     self.cosmo = Cosmo(self.spawnX, self.spawnY, self)
-    last_frame_time = 0
+    cosmoHUD()
 end
 
 function Lima:resetCosmo()
@@ -55,6 +62,18 @@ end
 
 function Lima:update()
     cosmoHUD()
+
+
+
+    if doorEnter == true then
+        self:goToLevel(doorWayName)
+        self.cosmo = Cosmo(16 * 20, 16 * 11, self)
+        hudShow = false
+        playdate.display.setScale(1)
+        activeArea = "bed"
+
+        doorEnter = false
+    end
 end
 
 function Lima:enterRoom(direction)
@@ -62,10 +81,13 @@ function Lima:enterRoom(direction)
     self:goToLevel(level)
     self.cosmo:add()
     CosmoInteractBtn()
-    bMenu()
+
     hudShow = true
 
+    bMenu()
+
     cosmoHUD()
+
     local spawnX, spawnY
     spawnX, spawnY = cosmoX, cosmoY
 
@@ -106,7 +128,10 @@ function Lima:goToLevel(levelName)
                 roomNumber = 4
             elseif levelName == "Level_5" then
                 roomNumber = 5
+            elseif levelName == "Level_6" then
+                roomNumber = 6
             end
+
             local layerSprite = gfx.sprite.new()
             layerSprite:setTilemap(tilemap)
             layerSprite:moveTo(0, 0)
@@ -134,9 +159,9 @@ function Lima:goToLevel(levelName)
             roomNumber = 4
         elseif levelName == "Level_5" then
             roomNumber = 5
+        elseif levelName == "Level_6" then
+            roomNumber = 6
         end
-        print(levelName)
-        print(roomNumber)
         local entityX, entityY = entity.position.x, entity.position.y
         self.fields = entity.fields
         local entityName = entity.name
@@ -148,6 +173,57 @@ function Lima:goToLevel(levelName)
             Objects(entityX, entityY, entity)
         elseif entityName == "Ship" then
             Ship(entityX, entityY, entity)
+        elseif entityName == "NPC" then
+            NPC(entityX, entityY, entity)
         end
     end
+end
+
+function playdate.gameWillPause()
+    local img = gfx.getDisplayImage()
+    gfx.lockFocus(img)
+  
+    local bgRect = playdate.geometry.rect.new(10, 10, 180, 220)
+    local bgRectBorder = playdate.geometry.rect.new(15, 15, 170, 210)
+    local limaRoom1 = playdate.geometry.rect.new(62, 74, 48, 32)
+    local limaRoom2 = playdate.geometry.rect.new(109, 74, 32, 48)
+    local limaRoom3 = playdate.geometry.rect.new(62, 121, 48, 32)
+    local limaRoom4 = playdate.geometry.rect.new(109, 121, 32, 24)
+    local limaRoom5 = playdate.geometry.rect.new(109, 144, 24, 32)
+    local limaRoom6 = playdate.geometry.rect.new(110, 121, 24, 32)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRoundRect(bgRect, 5)
+    gfx.setLineWidth(1)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.drawRoundRect(bgRectBorder, 5)
+
+    gfx.setFont(fontHud)
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    gfx.drawTextAligned(string.upper(location), 101, 50, kTextAlignment.center)
+
+    
+    gfx.drawRect(limaRoom1)
+    gfx.drawRect(limaRoom2)
+    gfx.drawRect(limaRoom3)
+    gfx.drawRect(limaRoom4)
+    gfx.drawRect(limaRoom5)
+    gfx.drawRect(limaRoom6)
+
+    if roomNumber == 1 then
+        gfx.fillRect(limaRoom1)
+    elseif roomNumber == 2 then
+        gfx.fillRect(limaRoom2)
+    elseif roomNumber == 3 then
+        gfx.fillRect(limaRoom3)
+    elseif roomNumber == 4 then
+        gfx.fillRect(limaRoom4)
+    elseif roomNumber == 5 then
+        gfx.fillRect(limaRoom5)
+    elseif roomNumber == 6 then
+        gfx.fillRect(limaRoom6)
+    end
+
+    
+    gfx.unlockFocus()
+    playdate.setMenuImage(img, 0)
 end

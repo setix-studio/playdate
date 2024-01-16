@@ -23,9 +23,12 @@ function BattleScene:enter()
     battlemusicend = pd.sound.fileplayer.new('assets/sounds/battleend')
 
     playerhit = pd.sound.fileplayer.new('assets/sounds/playermelee')
+
+    enemyInit()
+
     enemyType = "Gather"
 
-    enemyHP = math.random(8, 12)
+
     enemyMaxHP = enemyHP
 
     if enemyType == "Creature" then
@@ -42,6 +45,7 @@ function BattleScene:enter()
     battlecopyRun = false
     totalDamage = 0
     itemAdded = false
+    print(enemyHP)
 end
 
 function BattleScene:update()
@@ -203,7 +207,7 @@ function EnemyBattleImage:init()
     EnemyBattleImage.super.init(self, enemyBattleImageTable)
 
     self:addState("Bush", 1, 4, { tickStep = 6 })
-    self:addState("Meaty", 17, 20, { tickStep = 6 })
+    self:addState("Meaty", 5, 8, { tickStep = 6 })
     self:addState("Brusselfly", 9, 12, { tickStep = 6 })
     self:addState("Timid Toma", 13, 16, { tickStep = 6 })
     self:addState("Cool Shroom", 17, 20, { tickStep = 6 })
@@ -374,7 +378,8 @@ function PlayerRound()
             if playerBattleMenu:getSelectedRow() == 1 then
                 if options == battleoptions then
                     if enemyHP > 0 then
-                        playerDamage = math.random(math.random(0, 1+ (math.ceil(playerLevel/2))), math.random(2+ (math.ceil(playerLevel/2)), 5 + (math.ceil(playerLevel/2))))
+                        playerDamage = math.random(math.random(0, 1 + (math.ceil(playerLevel / 2))),
+                            math.random(2 + (math.ceil(playerLevel / 2)), 5 + (math.ceil(playerLevel / 2))))
                         enemyHP = enemyHP - playerDamage
 
                         if playerDamage > 0 then
@@ -440,8 +445,6 @@ function PlayerRound()
     end
 end
 
-
-
 function EnemyRound()
     if enemyTurn == true then
 
@@ -455,7 +458,7 @@ function enemyStartTimer()
     local randomTime = math.random(1000, 2000)
     enemyStart = pd.timer.performAfterDelay(randomTime, function()
         battlecopy = "The " ..
-            enemyName .. " readies its stance."
+            enemyName .. enemyStartCopy
         enemyThinkTimer()
     end)
 end
@@ -464,7 +467,7 @@ function enemyThinkTimer()
     local randomTime = math.random(1000, 2000)
     enemyThinkStart = pd.timer.performAfterDelay(randomTime, function()
         battlecopy = "The " ..
-            enemyName .. " is rustling cautiously."
+            enemyName .. enemyThinkCopy
         enemyAttackTimer()
     end)
 end
@@ -473,10 +476,12 @@ function enemyAttackTimer()
     local randomTime = math.random(1000, 2000)
     enemyAttackStart = pd.timer.performAfterDelay(randomTime, function()
         if enemyAttacked == false then
-            enemyAttackChance = math.random(0, 100)
+            enemyChance = math.random(0, 100)
 
-            if enemyAttackChance >= 70 then
-                battlecopy = "The bush attacks!"
+            if enemyChance >= enemyAttackChance then
+                battlecopy = "The " ..
+                    enemyName .. " attacks!"
+                    playerhit:play(1)
 
                 playerHP = playerHP - 3
             end
@@ -555,6 +560,7 @@ function runEndTimer()
         exitBattle()
     end)
 end
+
 function exitBattle()
     battlemusic:stop()
 
@@ -577,4 +583,39 @@ function exitBattle()
     cosmoY = returnY
     roomNumber = returnRoomNumber
     manager:push(levelScene)
+end
+
+-- enemies
+function enemyInit()
+    if enemyName == "Meaty" then
+        enemyType = "Gather"
+        enemyHP = math.random(8, 10)
+        enemyAttackChance = math.random(30,50)
+        enemyStartCopy = " narrows its gaze."
+        enemyThinkCopy = " is wobbling carelessly."
+    elseif enemyName == "Bush" then
+        enemyType = "Gather"
+        enemyHP = math.random(6, 10)
+        enemyAttackChance = math.random(40,60)
+        enemyStartCopy = " readies its stance."
+        enemyThinkCopy = " is rustling cautiously."
+    elseif enemyName == "Timid Toma" then
+        enemyType = "Gather"
+        enemyHP = math.random(4, 6)
+        enemyAttackChance = math.random(30,60)
+        enemyStartCopy = " shakes in suspicion."
+        enemyThinkCopy = " hopes nothing happens."
+    elseif enemyName == "Brusselfly" then
+        enemyType = "Gather"
+        enemyHP = math.random(7, 9)
+        enemyAttackChance = math.random(30,60)
+        enemyStartCopy = " flutters around."
+        enemyThinkCopy = " strategizes its plan."
+    elseif enemyName == "Cool Shroom" then
+        enemyType = "Gather"
+        enemyHP = math.random(4, 6)
+        enemyAttackChance = math.random(40,60)
+        enemyStartCopy = " narrows its gaze."
+        enemyThinkCopy = " is wobbling carelessly."
+    end
 end

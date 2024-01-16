@@ -2,32 +2,7 @@ local pd <const>   = playdate
 local gfx <const>  = playdate.graphics
 local geo <const>  = pd.geometry
 local ldtk <const> = LDtk
-TAGS               = {
-    Pickup = 1,
-    Player = 5,
-    Cosmo = 5,
-    Prop = 6,
-    Enemy = 3,
-    Planet = 21,
-    Collision = 5,
-    Textbox = 10,
-    Ship = 7,
-    Building = 8,
-    Shop = 9,
-    Object = 11
-}
 
-Z_INDEXES          = {
-    BG = -100,
-    Prop = 5,
-    Enemy = 5,
-    Pickup = 500,
-    Player = 15,
-    Steam = 800,
-    Planet = 10,
-    Ship = 10,
-    Textbox = 900
-}
 
 
 
@@ -287,22 +262,4 @@ function StarImage:update()
     end
 
     self:moveTo(newX + self.counter, newY + self.counter)
-end
-
-function playdate.gameWillPause()
-    local img = gfx.getDisplayImage()
-    gfx.lockFocus(img)
-    local bgRect = playdate.geometry.rect.new(10, 10, 180, 220)
-    local textRect = playdate.geometry.rect.new(30, 30, 140, 180)
-    gfx.setColor(gfx.kColorWhite)
-    gfx.fillRoundRect(bgRect, 5)
-    gfx.setLineWidth(1)
-    gfx.setColor(gfx.kColorBlack)
-
-    for i in pairs(items) do
-        gfx.drawText(tostring(items[i]["name"]) .. ": ", 30, 16 * i, kTextAlignment.left)
-        gfx.drawText(tostring(items[i]["quantity"]), 160, 16 * i, kTextAlignment.right)
-    end
-    gfx.unlockFocus()
-    playdate.setMenuImage(img, 0)
 end

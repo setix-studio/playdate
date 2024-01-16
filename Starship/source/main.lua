@@ -16,6 +16,7 @@ import "scripts/libraries/LDtk"
 --scripts
 
 import "scripts/items"
+import "scripts/recipes"
 
 
 import "scripts/PauseScene"
@@ -36,16 +37,19 @@ import "scripts/saveLoadData"
 import "scripts/planet"
 import "scripts/building"
 import "scripts/pdDialogue"
-import "scripts/underscore"
+import "scripts/playout"
 import "scripts/pdParticles"
 import "scripts/ship"
 import "scripts/insideShip"
 import "scripts/gameOverScene"
 import "scripts/objects"
+import "scripts/NPC"
+import "scripts/quests"
+import "scripts/questScene"
 
 import "scripts/sceneManager"
 
-__ = Underscore:new() -- double underscore
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 font1 = gfx.font.new("font/Nontendo-Light")
@@ -62,6 +66,7 @@ manager:enter(IntroScene())
 
 --audio
 spacemusic = pd.sound.fileplayer.new('assets/sounds/space2')
+shipmusic = pd.sound.fileplayer.new('assets/sounds/shipmusic')
 limamusic = pd.sound.fileplayer.new('assets/sounds/lima')
 lavenmusic = pd.sound.fileplayer.new('assets/sounds/laven')
 battlestartmusic = pd.sound.fileplayer.new('assets/sounds/battleintrosound')
@@ -78,6 +83,38 @@ pdDialogue.setup({
     end
 })
 -- loadGameData()
+
+
+
+TAGS               = {
+    Pickup = 1,
+    Player = 5,
+    Cosmo = 5,
+    Prop = 6,
+    Enemy = 3,
+    Planet = 21,
+    Collision = 5,
+    Textbox = 10,
+    Ship = 7,
+    Building = 8,
+    Shop = 9,
+    Object = 11,
+    Door = 12,
+    DoorOpen = 13,
+    NPC = 14
+}
+
+Z_INDEXES          = {
+    BG = -100,
+    Prop = 5,
+    Enemy = 5,
+    Pickup = 500,
+    Player = 11,
+    Steam = 800,
+    Planet = 10,
+    Ship = 10,
+    Textbox = 900
+}
 
 function pd.update()
     gfx.sprite.update()

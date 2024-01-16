@@ -9,91 +9,22 @@ function loadGameData()
         else
             saveData = saveData
         end
+        if gameData.quests then
+            quests = gameData.quests
+        else
+            quests = quests
+        end
         if gameData.items then
             items = gameData.items
         else
-            items = items { {
-
-                ["category"] = "toppings",
-                ["found"] = false,
-                ["name"] = "Berries",
-                ["ID"] = "Berries",
-                ["basedescription"] = "??????????????????????????????????????????????????",
-                ["description"] = "Sweet and juicy.",
-                ["quantity"] = 0
-            },
-                {
-                    ["category"] = "spices",
-                    ["found"] = false,
-                    ["name"] = "HOT SPICES",
-                    ["ID"] = "HOT SPICES",
-                    ["basedescription"] = "??????????????????????????????????????????????????",
-                    ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
-                    ["quantity"] = 0
-                },
-                {
-                    ["category"] = "spices",
-                    ["found"] = false,
-                    ["name"] = "TANGY SPICES",
-                    ["ID"] = "TANGY SPICES",
-                    ["basedescription"] = "??????????????????????????????????????????????????",
-                    ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
-                    ["quantity"] = 0
-                },
-                {
-                    ["category"] = "meat",
-                    ["found"] = false,
-                    ["name"] = "MEATY STALK",
-                    ["ID"] = "MEATY STALK",
-                    ["basedescription"] = "??????????????????????????????????????????????????",
-                    ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
-                    ["quantity"] = 0
-                },
-                {
-                    ["category"] = "meat",
-                    ["found"] = false,
-                    ["name"] = "SHROOMAS",
-                    ["ID"] = "SHROOMAS",
-                    ["basedescription"] = "??????????????????????????????????????????????????",
-                    ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
-                    ["quantity"] = 0
-                },
-                {
-                    ["category"] = "meat",
-                    ["found"] = false,
-                    ["name"] = "FLYING FISH",
-                    ["ID"] = "FLYING FISH",
-                    ["basedescription"] = "??????????????????????????????????????????????????",
-                    ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
-                    ["quantity"] = 0
-                },
-                {
-                    ["category"] = "toppings",
-                    ["found"] = false,
-                    ["name"] = "CHEESE",
-                    ["ID"] = "CHEESE",
-                    ["basedescription"] = "??????????????????????????????????????????????????",
-                    ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
-                    ["quantity"] = 0
-                },
-                {
-                    ["category"] = "toppings",
-                    ["found"] = false,
-                    ["name"] = "LIME",
-                    ["ID"] = "LIME",
-                    ["basedescription"] = "??????????????????????????????????????????????????",
-                    ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
-                    ["quantity"] = 0
-                },
-                {
-                    ["category"] = "toppings",
-                    ["found"] = false,
-                    ["name"] = "TOMAS",
-                    ["ID"] = "TOMAS",
-                    ["basedescription"] = "??????????????????????????????????????????????????",
-                    ["description"] = "SMALL, BULBOUS, BEEFY MORSLES. USED AS MEAT SUBSTITUTE.",
-                    ["quantity"] = 0
-                }, }
+            items = items 
+            
+        end
+        if gameData.recipes then
+            recipes = gameData.recipes
+        else
+            recipes = recipes 
+            
         end
         if gameData.levelNum then
             levelNum = gameData.levelNum
@@ -145,23 +76,31 @@ function loadGameData()
         else
             playerNextLevel = playerNextLevel
         end
+        if gameData.previouslevel then
+            previouslevel = gameData.previouslevel
+        else
+            previouslevel = previouslevel
+        end
     end
 end
 
 function saveGameData()
     local gameData = {
         saveData = saveData,
+        quests = quests,
         items = items,
+        recipes =recipes, 
         levelNum = levelNum,
-        cosmoX = cosmoX,
-        cosmoY = cosmoY,
-        returnX = returnX,
-        returnY = returnY,
+        -- cosmoX = cosmoX,
+        -- cosmoY = cosmoY,
+        -- returnX = returnX,
+        -- returnY = returnY,
         playerHP = playerHP,
         playerMaxHP = playerMaxHP,
         playerLevel = playerLevel,
         playerXP = playerXP,
-        playerNextLevel = playerNextLevel
+        playerNextLevel = playerNextLevel,
+        previouslevel = previouslevel
     }
     pd.datastore.write(gameData)
 end

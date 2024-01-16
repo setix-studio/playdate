@@ -297,7 +297,7 @@ function Player:handleMovementAndCollisions()
                         landing = true
                         ShipLand()
                         levelTimer = pd.timer.performAfterDelay(3500, function()
-                            levelNum = 2
+                            levelNum = 1
                             gfx.sprite.removeAll()
 
                             manager:enter(LoadingScene())
@@ -469,31 +469,6 @@ function MushrooTitle:update()
     end
 end
 
-class('ShipLand').extends(AnimatedSprite)
-
-function ShipLand:init(x, y)
-    gfx.setBackgroundColor(gfx.kColorWhite)
-
-    shiplandImageTable = gfx.imagetable.new("assets/images/burgerland-table-400-240")
-
-    Ship.super.init(self, shiplandImageTable)
-    self:addState("idle", 1, 16, { tickStep = 8 })
-    self.currentState = "idle"
-    self:setZIndex(1000)
-
-    self:moveTo(newX, newY)
-    self:setCenter(0, 0)
-    self:add()
-    self:playAnimation()
-    self:setTag(TAGS.Ship)
-end
-
-function ShipLand:update()
-    self:updateAnimation()
-    shipTimer = pd.timer.performAfterDelay(3000, function()
-        self:remove()
-    end)
-end
 
 class('HUD').extends(AnimatedSprite)
 

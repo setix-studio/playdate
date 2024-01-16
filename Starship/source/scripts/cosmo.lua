@@ -28,18 +28,17 @@ function Cosmo:init(x, y, gameManager)
 
 
 
-
     -- self:setCenter(0, 0)
+
     cosmoX = self.x
     cosmoY = self.y
     self:playAnimation()
-    CosmoInteractBtn()
-    bMenu()
+
     bMenuShow = false
     showIntBtn = false
     -- Sprite properties
     self:moveTo(x, y)
-    self:setZIndex(5)
+    self:setZIndex(11)
     self:setCollideRect(11, 20, 10, 10)
     self:setTag(TAGS.Cosmo)
 
@@ -57,18 +56,14 @@ function Cosmo:init(x, y, gameManager)
     self.touchingCeiling = false
     self.touchingWall = false
     self.dead = false
-    self.hasKey = false
-    self.hasAlphaKey = false
+
 
     self.TextboxShow = false
     playersteps = pd.sound.fileplayer.new('assets/sounds/step_3')
     playerheal = pd.sound.fileplayer.new('assets/sounds/heal')
     playersteps:setVolume(.2)
     stepTimer = 0
-    _G.AlphaKey = false
-    _G.BetaKey = false
-    _G.SigmaKey = false
-    _G.GammaKey = false
+
     --SFX
 
     battleFade = false
@@ -94,18 +89,21 @@ function Cosmo:init(x, y, gameManager)
     if playerMaxHP == nil then
         playerMaxHP = 30
     else
-        playerMaxHP = playerMaxHP + (playerLevel * 2)
+        playerMaxHP = playerMaxHP
     end
     if playerHP == nil then
         playerHP = playerMaxHP
     else
         playerHP = playerHP
     end
+
+    CosmoInteractBtn()
+    bMenu()
 end
 
 function Cosmo:collisionResponse(other)
     local tag = other:getTag()
-    if tag == TAGS.Pickup or tag == TAGS.Hazard or tag == TAGS.Prop or tag == TAGS.Laser or tag == TAGS.Ship then
+    if tag == TAGS.Pickup or tag == TAGS.Hazard or tag == TAGS.Prop or tag == TAGS.Laser or tag == TAGS.Door then
         return gfx.sprite.kCollisionTypeOverlap
     end
     return gfx.sprite.kCollisionTypeSlide
@@ -142,32 +140,31 @@ function Cosmo:update()
         self:handleMovementAndCollisions()
         self:updateAnimation()
         self:handleLeveling()
-        if pd.buttonIsPressed(pd.kButtonB) then
-            bMenuShow = true
-            if playdate.buttonJustPressed(playdate.kButtonLeft) then
-                limamusic:setVolume(0.2)
-                lavenmusic:setVolume(0.2)
-                paused = true
-                self.xVelocity = 0
-                self.yVelocity = 0
+        if hudShow == true then
+            if pd.buttonIsPressed(pd.kButtonB) then
+                bMenuShow = true
+                if playdate.buttonJustPressed(playdate.kButtonLeft) then
+                    limamusic:setVolume(0.2)
+                    lavenmusic:setVolume(0.2)
+                    paused = true
+                    self.xVelocity = 0
+                    self.yVelocity = 0
 
 
-                manager:push(PauseScene())
-            end
-            if playdate.buttonJustPressed(playdate.kButtonDown) then
-                self.xVelocity = 0
-                self.yVelocity = 0
-
-                playerHP = playerHP + 5
-
-                if playerHP >= playerMaxHP then
-                    playerHP = playerMaxHP
-                else
-                    playerheal:play(1)
+                    manager:push(PauseScene())
                 end
+                if playdate.buttonJustPressed(playdate.kButtonDown) then
+                    limamusic:setVolume(0.2)
+                    lavenmusic:setVolume(0.2)
+                    paused = true
+                    self.xVelocity = 0
+                    self.yVelocity = 0
+
+                    manager:push(questScene())
+                end
+            elseif pd.buttonJustReleased(pd.kButtonB) then
+                bMenuShow = false
             end
-        elseif pd.buttonJustReleased(pd.kButtonB) then
-            bMenuShow = false
         end
     else
         self:changeToIdleState()
@@ -188,6 +185,8 @@ function Cosmo:handleLeveling()
 
         remainingXP = playerNextLevel - playerXP
         playerXP = 0 + remainingXP * -1
+        playerMaxHP = playerMaxHP + (playerLevel * 2)
+        playerHP = playerMaxHP
         playerNextLevel = 100 * playerLevel
     end
 end
@@ -247,26 +246,12 @@ function Cosmo:handleMovementAndCollisions()
 
 
 
-
         if collisionTag == TAGS.Ship then
-            showIntBtn = true
 
 
 
-            if pd.buttonJustReleased(pd.kButtonA) then
-                limamusic:stop()
-                lavenmusic:stop()
-
-
-                hudShow = false
-                paused  = true
-                gfx.sprite.removeAll()
-
-
-                manager:enter(ShipInteriorScene())
-            end
-        elseif collisionTag == TAGS.Shop then
-
+        elseif collisionTag == TAGS.Door then
+            doorEnter = true
         elseif collisionTag == TAGS.Pickup then
             collisionObject:pickUp(self)
         end
@@ -324,79 +309,82 @@ function Cosmo:changeToIdleState()
     self.yVelocity = 0
     posX           = false
     negX           = false
-
-    if pd.buttonJustReleased(pd.kButtonLeft) then
-        self:changeState("idlewest")
-    elseif pd.buttonJustReleased(pd.kButtonRight) then
-        self:changeState("idleeast")
-    elseif pd.buttonJustReleased(pd.kButtonUp) then
-        self:changeState("idlenorth")
-    elseif pd.buttonJustReleased(pd.kButtonDown) then
-        self:changeState("idlesouth")
+    if paused == false then
+        if pd.buttonJustReleased(pd.kButtonLeft) then
+            self:changeState("idlewest")
+        elseif pd.buttonJustReleased(pd.kButtonRight) then
+            self:changeState("idleeast")
+        elseif pd.buttonJustReleased(pd.kButtonUp) then
+            self:changeState("idlenorth")
+        elseif pd.buttonJustReleased(pd.kButtonDown) then
+            self:changeState("idlesouth")
+        end
     end
 end
 
 function Cosmo:changeToRunState(direction)
-    if not pd.buttonIsPressed(pd.kButtonB) then
-        if pd.buttonJustPressed(pd.kButtonLeft) then
-            self.xVelocity = -self.maxSpeed
-            self.yVelocity = self.yVelocity
-        elseif pd.buttonJustPressed(pd.kButtonRight) then
-            self.xVelocity = self.maxSpeed
-            self.yVelocity = self.yVelocity
-        elseif pd.buttonJustPressed(pd.kButtonUp) then
-            self.yVelocity = -self.maxSpeed
-            self.xVelocity = self.xVelocity
-        elseif pd.buttonJustPressed(pd.kButtonDown) then
-            self.yVelocity = self.maxSpeed
-            self.xVelocity = self.xVelocity
+    if paused == false then
+        if not pd.buttonIsPressed(pd.kButtonB) then
+            if pd.buttonJustPressed(pd.kButtonLeft) then
+                self.xVelocity = -self.maxSpeed
+                self.yVelocity = self.yVelocity
+            elseif pd.buttonJustPressed(pd.kButtonRight) then
+                self.xVelocity = self.maxSpeed
+                self.yVelocity = self.yVelocity
+            elseif pd.buttonJustPressed(pd.kButtonUp) then
+                self.yVelocity = -self.maxSpeed
+                self.xVelocity = self.xVelocity
+            elseif pd.buttonJustPressed(pd.kButtonDown) then
+                self.yVelocity = self.maxSpeed
+                self.xVelocity = self.xVelocity
+            end
+            if pd.buttonJustReleased(pd.kButtonLeft) then
+                self.xVelocity = 0
+            elseif pd.buttonJustReleased(pd.kButtonRight) then
+                self.xVelocity = 0
+            elseif pd.buttonJustReleased(pd.kButtonUp) then
+                self.yVelocity = 0
+            elseif pd.buttonJustReleased(pd.kButtonDown) then
+                self.yVelocity = 0
+            end
+            if self.xVelocity < 0 and self.yVelocity == 0 then
+                self:changeState("west")
+            end
+            if self.xVelocity > 0 and self.yVelocity == 0 then
+                self:changeState("east")
+            end
+            if self.xVelocity == 0 and self.yVelocity < 0 then
+                self:changeState("north")
+            end
+            if self.xVelocity == 0 and self.yVelocity > 0 then
+                self:changeState("south")
+            end
+            if self.xVelocity > 0 and self.yVelocity > 0 then
+                self:changeState("southeast")
+            end
+            if self.xVelocity < 0 and self.yVelocity > 0 then
+                self:changeState("southwest")
+            end
+            if self.xVelocity > 0 and self.yVelocity < 0 then
+                self:changeState("northeast")
+            end
+            if self.xVelocity < 0 and self.yVelocity < 0 then
+                self:changeState("northwest")
+            end
         end
-        if pd.buttonJustReleased(pd.kButtonLeft) then
-            self.xVelocity = 0
-        elseif pd.buttonJustReleased(pd.kButtonRight) then
-            self.xVelocity = 0
-        elseif pd.buttonJustReleased(pd.kButtonUp) then
-            self.yVelocity = 0
-        elseif pd.buttonJustReleased(pd.kButtonDown) then
-            self.yVelocity = 0
-        end
-        if self.xVelocity < 0 and self.yVelocity == 0 then
-            self:changeState("west")
-        end
-        if self.xVelocity > 0 and self.yVelocity == 0 then
-            self:changeState("east")
-        end
-        if self.xVelocity == 0 and self.yVelocity < 0 then
-            self:changeState("north")
-        end
-        if self.xVelocity == 0 and self.yVelocity > 0 then
-            self:changeState("south")
-        end
-        if self.xVelocity > 0 and self.yVelocity > 0 then
-            self:changeState("southeast")
-        end
-        if self.xVelocity < 0 and self.yVelocity > 0 then
-            self:changeState("southwest")
-        end
-        if self.xVelocity > 0 and self.yVelocity < 0 then
-            self:changeState("northeast")
-        end
-        if self.xVelocity < 0 and self.yVelocity < 0 then
-            self:changeState("northwest")
-        end
-    end
 
-    if direction == "left" then
-        posX = true
-        negX = false
-    elseif direction == "right" then
-        posX = false
-        negX = true
-    end
+        if direction == "left" then
+            posX = true
+            negX = false
+        elseif direction == "right" then
+            posX = false
+            negX = true
+        end
 
-    if self.touchingWall == true then
-        posX = false
-        negX = false
+        if self.touchingWall == true then
+            posX = false
+            negX = false
+        end
     end
 end
 
@@ -413,7 +401,7 @@ function CosmoInteractBtn:init(x, y)
 
     self:setCenter(0.5, 0.5)
     self:add()
-    self:setZIndex(Z_INDEXES.Player)
+    self:setZIndex(11)
     self:moveTo(-100, -100)
 end
 
@@ -426,27 +414,13 @@ function CosmoInteractBtn:update()
     end
 end
 
--- function CosmoInteractBtn() --NEW
---     if showIntBtn == true then
---         gfx.setColor(gfx.kColorBlack)
---         if newX > levelWidth then
---             newX = levelWidth
---         else
---             newX = newX
---         end
---         gfx.fillRect(0 + newX, 190 + newY, 100, 30)
---         gfx.setColor(gfx.kColorWhite)
---         gfx.setFont(font2)
---         gfx.setColor(gfx.kColorWhite)
---         gfx.drawTextAligned("Action", 20 + newX, 195 + newY, kTextAlignment.left)
---     end
--- end
 class('ShipTakeoff').extends(AnimatedSprite)
 
 function ShipTakeoff:init(x, y)
     gfx.setBackgroundColor(gfx.kColorBlack)
+    gfx.setDrawOffset(0, 0)
 
-    shiptakeoffImageTable = gfx.imagetable.new("assets/images/burgertakeoff-table-400-240")
+    shiptakeoffImageTable = gfx.imagetable.new("assets/images/shiptakeoff-table-400-240")
 
     Ship.super.init(self, shiptakeoffImageTable)
     self:addState("idle", 1, 15, { tickStep = 8 })
@@ -455,7 +429,7 @@ function ShipTakeoff:init(x, y)
 
 
     self:setCenter(0, 0)
-    self:moveTo(newX, newY)
+    self:moveTo(0, 0)
     self:add()
     self:playAnimation()
     self:setTag(TAGS.Ship)
@@ -469,10 +443,10 @@ function ShipTakeoff:update()
 end
 
 function cosmoSortOrder(self)
-    if cosmoY > self.y + 10 then
-        self:setZIndex(4)
-    else
+    if cosmoY >= self.y + 10 then
         self:setZIndex(10)
+    else
+        self:setZIndex(12)
     end
 end
 
@@ -495,10 +469,12 @@ end
 
 function bMenu:update()
     self:updateAnimation()
-    if bMenuShow == true then
-        self:moveTo(cosmoX, cosmoY - 32)
-    elseif bMenuShow == false then
-        self:moveTo(-100, -100)
+    if paused == false then
+        if bMenuShow == true then
+            self:moveTo(cosmoX, cosmoY - 32)
+        elseif bMenuShow == false then
+            self:moveTo(-100, -100)
+        end
     end
 end
 
@@ -506,7 +482,8 @@ function BattleTimer()
     battleFade = true
     returnRoomNumber = roomNumber
     battlestartmusic:play()
-
+    returnX = cosmoX
+    returnY = cosmoY
     battlestartmusic:setVolume(0.5)
     BattleEnterTimer = pd.timer.performAfterDelay(2300, function()
 
@@ -564,27 +541,25 @@ function cosmoHUD()
 
         gfx.setFont(fontHud)
         --player healthbar
-        gfx.drawRect(285 + -cameraX, 208 + -cameraY, 74, 9)
-        gfx.drawRect(358 + -cameraX, 208 + -cameraY, 6, 9)
+        gfx.drawRect(290 + -cameraX, 208 + -cameraY, 74, 9)
+        gfx.drawRect(363 + -cameraX, 208 + -cameraY, 6, 9)
         gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(358 + -cameraX, 208 + -cameraY, 6, 9)
+        gfx.fillRect(363 + -cameraX, 208 + -cameraY, 6, 9)
         gfx.setDitherPattern(.25, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(287 + -cameraX, 210 + -cameraY, 70, 5)
+        gfx.fillRect(292 + -cameraX, 210 + -cameraY, 70, 5)
         gfx.setDitherPattern(0, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(287 + -cameraX, 210 + -cameraY, playerHP / playerMaxHP * 70, 5)
+        gfx.fillRect(292 + -cameraX, 210 + -cameraY, playerHP / playerMaxHP * 70, 5)
 
 
         --player level bar
-        gfx.drawRect(285 + -cameraX, 216 + -cameraY, 54, 7)
-        gfx.drawRect(338 + -cameraX, 216 + -cameraY, 5, 7)
+        gfx.drawRect(290 + -cameraX, 216 + -cameraY, 54, 7)
+        gfx.drawRect(343 + -cameraX, 216 + -cameraY, 5, 7)
         gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(338 + -cameraX, 216 + -cameraY, 5, 7)
+        gfx.fillRect(343 + -cameraX, 216 + -cameraY, 5, 7)
         gfx.setDitherPattern(.25, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(287 + -cameraX, 218 + -cameraY, 50, 3)
+        gfx.fillRect(292 + -cameraX, 218 + -cameraY, 50, 3)
         gfx.setDitherPattern(0, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(287 + -cameraX, 218 + -cameraY, playerXP / playerNextLevel * 50, 3)
-        gfx.drawTextAligned("lv " .. playerLevel, 280 + -cameraX, 208 + -cameraY, kTextAlignment.right)
-        
-
+        gfx.fillRect(292 + -cameraX, 218 + -cameraY, playerXP / playerNextLevel * 50, 3)
+        gfx.drawTextAligned("lv " .. playerLevel, 285 + -cameraX, 208 + -cameraY, kTextAlignment.right)
     end
 end

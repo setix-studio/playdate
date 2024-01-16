@@ -1,8 +1,8 @@
-name=Cosmo Nash: Galactic Courier 
+name=Cosmo Nash: Culinary Courier 
 author=setix studio 
 description=space
 bundleID=com.setixstudio.cosmo
-version=0.0.5a
-buildNumber=2
+version=0.0.9a
+buildNumber=3
 imagePath=assets/image
 launchSoundPath=assets/sound
