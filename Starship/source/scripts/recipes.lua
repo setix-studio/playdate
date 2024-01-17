@@ -1,4 +1,4 @@
-local pd <const> = playdate
+=local pd <const> = playdate
 local gfx <const> = pd.graphics
 
 class('Recipes').extends(AnimatedSprite)
@@ -221,6 +221,66 @@ recipes = {
         ["description"] = "Straight from the air to the grill, lemmy fresh.",
         ["quantity"] = 0,
         ["requiredItems"] = "4 Flying Fish, 2 Lemmies, 1 Savory",
+    },
+{
+        ["categoryID"] = 1,
+        ["category"] = "Main Dish",
+        ["found"] = false,
+        ["name"] = "Fried Chop",
+        ["ID"] = "FRIED CHOP",
+        ["description"] = "Fried to pork-fection.",
+        ["quantity"] = 0,
+        ["requiredItems"] = "2 Big Chop, 1 Savory",
+    },
+{
+        ["categoryID"] = 1,
+        ["category"] = "Main Dish",
+        ["found"] = false,
+        ["name"] = "Meaty Sando",
+        ["ID"] = "MEATY SANDO",
+        ["description"] = "Chunks of meat, tomas and cheddah in a savory sando.",
+        ["quantity"] = 0,
+        ["requiredItems"] = "5 Meaty Chunks, 3 Tomas, 2 Cheddah, 2 Doughball, 1 Savory",
+    },
+{
+        ["categoryID"] = 1,
+        ["category"] = "Main Dish",
+        ["found"] = false,
+        ["name"] = "Veggie Sando",
+        ["ID"] = "VEGGIE SANDO",
+        ["description"] = "Brussels, tomas, shrooma and cheddah in a spicy sando.",
+        ["quantity"] = 0,
+        ["requiredItems"] = "3 Brussels, 3 Tomas, 3 Shrooma, 2 Cheddah, 2 Doughball, 1 Spicy",
+    },
+{
+        ["categoryID"] = 1,
+        ["category"] = "Main Dish",
+        ["found"] = false,
+        ["name"] = "Meaty Pizza",
+        ["ID"] = "MEATY PIZZA",
+        ["description"] = "Chunks of meat, tomas, shrooma and mozzerell on a thin crust.",
+        ["quantity"] = 0,
+        ["requiredItems"] = "4 Meaty Chunks, 3 Tomas, 3 Shrooma, 4 Mozzerell, 2 Doughball",
+    },
+{
+        ["categoryID"] = 1,
+        ["category"] = "Main Dish",
+        ["found"] = false,
+        ["name"] = "Cheesy Pizza",
+        ["ID"] = "CHEESY PIZZA",
+        ["description"] = "Cheddah, mozzerell and tomas on a thin crust.",
+        ["quantity"] = 0,
+        ["requiredItems"] = "4 Cheddah, 4 Mozzerell, 3 Tomas, 2 Doughball",
+    },
+{
+        ["categoryID"] = 1,
+        ["category"] = "Main Dish",
+        ["found"] = false,
+        ["name"] = "Mac n Cheese",
+        ["ID"] = "MAC N CHEESE",
+        ["description"] = "Little noodles in a creamy, cheesy sauce",
+        ["quantity"] = 0,
+        ["requiredItems"] = "10 Noodles, 4 Cheddah, 2 Crema",
     },
     {
         ["categoryID"] = 3,
