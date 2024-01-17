@@ -282,6 +282,17 @@ recipes = {
         ["quantity"] = 0,
         ["requiredItems"] = "10 Noodles, 4 Cheddah, 2 Crema",
     },
+{
+        ["categoryID"] = 2,
+        ["category"] = "Side Dish",
+        ["found"] = false,
+        ["name"] = "Mushroom Soup",
+        ["ID"] = "MUSHROOM SOUP",
+        ["description"] = "Savory mushrooms in s creamy soup",
+        ["quantity"] = 0,
+        ["requiredItems"] = "10 Shrooma, 5 Crema, 1 Savory",
+    },
+
     {
         ["categoryID"] = 3,
         ["category"] = "Dessert",
