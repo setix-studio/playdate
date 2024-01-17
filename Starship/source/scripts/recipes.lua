@@ -1,4 +1,4 @@
-=local pd <const> = playdate
+local pd <const> = playdate
 local gfx <const> = pd.graphics
 
 class('Recipes').extends(AnimatedSprite)
@@ -288,7 +288,7 @@ recipes = {
         ["found"] = false,
         ["name"] = "Mushroom Soup",
         ["ID"] = "MUSHROOM SOUP",
-        ["description"] = "Savory mushrooms in s creamy soup",
+        ["description"] = "Savory mushrooms in a creamy soup",
         ["quantity"] = 0,
         ["requiredItems"] = "10 Shrooma, 5 Crema, 1 Savory",
     },

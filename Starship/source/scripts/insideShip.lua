@@ -165,7 +165,7 @@ function InteriorShip:update()
         if showMenu == true then
         
 
-            kitchenMainMenu:drawInRect(20, 20, 202, 200)
+            kitchenMainMenu:drawInRect(20, 20, 202, 90)
             kitchenMainMenu:setNumberOfRows(#recipes)
 
             kitchenMainMenu:setCellPadding(2, 2, 2, 2)
@@ -178,6 +178,8 @@ function InteriorShip:update()
                 if selected then
                     gfx.setColor(gfx.kColorBlack)
                     gfx.setFont(font2)
+                   
+                    gfx.setColor(gfx.kColorWhite)
 
                     gfx.drawTextInRect(recipes[row]["description"], 20, 120, 200, 60, nil, nil, kTextAlignment.center)
                    
@@ -186,7 +188,7 @@ function InteriorShip:update()
                 else
                 gfx.setFont(font1)
 
-                    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+                    
                 end
 
 

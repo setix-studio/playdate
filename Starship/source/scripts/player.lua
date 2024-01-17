@@ -55,9 +55,8 @@ function Player:init(x, y, gameManager)
     if newY == nil then
         newY = 0
     end
-    returnX = newX
-    returnY = newY
-    engine = pd.sound.fileplayer.new('assets/sounds/engine')
+    shipreturnX = newX
+    shipreturnY = newY
 end
 
 function Player:collisionResponse(other)
@@ -85,7 +84,6 @@ function Player:update()
         thrustX = 160
         thrustY = 120
         thrustFlip = 180
-
     end
     if angle <= 360 and angle >= 341 then
         self:changeState("east")
@@ -110,49 +108,43 @@ function Player:update()
         thrustX = 240
         thrustY = 115
         thrustFlip = 340
-
     end
     if angle <= 205 and angle >= 159 then
         self:changeState("west")
         thrustX = 240
         thrustY = 120
         thrustFlip = 0
-
     end
     if angle <= 250 and angle >= 206 then
         self:changeState("northwest")
         thrustX = 240
         thrustY = 125
         thrustFlip = 20
-
-        
     end
     if angle <= 295 and angle >= 251 then
         self:changeState("north")
         thrustX = 200
         thrustY = 120
         thrustFlip = 90
-
     end
     if angle <= 340 and angle >= 296 then
         self:changeState("northeast")
         thrustX = 160
         thrustY = 125
         thrustFlip = 160
-
     end
     if pd.buttonIsPressed(pd.kButtonB) and pd.buttonJustReleased(pd.kButtonLeft) then
         spacemusic:setVolume(0.2)
-        engine:stop()
+
         shipSpeed = 0
         paused = true
 
 
         manager:push(PauseScene())
     end
-    if  pd.buttonIsPressed(pd.kButtonB) and pd.buttonJustPressed(playdate.kButtonDown) then
+    if pd.buttonIsPressed(pd.kButtonB) and pd.buttonJustPressed(playdate.kButtonDown) then
         spacemusic:setVolume(0)
-       
+
         paused = true
         BattleFadeImage()
         BattleTimer()
@@ -208,7 +200,7 @@ function Player:handleMovementAndCollisions()
         end
         self:changeToMovingState()
     elseif pd.buttonJustReleased('down') then
-        shipSpeed = shipSpeed -2
+        shipSpeed = shipSpeed - 2
 
 
         if shipSpeed <= minSpeed then
@@ -242,13 +234,13 @@ function Player:handleMovementAndCollisions()
             end
             if collisionTag == TAGS.Planet then
                 showBtn = true
+
                 if collisionObject.planetName == "Lima" then
                     location = "Lima"
 
                     currentPlanetX = collisionObject.fields.xPos + 32
                     currentPlanetY = collisionObject.fields.yPos + 32
                     if pd.buttonJustReleased(pd.kButtonA) then
-                        engine:stop()
                         spacemusic:stop()
                         stopSpawner()
                         shipSpeed = 0
@@ -268,7 +260,6 @@ function Player:handleMovementAndCollisions()
                     currentPlanetX = collisionObject.fields.xPos + 32
                     currentPlanetY = collisionObject.fields.yPos + 32
                     if pd.buttonJustPressed(pd.kButtonA) then
-                        engine:stop()
                         spacemusic:stop()
                         stopSpawner()
                         shipSpeed = 0
@@ -288,7 +279,6 @@ function Player:handleMovementAndCollisions()
                     currentPlanetX = collisionObject.fields.xPos + 32
                     currentPlanetY = collisionObject.fields.yPos + 32
                     if pd.buttonJustPressed(pd.kButtonA) then
-                        engine:stop()
                         spacemusic:stop()
                         stopSpawner()
                         shipSpeed = 0
@@ -308,7 +298,6 @@ function Player:handleMovementAndCollisions()
                     currentPlanetX = collisionObject.fields.xPos + 32
                     currentPlanetY = collisionObject.fields.yPos + 32
                     if pd.buttonJustPressed(pd.kButtonA) then
-                        engine:stop()
                         spacemusic:stop()
                         stopSpawner()
                         shipSpeed = 0
@@ -330,12 +319,10 @@ function Player:handleMovementAndCollisions()
 end
 
 function Player:changeToIdleState()
-    engine:stop()
     self:changeState("idle")
 end
 
 function Player:changeToMovingState()
-    engine:play(0)
     self:changeState("moving")
 end
 
@@ -469,7 +456,6 @@ function MushrooTitle:update()
     end
 end
 
-
 class('HUD').extends(AnimatedSprite)
 
 function HUD:init()
@@ -482,7 +468,7 @@ function HUD:init()
     self:addState("one", 2, 2)
     self:addState("two", 3, 3)
     self:addState("three", 4, 4)
-    
+
     self.currentState = "off"
 
     self:setCenter(0, 0)
@@ -494,7 +480,7 @@ end
 
 function HUD:update()
     self:moveTo(newX + 315, newY + 190)
-    
+
     if shipSpeed == 0 then
         self:changeState("off")
     elseif shipSpeed == 2 then
@@ -503,7 +489,6 @@ function HUD:update()
         self:changeState("two")
     elseif shipSpeed == 6 then
         self:changeState("three")
-   
     end
 end
 
@@ -529,7 +514,7 @@ end
 function ThrustParticles:update()
     self:moveTo(newX + thrustX, newY + thrustY)
     self:updateAnimation()
-    self:setRotation(thrustFlip) 
+    self:setRotation(thrustFlip)
     if shipSpeed > 0 then
         self:changeState("on")
     else

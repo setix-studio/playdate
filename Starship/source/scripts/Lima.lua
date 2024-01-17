@@ -130,6 +130,8 @@ function Lima:goToLevel(levelName)
                 roomNumber = 5
             elseif levelName == "Level_6" then
                 roomNumber = 6
+            elseif levelName == "Level_7" then
+                roomNumber = 7
             end
 
             local layerSprite = gfx.sprite.new()
@@ -161,6 +163,8 @@ function Lima:goToLevel(levelName)
             roomNumber = 5
         elseif levelName == "Level_6" then
             roomNumber = 6
+        elseif levelName == "Level_7" then
+            roomNumber = 7
         end
         local entityX, entityY = entity.position.x, entity.position.y
         self.fields = entity.fields

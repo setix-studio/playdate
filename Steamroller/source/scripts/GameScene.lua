@@ -148,9 +148,11 @@ function GameScene:update()
 
         if score >= HIGH_SCORE then
             HIGH_SCORE = score
+           
         else
             HIGH_SCORE = HIGH_SCORE
         end
+        reportScore(HIGH_SCORE)
         saveGameData()
         music:stop()
         sfxBackup:stop()

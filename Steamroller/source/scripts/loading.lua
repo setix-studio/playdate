@@ -12,14 +12,34 @@ function LoadingScene:init()
 
     score = currentScore
     spawnTimer = pd.timer.performAfterDelay(6000, function()
+        
         if levelNum >= 0 and levelNum <= 9 then
-            ldtk.load("levels/world.ldtk")
+            ldtk_file ="levels/world.ldtk"
+            use_ldtk_fastloading = true
         elseif levelNum >= 10 and levelNum <= 19 then
-                ldtk.load("levels/world3.ldtk")
+            ldtk_file ="levels/world3.ldtk"
+                use_ldtk_fastloading = true
             elseif levelNum >= 20 and levelNum <= 29 then
-                    ldtk.load("levels/world4.ldtk")
+                ldtk_file ="levels/world4.ldtk"
+                    use_ldtk_fastloading = true
         elseif levelNum >= 30 and levelNum <= 59 then
-            ldtk.load("levels/world2.ldtk")
+            ldtk_file ="levels/world2.ldtk"
+            use_ldtk_fastloading = true
+        end
+        if not use_ldtk_fastloading then
+            LDtk.load( ldtk_file )
+        
+        -- To speed up loading times, you can export you levels as lua files and load them precompiled
+        else
+            if playdate.isSimulator then
+                -- In the simulator, we load the ldtk file and export the levels as lua files
+                -- You need to copy the lua files in your project
+                LDtk.load( ldtk_file )
+                LDtk.export_to_lua_files()
+            else
+                -- On device, we tell the library to load using the lua files
+                LDtk.load( ldtk_file, use_ldtk_fastloading )
+            end
         end
         manager:enter(GameScene())
     end)

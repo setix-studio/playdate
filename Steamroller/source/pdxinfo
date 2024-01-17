@@ -1,8 +1,8 @@
 name=Steam'd Roller
 author=setix studio 
 description=How many moles can you roll?
-bundleID=com.setixstudio.steamdroller
-version=1.5.5
+bundleID=com.setixstudio.steamdrollertest
+version=2.0
 buildNumber=12142306
 imagePath=assets/images
 launchSoundPath=assets/sounds
