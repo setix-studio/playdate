@@ -6,9 +6,6 @@ local ldtk <const> = LDtk
 class('InteriorShip').extends(Room)
 
 function InteriorShip:enter()
-    gfx.setBackgroundColor(gfx.kColorWhite)
-    gfx.setColor(gfx.kColorWhite)
-
     self.spawnX = 16 * 20
 
     self.spawnY = 16 * 11
@@ -43,6 +40,8 @@ function InteriorShip:enter()
     kitchenMenuShow = false
     recipeMenu = false
     shipDoor()
+    showImage = false
+    Recipes(280, 16)
 
     returnX = nil
     returnY = nil
@@ -104,6 +103,7 @@ function shiptextbox:draw()
 
 
     gfx.drawTextInRect(self.currentText, 10, 10, 250, 160)
+    gfx.setImageDrawMode(gfx.kDrawModeXOR)
 
 
     gfx.popContext()
@@ -115,6 +115,7 @@ function InteriorShip:update()
     kitchenSightLine = pd.geometry.distanceToPoint(320, 160, cosmoX, cosmoY)
 
     cockpitSightLine = pd.geometry.distanceToPoint(360, 175, cosmoX, cosmoY)
+
 
     if bedSightLine <= 16 then
         if showMenu == false then
@@ -163,9 +164,8 @@ function InteriorShip:update()
     end
     if activeArea == "kitchen" then
         if showMenu == true then
-        
-
-            kitchenMainMenu:drawInRect(20, 20, 202, 90)
+            showImage = true
+            kitchenMainMenu:drawInRect(16, 16, 192, 80)
             kitchenMainMenu:setNumberOfRows(#recipes)
 
             kitchenMainMenu:setCellPadding(2, 2, 2, 2)
@@ -173,28 +173,30 @@ function InteriorShip:update()
             kitchenMainMenu.backgroundImage = gfx.nineSlice.new("assets/images/textBackground", 6, 6, 18, 18)
             kitchenMainMenu:setContentInset(2, 2, 2, 2)
 
+            gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+
+            gfx.drawTextInRect(reqItems, 16, 144, 192, 96, nil, nil, kTextAlignment.left)
+
+
+
+            gfx.drawTextInRect(itemDesc, 16, 112, 192, 32, nil, nil, kTextAlignment.left)
+            gfx.setImageDrawMode(gfx.kDrawModeXOR)
 
             function kitchenMainMenu:drawCell(section, row, column, selected, x, y, width, height)
                 if selected then
-                    gfx.setColor(gfx.kColorBlack)
+                    reqItems = recipes[row]["requiredItems"]
+                    itemDesc = recipes[row]["description"]
                     gfx.setFont(font2)
-                   
-                    gfx.setColor(gfx.kColorWhite)
-
-                    gfx.drawTextInRect(recipes[row]["description"], 20, 120, 200, 60, nil, nil, kTextAlignment.center)
-                   
-                 
-                    gfx.drawTextInRect(recipes[row]["requiredItems"], 40, 180, 160, 90, nil, nil, kTextAlignment.center)
+                    imageIndex = recipes[row]["index"]
                 else
-                gfx.setFont(font1)
-
-                    
+                    gfx.setFont(font1)
                 end
 
 
 
+
                 local fontHeight = gfx.getSystemFont():getHeight()
-               
+
 
                 kitchenlist = gfx.drawTextInRect(recipes[row]["name"] .. " ... " .. recipes[row]["quantity"], x,
                     y + (height / 2 - fontHeight / 2) + 3,
@@ -209,34 +211,14 @@ function InteriorShip:update()
                 kitchenMainMenu:selectNextRow(true)
             end
 
-
-            if pd.buttonJustPressed(pd.kButtonB) and recipeMenu == true then
-                recipeMenu = false
-            end
-
-            if kitchenMainMenu:getSelectedRow() == 1 and recipeMenu == false then
-                if pd.buttonJustPressed(pd.kButtonA) then
-                    recipeMenu = true
-                end
-            elseif kitchenMainMenu:getSelectedRow() == 2 and recipeMenu == false then
-                if pd.buttonJustPressed(pd.kButtonA) then
-
+            for i = 42, 1, -1 do
+                if kitchenMainMenu:getSelectedRow() == i then
+                    if pd.buttonJustPressed(pd.kButtonA) then
+                        Recipes:addInventory(recipes[i].name)
+                    end
                 end
             end
-            if kitchenMainMenu:getSelectedRow() == 1 and recipeMenu == true then
-                if pd.buttonJustPressed(pd.kButtonA) then
-                    recipeMenu = true
-                end
-            elseif kitchenMainMenu:getSelectedRow() == 2 and recipeMenu == true then
-                if pd.buttonJustPressed(pd.kButtonA) then
 
-                end
-            elseif kitchenMainMenu:getSelectedRow() == 3 and recipeMenu == false then
-                if pd.buttonJustPressed(pd.kButtonA) then
-                    Recipes:addInventory("Berry Tart")
-                    print("hey")
-                end
-            end
 
 
 
@@ -247,6 +229,8 @@ function InteriorShip:update()
             elseif crankTicks == -1 then
                 kitchenMainMenu:selectPreviousColumn(true)
             end
+        else
+            showImage = false
         end
     end
 
@@ -268,7 +252,6 @@ function InteriorShip:update()
                     gfx.setColor(gfx.kColorBlack)
 
                     gfx.fillRoundRect(x, y, width, height, 2)
-                    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
                     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
                 else
                     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
