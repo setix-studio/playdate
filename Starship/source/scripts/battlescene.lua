@@ -41,7 +41,7 @@ function BattleScene:enter()
     options = battleoptions
 
 
-
+    winnings = math.random(2, enemyMaxHP)
     battlecopyRun = false
     totalDamage = 0
     itemAdded = false
@@ -523,15 +523,16 @@ function battleEndTimer()
     end
     battlemusic:stop()
     battlemusicend:play(1)
+    
     playerXP = playerXP + enemyMaxHP * 8
     if playerNextLevel - playerXP <= 0 then
         battlecopy = "Level up! You are now level " ..
             playerLevel + 1 ..
             "!\nThe " ..
-            enemyName .. " has been defeated! You picked a total of " .. totalDamage .. " " .. enemyItem .. "!"
+            enemyName .. " has been defeated! You picked a total of " .. totalDamage .. " " .. enemyItem .. " and won " .. winnings .. " credits!"
     else
         battlecopy = "The " ..
-            enemyName .. " has been defeated! You picked a total of " .. totalDamage .. " " .. enemyItem .. "!"
+            enemyName .. " has been defeated! You picked a total of " .. totalDamage .. " " .. enemyItem .. " and won " .. winnings .. " credits!"
     end
 
     if itemAdded == false then
@@ -539,6 +540,8 @@ function battleEndTimer()
         if itemQty > enemyMaxHP then
             itemQty = enemyMaxHP
         end
+        
+        credits = credits + winnings
         Items:addItem(enemyItem, itemQty)
         itemAdded = true
     end

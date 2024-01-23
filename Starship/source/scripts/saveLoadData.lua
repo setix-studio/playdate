@@ -76,6 +76,11 @@ function loadGameData()
         else
             playerNextLevel = playerNextLevel
         end
+        if gameData.credits then
+            credits = gameData.credits
+        else
+            credits = credits
+        end
         if gameData.previouslevel then
             previouslevel = gameData.previouslevel
         else
@@ -100,7 +105,8 @@ function saveGameData()
         playerLevel = playerLevel,
         playerXP = playerXP,
         playerNextLevel = playerNextLevel,
-        previouslevel = previouslevel
+        previouslevel = previouslevel,
+        credits = credits
     }
     pd.datastore.write(gameData)
 end

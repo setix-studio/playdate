@@ -38,7 +38,7 @@ class('PauseScene').extends(PauseRoom)
 
 function PauseScene:init()
     gfx.setDrawOffset(0, 0)
-    printTable(filter(items, { category = "Bread and Dairy" }))
+    
     for i in pairs(items) do
         if items[i]["found"] == true then
             items[i]["name"] = items[i]["name"]

@@ -131,7 +131,7 @@ function GameScene:update()
         gfx.setColor(gfx.kColorWhite)
         gfx.setFont(fontHud)
         gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-        gfx.drawTextAligned(string.upper(location), 346 + newX, 198 + newY, kTextAlignment.center)
+        gfx.drawTextAligned(string.upper(location), 345 + newX, 214 + newY, kTextAlignment.center)
     end
     if pd.isCrankDocked() then
         pd.ui.crankIndicator:update()

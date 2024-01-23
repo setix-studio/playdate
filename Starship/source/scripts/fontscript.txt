@@ -1,1 +1,1 @@
-pdft C:\Users\sensa\Downloads\SairaSemiCondensed-Medium.ttf C:\Users\sensa\Downloads\ sairamed16 16
+pdft C:\Users\sensa\Downloads\Merriweather\Merriweather-Black.ttf C:\Users\sensa\Downloads\ merriweatherblk14 14

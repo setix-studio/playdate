@@ -27,7 +27,7 @@ function Cosmo:init(x, y, gameManager)
 
 
 
-
+  
     -- self:setCenter(0, 0)
 
     cosmoX = self.x
@@ -56,7 +56,11 @@ function Cosmo:init(x, y, gameManager)
     self.touchingCeiling = false
     self.touchingWall = false
     self.dead = false
-
+    if credits == nil then
+        credits = 0
+    else
+        credits = credits
+    end
 
     self.TextboxShow = false
     playersteps = pd.sound.fileplayer.new('assets/sounds/step_3')
@@ -560,6 +564,9 @@ function cosmoHUD()
         gfx.fillRect(292 + -cameraX, 218 + -cameraY, 50, 3)
         gfx.setDitherPattern(0, gfx.image.kDitherTypeBayer8x8)
         gfx.fillRect(292 + -cameraX, 218 + -cameraY, playerXP / playerNextLevel * 50, 3)
-        gfx.drawTextAligned("lv " .. playerLevel, 285 + -cameraX, 208 + -cameraY, kTextAlignment.right)
+            gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+            gfx.setColor(gfx.kColorBlack)
+        gfx.drawTextAligned("lv: " .. playerLevel, 285 + -cameraX, 212 + -cameraY, kTextAlignment.right)
+        gfx.drawTextAligned("credits: " .. credits, 285 + -cameraX, 188 + -cameraY, kTextAlignment.right)
     end
 end

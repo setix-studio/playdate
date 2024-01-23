@@ -71,17 +71,12 @@ function Items:init(x, y, entity)
 
     self:playAnimation()
 
-    textMove = 20
 
     self:setZIndex(Z_INDEXES.Pickup)
     self:setTag(TAGS.Pickup)
     self:interactable()
 
-    _G.keyType = self.fields.KeyType
-    if self.fields.Hidden == true then
-        self:setZIndex(-900)
-        self:remove()
-    end
+
 
 
 
@@ -124,8 +119,12 @@ end
 
 function Items:addItem(enemyItem, itemQty)
     self.itemPName = enemyItem
-
-
+    print(enemyItem, itemQty)
+    for i in pairs(items) do
+        if  items[i]["quantity"] <= 0 then
+            items[i]["quantity"] = 0
+        end
+    end
     if self.itemPName == "Meaty Chunks" then
         for i in pairs(items) do
             if items[i]["ID"] == "MEATY CHUNKS" then
@@ -135,9 +134,40 @@ function Items:addItem(enemyItem, itemQty)
                 items[i]["quantity"] = items[i]["quantity"] + itemQty
             end
         end
+    elseif self.itemPName == "Flyin Fish" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "FLYIN FISH" then
+                items[i]["found"] = true
+                items[i]["name"] = "Flyin Fish"
+                items[i]["description"] = "Fresh from the sea.. er .. air.."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    elseif self.itemPName == "Big Chop" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "BIG CHOP" then
+                items[i]["found"] = true
+                items[i]["name"] = "Big Chop"
+                items[i]["description"] = "Nice hunk of meat."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    elseif self.itemPName == "Lemmies" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "LEMMIES" then
+                items[i]["found"] = true
+                items[i]["name"] = "Lemmies"
+                items[i]["description"] = "Small and sour."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    
     elseif self.itemPName == "Berries" then
         for i in pairs(items) do
-            if items[i]["ID"] == "Berries" then
+            if items[i]["ID"] == "BERRIES" then
                 items[i]["found"] = true
                 items[i]["name"] = "Berries"
                 items[i]["description"] = "Sweet and Juicy"
@@ -175,6 +205,49 @@ function Items:addItem(enemyItem, itemQty)
                 items[i]["quantity"] = items[i]["quantity"] + itemQty
             end
         end
+    
+    elseif self.itemPName == "Nanners" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "NANNERS" then
+                items[i]["found"] = true
+                items[i]["name"] = "Nanners"
+                items[i]["description"] = "Sweet, ripe and ready."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    
+    elseif self.itemPName == "Taters" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "TATERS" then
+                items[i]["found"] = true
+                items[i]["name"] = "Taters"
+                items[i]["description"] = "Boil'em, mash'em, stick'em in a stew."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    
+    elseif self.itemPName == "Garlic" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "GARLIC" then
+                items[i]["found"] = true
+                items[i]["name"] = "Garlic"
+                items[i]["description"] = "Garliel's finest product."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    elseif self.itemPName == "Nuts" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "NUTS" then
+                items[i]["found"] = true
+                items[i]["name"] = "Nuts"
+                items[i]["description"] = "Crunchy and full of flavor."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
     elseif self.itemPName == "Doughball" then
         for i in pairs(items) do
             if items[i]["ID"] == "DOUGHBALL" then
@@ -185,209 +258,532 @@ function Items:addItem(enemyItem, itemQty)
                 items[i]["quantity"] = items[i]["quantity"] + itemQty
             end
         end
+    elseif self.itemPName == "Noodles" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "NOODLES" then
+                items[i]["found"] = true
+                items[i]["name"] = "Noodles"
+                items[i]["description"] = "Strands of dough ready for sauce or broth."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    elseif self.itemPName == "Eggies" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "EGGIES" then
+                items[i]["found"] = true
+                items[i]["name"] = "Eggies"
+                items[i]["description"] = "Boiled or fried, these are rich and full of flavor."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    elseif self.itemPName == "Crema" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "CREMA" then
+                items[i]["found"] = true
+                items[i]["name"] = "Crema"
+                items[i]["description"] = "Adds a rich and creamy texture to any meal."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    elseif self.itemPName == "Cheddah" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "CHEDDAH" then
+                items[i]["found"] = true
+                items[i]["name"] = "Cheddah"
+                items[i]["description"] = "The perfect addition to any meal."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    elseif self.itemPName == "Mozzerell" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "MOZZERELL" then
+                items[i]["found"] = true
+                items[i]["name"] = "Mozzerell"
+                items[i]["description"] = "Perfect for pizza or pasta."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    elseif self.itemPName == "Spicy" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "SPICY" then
+                items[i]["found"] = true
+                items[i]["name"] = "Spicy"
+                items[i]["description"] = "Complex flavors with hints of heat."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    elseif self.itemPName == "Sweet" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "SWEET" then
+                items[i]["found"] = true
+                items[i]["name"] = "Sweet"
+                items[i]["description"] = "Makes any dessert perfect."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    elseif self.itemPName == "Savory" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "SAVORY" then
+                items[i]["found"] = true
+                items[i]["name"] = "Savory"
+                items[i]["description"] = "Homestyle flavors to warm any heart."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
+    elseif self.itemPName == "Tangy" then
+        for i in pairs(items) do
+            if items[i]["ID"] == "TANGY" then
+                items[i]["found"] = true
+                items[i]["name"] = "Tangy"
+                items[i]["description"] = "As if lemmies weren't sour enough."
+
+                items[i]["quantity"] = items[i]["quantity"] + itemQty
+            end
+        end
     end
+    
 end
 
 --inventory
 
 items = {
     {
+        ["itemID"] = 1,
         ["categoryID"] = 1,
         ["category"] = "Meat",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Meaty Chunks",
         ["ID"] = "MEATY CHUNKS",
         ["description"] = "Nice chunks of meat, probably beef.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 2,
         ["categoryID"] = 1,
         ["category"] = "Meat",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Flyin Fish",
         ["ID"] = "FLYIN FISH",
         ["description"] = "Fresh from the sea.. er .. air..",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 3,
         ["categoryID"] = 1,
         ["category"] = "Meat",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Big Chop",
         ["ID"] = "BIG CHOP",
         ["description"] = "Nice hunk of meat.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 4,
+        ["categoryID"] = 1,
+        ["category"] = "Meat",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 5,
+        ["categoryID"] = 1,
+        ["category"] = "Meat",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 6,
+        ["categoryID"] = 1,
+        ["category"] = "Meat",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 7,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Berries",
         ["ID"] = "Berries",
         ["description"] = "Sweet and juicy.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 8,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Shroomas",
         ["ID"] = "SHROOMAS",
         ["description"] = "Velvety and robust flavor.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 9,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Brussels",
         ["ID"] = "BRUSSELS",
         ["description"] = "Delicious once roasted.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 10,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Tomas",
         ["ID"] = "TOMAS",
         ["description"] = "Round, juicy and full of flavor.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 11,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Nanners",
         ["ID"] = "NANNERS",
         ["description"] = "Sweet, ripe and ready.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 12,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Taters",
         ["ID"] = "TATERS",
         ["description"] = "Boil'em, mash'em, stick'em in a stew.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 13,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Lemmies",
         ["ID"] = "LEMMIES",
         ["description"] = "Small and sour.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 14,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Garlic",
         ["ID"] = "GARLIC",
         ["description"] = "Garliel's finest product.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 15,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Nuts",
         ["ID"] = "NUTS",
-        ["description"] = "Crunchy and full of flavor",
-        ["quantity"] = 0
+        ["description"] = "Crunchy and full of flavor.",
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 16,
+        ["categoryID"] = 2,
+        ["category"] = "Fruits and Vegetables",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 17,
+        ["categoryID"] = 2,
+        ["category"] = "Fruits and Vegetables",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 18,
+        ["categoryID"] = 2,
+        ["category"] = "Fruits and Vegetables",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 19,
+        ["categoryID"] = 2,
+        ["category"] = "Fruits and Vegetables",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 20,
+        ["categoryID"] = 2,
+        ["category"] = "Fruits and Vegetables",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 21,
+        ["categoryID"] = 2,
+        ["category"] = "Fruits and Vegetables",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 22,
+        ["categoryID"] = 2,
+        ["category"] = "Fruits and Vegetables",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 23,
+        ["categoryID"] = 2,
+        ["category"] = "Fruits and Vegetables",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 24,
+        ["categoryID"] = 2,
+        ["category"] = "Fruits and Vegetables",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 25,
+        ["categoryID"] = 2,
+        ["category"] = "Fruits and Vegetables",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 26,
         ["categoryID"] = 3,
         ["category"] = "Bread and Dairy",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Doughball",
         ["ID"] = "DOUGHBALL",
         ["description"] = "The perfect puff, ready for baking.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 27,
         ["categoryID"] = 3,
         ["category"] = "Bread and Dairy",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Noodles",
         ["ID"] = "NOODLES",
         ["description"] = "Strands of dough ready for sauce or broth.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 28,
         ["categoryID"] = 3,
         ["category"] = "Bread and Dairy",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Eggies",
         ["ID"] = "EGGIES",
-        ["description"] = "Boiled or fried, these are rich and full of flavor",
-        ["quantity"] = 0
+        ["description"] = "Boiled or fried, these are rich and full of flavor.",
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 29,
         ["categoryID"] = 3,
         ["category"] = "Bread and Dairy",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Crema",
         ["ID"] = "CREMA",
         ["description"] = "Adds a rich and creamy texture to any meal.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 30,
         ["categoryID"] = 3,
         ["category"] = "Bread and Dairy",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Cheddah",
         ["ID"] = "CHEDDAH",
-        ["description"] = "The perfect addition to any meal",
-        ["quantity"] = 0
+        ["description"] = "The perfect addition to any meal.",
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 31,
         ["categoryID"] = 3,
         ["category"] = "Bread and Dairy",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Mozzerell",
         ["ID"] = "MOZZERELL",
         ["description"] = "Perfect for pizza or pasta.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 32,
+        ["categoryID"] = 3,
+        ["category"] = "Bread and Dairy",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 33,
+        ["categoryID"] = 3,
+        ["category"] = "Bread and Dairy",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 34,
+        ["categoryID"] = 3,
+        ["category"] = "Bread and Dairy",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 35,
+        ["categoryID"] = 3,
+        ["category"] = "Bread and Dairy",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 36,
+        ["categoryID"] = 3,
+        ["category"] = "Bread and Dairy",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 37,
+        ["categoryID"] = 3,
+        ["category"] = "Bread and Dairy",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 38,
+        ["categoryID"] = 3,
+        ["category"] = "Bread and Dairy",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 39,
+        ["categoryID"] = 3,
+        ["category"] = "Bread and Dairy",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 20
+    },
+    {
+        ["itemID"] = 40,
         ["categoryID"] = 4,
         ["category"] = "Flavors",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Spicy",
         ["ID"] = "SPICY",
         ["description"] = "Complex flavors with hints of heat.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 41,
         ["categoryID"] = 4,
         ["category"] = "Flavors",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Sweet",
         ["ID"] = "SWEET",
-        ["description"] = "Makes any dessert perfect",
-        ["quantity"] = 0
+        ["description"] = "Makes any dessert perfect.",
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 42,
         ["categoryID"] = 4,
         ["category"] = "Flavors",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Savory",
         ["ID"] = "SAVORY",
-        ["description"] = "Homestyle flavors that will warm any heart.",
-        ["quantity"] = 0
+        ["description"] = "Homestyle flavors to warm any heart.",
+        ["quantity"] = 20
     },
     {
+        ["itemID"] = 43,
         ["categoryID"] = 4,
         ["category"] = "Flavors",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Tangy",
         ["ID"] = "TANGY",
         ["description"] = "As if lemmies weren't sour enough.",
-        ["quantity"] = 0
+        ["quantity"] = 20
     },
 
 }

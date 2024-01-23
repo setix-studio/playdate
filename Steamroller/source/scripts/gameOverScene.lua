@@ -2,7 +2,8 @@ local pd <const> = playdate
 local gfx <const> = playdate.graphics
 local board <const> = pd.scoreboards
 
- scoreBoardId = "highscores" --Input my board ID.
+ scoreBoardName = "Steam'd Roller Highscores" 
+ scoreBoardId = "highscores"
 
  function scoreboardsCallback(status, result)
     print("code = "..status.code, status.message)
@@ -29,7 +30,6 @@ function GameOverScene:init()
     spawnTimer = pd.timer.performAfterDelay(5000, function()
         GameOverSceneImage()
     end)
-    playdate.scoreboards.addScore(scoreBoardId, HIGH_SCORE, scoreboardsCallback)
 end
 
 function GameOverScene:update()
@@ -44,7 +44,6 @@ function GameOverScene:update()
     gfx.drawTextAligned("High Score: " .. HIGH_SCORE, width / 2, 100, kTextAlignment.center)
     gfx.drawTextAligned("Your Score: " .. score, width / 2, 120, kTextAlignment.center)
     gfx.drawTextAligned("Press  A ", width / 2, 150, kTextAlignment.center)
-    playdate.scoreboards.getScoreboards(scoreboardsCallback)
 end
 
 function GameOverScene:AButtonDown()

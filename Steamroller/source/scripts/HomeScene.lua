@@ -25,6 +25,8 @@ function HomeScene:init()
     music:setVolume(0.8)
     music:play(0)
     currentScore = 0
+    getMyBoard()
+    getMyScore()
 end
 
 function HomeScene:update()
