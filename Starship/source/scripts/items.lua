@@ -363,7 +363,7 @@ items = {
         ["name"] = "Meaty Chunks",
         ["ID"] = "MEATY CHUNKS",
         ["description"] = "Nice chunks of meat, probably beef.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 2,
@@ -373,7 +373,7 @@ items = {
         ["name"] = "Flyin Fish",
         ["ID"] = "FLYIN FISH",
         ["description"] = "Fresh from the sea.. er .. air..",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 3,
@@ -383,47 +383,48 @@ items = {
         ["name"] = "Big Chop",
         ["ID"] = "BIG CHOP",
         ["description"] = "Nice hunk of meat.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 4,
         ["categoryID"] = 1,
-        ["category"] = "Meat",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 5,
         ["categoryID"] = 1,
-        ["category"] = "Meat",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
+    
     {
         ["itemID"] = 6,
-        ["categoryID"] = 1,
-        ["category"] = "Meat",
-        ["found"] = true,
-        ["name"] = "",
-        ["ID"] = "",
-        ["description"] = "",
-        ["quantity"] = 20
-    },
-    {
-        ["itemID"] = 7,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
         ["found"] = true,
         ["name"] = "Berries",
-        ["ID"] = "Berries",
+        ["ID"] = "BERRIES",
         ["description"] = "Sweet and juicy.",
-        ["quantity"] = 20
+        ["quantity"] = 0
+    },
+    {
+        ["itemID"] = 7,
+        ["categoryID"] = 1,
+        ["category"] = "",
+        ["found"] = true,
+        ["name"] = "",
+        ["ID"] = "",
+        ["description"] = "",
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 8,
@@ -433,7 +434,7 @@ items = {
         ["name"] = "Shroomas",
         ["ID"] = "SHROOMAS",
         ["description"] = "Velvety and robust flavor.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 9,
@@ -443,7 +444,7 @@ items = {
         ["name"] = "Brussels",
         ["ID"] = "BRUSSELS",
         ["description"] = "Delicious once roasted.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 10,
@@ -453,7 +454,7 @@ items = {
         ["name"] = "Tomas",
         ["ID"] = "TOMAS",
         ["description"] = "Round, juicy and full of flavor.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 11,
@@ -463,7 +464,7 @@ items = {
         ["name"] = "Nanners",
         ["ID"] = "NANNERS",
         ["description"] = "Sweet, ripe and ready.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 12,
@@ -473,7 +474,7 @@ items = {
         ["name"] = "Taters",
         ["ID"] = "TATERS",
         ["description"] = "Boil'em, mash'em, stick'em in a stew.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 13,
@@ -483,7 +484,7 @@ items = {
         ["name"] = "Lemmies",
         ["ID"] = "LEMMIES",
         ["description"] = "Small and sour.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 14,
@@ -493,7 +494,7 @@ items = {
         ["name"] = "Garlic",
         ["ID"] = "GARLIC",
         ["description"] = "Garliel's finest product.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 15,
@@ -503,107 +504,107 @@ items = {
         ["name"] = "Nuts",
         ["ID"] = "NUTS",
         ["description"] = "Crunchy and full of flavor.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 16,
         ["categoryID"] = 2,
-        ["category"] = "Fruits and Vegetables",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 17,
         ["categoryID"] = 2,
-        ["category"] = "Fruits and Vegetables",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 18,
         ["categoryID"] = 2,
-        ["category"] = "Fruits and Vegetables",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 19,
         ["categoryID"] = 2,
-        ["category"] = "Fruits and Vegetables",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 20,
         ["categoryID"] = 2,
-        ["category"] = "Fruits and Vegetables",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 21,
         ["categoryID"] = 2,
-        ["category"] = "Fruits and Vegetables",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 22,
         ["categoryID"] = 2,
-        ["category"] = "Fruits and Vegetables",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 23,
         ["categoryID"] = 2,
-        ["category"] = "Fruits and Vegetables",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 24,
         ["categoryID"] = 2,
-        ["category"] = "Fruits and Vegetables",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 25,
         ["categoryID"] = 2,
-        ["category"] = "Fruits and Vegetables",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 26,
@@ -613,7 +614,7 @@ items = {
         ["name"] = "Doughball",
         ["ID"] = "DOUGHBALL",
         ["description"] = "The perfect puff, ready for baking.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 27,
@@ -623,7 +624,7 @@ items = {
         ["name"] = "Noodles",
         ["ID"] = "NOODLES",
         ["description"] = "Strands of dough ready for sauce or broth.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 28,
@@ -633,7 +634,7 @@ items = {
         ["name"] = "Eggies",
         ["ID"] = "EGGIES",
         ["description"] = "Boiled or fried, these are rich and full of flavor.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 29,
@@ -643,7 +644,7 @@ items = {
         ["name"] = "Crema",
         ["ID"] = "CREMA",
         ["description"] = "Adds a rich and creamy texture to any meal.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 30,
@@ -653,7 +654,7 @@ items = {
         ["name"] = "Cheddah",
         ["ID"] = "CHEDDAH",
         ["description"] = "The perfect addition to any meal.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 31,
@@ -663,87 +664,87 @@ items = {
         ["name"] = "Mozzerell",
         ["ID"] = "MOZZERELL",
         ["description"] = "Perfect for pizza or pasta.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 32,
         ["categoryID"] = 3,
-        ["category"] = "Bread and Dairy",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 33,
         ["categoryID"] = 3,
-        ["category"] = "Bread and Dairy",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 34,
         ["categoryID"] = 3,
-        ["category"] = "Bread and Dairy",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 35,
         ["categoryID"] = 3,
-        ["category"] = "Bread and Dairy",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 36,
         ["categoryID"] = 3,
-        ["category"] = "Bread and Dairy",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 37,
         ["categoryID"] = 3,
-        ["category"] = "Bread and Dairy",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 38,
         ["categoryID"] = 3,
-        ["category"] = "Bread and Dairy",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 39,
         ["categoryID"] = 3,
-        ["category"] = "Bread and Dairy",
+        ["category"] = "",
         ["found"] = true,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 40,
@@ -753,7 +754,7 @@ items = {
         ["name"] = "Spicy",
         ["ID"] = "SPICY",
         ["description"] = "Complex flavors with hints of heat.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 41,
@@ -763,7 +764,7 @@ items = {
         ["name"] = "Sweet",
         ["ID"] = "SWEET",
         ["description"] = "Makes any dessert perfect.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 42,
@@ -773,7 +774,7 @@ items = {
         ["name"] = "Savory",
         ["ID"] = "SAVORY",
         ["description"] = "Homestyle flavors to warm any heart.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
     {
         ["itemID"] = 43,
@@ -783,7 +784,7 @@ items = {
         ["name"] = "Tangy",
         ["ID"] = "TANGY",
         ["description"] = "As if lemmies weren't sour enough.",
-        ["quantity"] = 20
+        ["quantity"] = 0
     },
 
 }

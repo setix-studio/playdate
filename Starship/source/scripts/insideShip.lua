@@ -175,21 +175,49 @@ function InteriorShip:update()
 
             gfx.setImageDrawMode(gfx.kDrawModeNXOR)
 
-            gfx.drawTextInRect(reqItems, 16, 144, 192, 96, nil, nil, kTextAlignment.left)
+            gfx.setFont(font1)
 
-
-
-            gfx.drawTextInRect(itemDesc, 16, 112, 192, 32, nil, nil, kTextAlignment.left)
+            gfx.drawTextInRect(invItems, 16, 160, 192, 96, nil, nil, kTextAlignment.left)
+            gfx.drawTextInRect(reqItems, 32, 160, 192, 96, nil, nil, kTextAlignment.left)
+            gfx.drawTextInRect(itemDesc, 16, 112, 192, 48, nil, nil, kTextAlignment.left)
             gfx.setImageDrawMode(gfx.kDrawModeXOR)
 
             function kitchenMainMenu:drawCell(section, row, column, selected, x, y, width, height)
                 if selected then
+                    playdate.graphics.setColor(1)
+                    playdate.graphics.setDitherPattern(1, playdate.graphics.image.kDitherTypeNone)
+
+
+                    playdate.graphics.fillRect(20, 40, 160, 10)
+                    if kitchenMainMenu:getSelectedRow() == 1 then
+
+                    elseif kitchenMainMenu:getSelectedRow() ~= 1 or kitchenMainMenu:getSelectedRow() ~= #recipes then
+
+                    elseif kitchenMainMenu:getSelectedRow() >= 18 then
+                        playdate.graphics.setDitherPattern(0.5, playdate.graphics.image.kDitherTypeBayer8x8)
+                    end
                     reqItems = recipes[row]["requiredItems"]
                     itemDesc = recipes[row]["description"]
+                    invItemsQty()
+                    recipes = recipes
                     gfx.setFont(font2)
                     imageIndex = recipes[row]["index"]
                 else
                     gfx.setFont(font1)
+                    -- playdate.graphics.setColor(1)
+                    -- playdate.graphics.setDitherPattern(0.5, playdate.graphics.image.kDitherTypeBayer8x8)
+
+
+                    -- if kitchenMainMenu:getSelectedRow() == 1 then
+                    --     playdate.graphics.fillRect(20, 40, 160, 20)
+                    --     playdate.graphics.fillRect(20, 60, 160, 20)
+                    -- elseif kitchenMainMenu:getSelectedRow() ~= 1 or kitchenMainMenu:getSelectedRow() ~= #recipes then
+                    --     playdate.graphics.fillRect(20, 20, 160, 20)
+                    --     playdate.graphics.fillRect(20, 60, 160, 20)
+                    -- elseif kitchenMainMenu:getSelectedRow() >= 18 then
+                    --     playdate.graphics.fillRect(20, 20, 160, 60)
+                    --     playdate.graphics.fillRect(20, 40, 160, 30)
+                    -- end
                 end
 
 
@@ -461,5 +489,53 @@ function shipDoor:update()
         self:setTag(TAGS.Door)
 
         self:changeState("open")
+    end
+end
+
+function invItemsQty()
+    if kitchenMainMenu:getSelectedRow() == 1  or kitchenMainMenu:getSelectedRow() == #recipes then
+        invItems = ""
+    elseif kitchenMainMenu:getSelectedRow() == 2 then
+        invItems = items[1].quantity ..
+            "\n" ..
+            items[10].quantity .. "\n" .. items[27].quantity .. "\n" .. items[30].quantity .. "\n" .. items[40].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 3 then
+        invItems = items[2].quantity .. "\n" .. items[13].quantity .. "\n" .. items[42].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 4 then
+        invItems = items[3].quantity .. "\n" .. items[42].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 5 then
+        invItems = items[1].quantity ..
+            "\n" ..
+            items[10].quantity .. "\n" .. items[30].quantity .. "\n" .. items[26].quantity .. "\n" .. items[42].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 6 then
+        invItems = items[9].quantity ..
+            "\n" ..
+            items[10].quantity .. "\n" .. items[30].quantity .. "\n" .. items[26].quantity .. "\n" .. items[40].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 7 then
+        invItems = items[1].quantity .. "\n" .. items[10].quantity .. "\n" .. items[8].quantity .. "\n" .. items[26].quantity .. "\n" .. items[31].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 8 then
+        invItems = items[30].quantity .. "\n" .. items[31].quantity .. "\n" .. items[10].quantity .. "\n" .. items[26].quantity 
+    elseif kitchenMainMenu:getSelectedRow() == 9 then
+        invItems = items[27].quantity .. "\n" .. items[30].quantity .. "\n" .. items[29].quantity 
+    elseif kitchenMainMenu:getSelectedRow() == 10 then
+        invItems = items[8].quantity .. "\n" .. items[31].quantity .. "\n" .. items[42].quantity 
+    elseif kitchenMainMenu:getSelectedRow() == 11 then
+        invItems = items[1].quantity .. "\n" .. items[9].quantity .. "\n" .. items[8].quantity .. "\n" .. items[42].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 12 then
+        invItems = items[10].quantity .. "\n" .. items[29].quantity .. "\n" .. items[42].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 13 then
+        invItems = items[1].quantity .. "\n" .. items[8].quantity .. "\n" .. items[27].quantity .. "\n" .. items[28].quantity .. "\n" .. items[42].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 14 then
+        invItems = items[6].quantity .. "\n" .. items[26].quantity .. "\n" .. items[41].quantity 
+    elseif kitchenMainMenu:getSelectedRow() == 15 then
+        invItems = items[26].quantity .. "\n" .. items[41].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 16 then
+        invItems = items[11].quantity .. "\n" .. items[29].quantity .. "\n" .. items[41].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 17 then
+        invItems = items[12].quantity .. "\n" .. items[42].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 18 then
+        invItems = items[1].quantity .. "\n" .. items[15].quantity .. "\n" .. items[6].quantity .. "\n" .. items[11].quantity .. "\n" .. items[40].quantity
+    elseif kitchenMainMenu:getSelectedRow() == 19 then
+        invItems = items[9].quantity .. "\n" .. items[31].quantity .. "\n" .. items[42].quantity
     end
 end

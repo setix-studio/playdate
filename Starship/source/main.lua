@@ -52,15 +52,15 @@ import "scripts/sceneManager"
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
-font1 = gfx.font.new("font/Dark Seal")
+font1 = gfx.font.new("font/dpaint_8")
 font1:setLeading(5)
-font1:setTracking(0)
-font2 = gfx.font.new("font/Dark Seal")
+font1:setTracking(1)
+font2 = gfx.font.new("font/topaz_11")
 font2:setLeading(5)
 font2:setTracking(1)
-fontHud = gfx.font.new("font/Dark Seal")
+fontHud = gfx.font.new("font/dpaint_8")
 fontHud:setLeading(3)
-fontHud:setTracking(0)
+fontHud:setTracking(1)
 
 manager = Manager()
 manager:hook()
