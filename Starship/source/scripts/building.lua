@@ -77,6 +77,8 @@ function ShopText()
     textboxActive = true
 
     hudShow = false
+    shopMenuShow = false
+    if quests[1].complete == false then
     pdDialogue.say("Hello and welcome to Lima! Our shop will be open soon!",
         {
             width = 360,
@@ -92,8 +94,30 @@ function ShopText()
                 end)
             end
         })
-
-
+    else
+        pdDialogue.say("Welcome Cosmo! How can I help ya?",
+        {
+            width = 360,
+            height = 60,
+            x = -cameraX + 20,
+            y = -cameraY + 160,
+            padding = 10,
+            nineSlice = textbg,
+            onClose = function()
+                textboxTimer = pd.timer.performAfterDelay(1000, function()
+                    textboxActive = true
+                    hudShow = false
+                    shopMenuShow = true
+                    limamusic:setVolume(0.2)
+                    lavenmusic:setVolume(0.2)
+                    paused = true
+    gfx.setDrawOffset(0, 0)
+                   
+                    manager:push(ShopScene())
+                end)
+            end
+        })
+    end
     -- function dialogue:onClose()
     --     textboxTimer = pd.timer.performAfterDelay(1000, function()
     --         textboxActive = false

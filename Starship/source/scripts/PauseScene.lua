@@ -145,7 +145,7 @@ function gridview:drawCell(section, row, column, selected, x, y, width, height)
         return first.found and not second.found
     end
 
-    table.sort(items, ownedItem)
+    -- table.sort(items, ownedItem)
   
 
     -- gfx.drawTextInRect(filter(items, { categoryID = section })[row]["name"] .. " ....  " .. tostring(filter(items, { categoryID = section })[row]["quantity"]), x - 10,

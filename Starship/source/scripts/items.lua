@@ -121,7 +121,7 @@ function Items:addItem(enemyItem, itemQty)
     self.itemPName = enemyItem
     print(enemyItem, itemQty)
     for i in pairs(items) do
-        if  items[i]["quantity"] <= 0 then
+        if items[i]["quantity"] <= 0 then
             items[i]["quantity"] = 0
         end
     end
@@ -164,7 +164,6 @@ function Items:addItem(enemyItem, itemQty)
                 items[i]["quantity"] = items[i]["quantity"] + itemQty
             end
         end
-    
     elseif self.itemPName == "Berries" then
         for i in pairs(items) do
             if items[i]["ID"] == "BERRIES" then
@@ -205,7 +204,6 @@ function Items:addItem(enemyItem, itemQty)
                 items[i]["quantity"] = items[i]["quantity"] + itemQty
             end
         end
-    
     elseif self.itemPName == "Nanners" then
         for i in pairs(items) do
             if items[i]["ID"] == "NANNERS" then
@@ -216,7 +214,6 @@ function Items:addItem(enemyItem, itemQty)
                 items[i]["quantity"] = items[i]["quantity"] + itemQty
             end
         end
-    
     elseif self.itemPName == "Taters" then
         for i in pairs(items) do
             if items[i]["ID"] == "TATERS" then
@@ -227,7 +224,6 @@ function Items:addItem(enemyItem, itemQty)
                 items[i]["quantity"] = items[i]["quantity"] + itemQty
             end
         end
-    
     elseif self.itemPName == "Garlic" then
         for i in pairs(items) do
             if items[i]["ID"] == "GARLIC" then
@@ -349,7 +345,6 @@ function Items:addItem(enemyItem, itemQty)
             end
         end
     end
-    
 end
 
 --inventory
@@ -359,252 +354,302 @@ items = {
         ["itemID"] = 1,
         ["categoryID"] = 1,
         ["category"] = "Meat",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Meaty Chunks",
         ["ID"] = "MEATY CHUNKS",
         ["description"] = "Nice chunks of meat, probably beef.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 2,
         ["categoryID"] = 1,
         ["category"] = "Meat",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Flyin Fish",
         ["ID"] = "FLYIN FISH",
         ["description"] = "Fresh from the sea.. er .. air..",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 3,
         ["categoryID"] = 1,
         ["category"] = "Meat",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Big Chop",
         ["ID"] = "BIG CHOP",
         ["description"] = "Nice hunk of meat.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 4,
         ["categoryID"] = 1,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 5,
         ["categoryID"] = 1,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
-    
+
     {
         ["itemID"] = 6,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Berries",
         ["ID"] = "BERRIES",
         ["description"] = "Sweet and juicy.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 7,
         ["categoryID"] = 1,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 8,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Shroomas",
         ["ID"] = "SHROOMAS",
         ["description"] = "Velvety and robust flavor.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 9,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Brussels",
         ["ID"] = "BRUSSELS",
         ["description"] = "Delicious once roasted.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 10,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Tomas",
         ["ID"] = "TOMAS",
         ["description"] = "Round, juicy and full of flavor.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 11,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Nanners",
         ["ID"] = "NANNERS",
         ["description"] = "Sweet, ripe and ready.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 12,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Taters",
         ["ID"] = "TATERS",
         ["description"] = "Boil'em, mash'em, stick'em in a stew.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 13,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Lemmies",
         ["ID"] = "LEMMIES",
         ["description"] = "Small and sour.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 14,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Garlic",
         ["ID"] = "GARLIC",
         ["description"] = "Garliel's finest product.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 15,
         ["categoryID"] = 2,
         ["category"] = "Fruits and Vegetables",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "Nuts",
         ["ID"] = "NUTS",
         ["description"] = "Crunchy and full of flavor.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 16,
         ["categoryID"] = 2,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 17,
         ["categoryID"] = 2,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 18,
         ["categoryID"] = 2,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 19,
         ["categoryID"] = 2,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 20,
         ["categoryID"] = 2,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 21,
         ["categoryID"] = 2,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 22,
         ["categoryID"] = 2,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 23,
         ["categoryID"] = 2,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 24,
         ["categoryID"] = 2,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 25,
         ["categoryID"] = 2,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 26,
@@ -614,7 +659,10 @@ items = {
         ["name"] = "Doughball",
         ["ID"] = "DOUGHBALL",
         ["description"] = "The perfect puff, ready for baking.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 10,
+        ["levelReq"] = 0,
+        ["shopItem"] = true
     },
     {
         ["itemID"] = 27,
@@ -624,7 +672,11 @@ items = {
         ["name"] = "Noodles",
         ["ID"] = "NOODLES",
         ["description"] = "Strands of dough ready for sauce or broth.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 10,
+        ["levelReq"] = 0,
+        ["shopItem"] = true
+
     },
     {
         ["itemID"] = 28,
@@ -634,7 +686,10 @@ items = {
         ["name"] = "Eggies",
         ["ID"] = "EGGIES",
         ["description"] = "Boiled or fried, these are rich and full of flavor.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 5,
+        ["levelReq"] = 5,
+        ["shopItem"] = true
     },
     {
         ["itemID"] = 29,
@@ -644,7 +699,10 @@ items = {
         ["name"] = "Crema",
         ["ID"] = "CREMA",
         ["description"] = "Adds a rich and creamy texture to any meal.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 10,
+        ["levelReq"] = 5,
+        ["shopItem"] = true
     },
     {
         ["itemID"] = 30,
@@ -654,7 +712,11 @@ items = {
         ["name"] = "Cheddah",
         ["ID"] = "CHEDDAH",
         ["description"] = "The perfect addition to any meal.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 10,
+        ["levelReq"] = 5,
+        ["shopItem"] = true
+
     },
     {
         ["itemID"] = 31,
@@ -664,87 +726,106 @@ items = {
         ["name"] = "Mozzerell",
         ["ID"] = "MOZZERELL",
         ["description"] = "Perfect for pizza or pasta.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 10,
+        ["levelReq"] = 5,
+        ["shopItem"] = true
     },
     {
         ["itemID"] = 32,
         ["categoryID"] = 3,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 33,
         ["categoryID"] = 3,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 34,
         ["categoryID"] = 3,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 35,
         ["categoryID"] = 3,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 36,
         ["categoryID"] = 3,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 37,
         ["categoryID"] = 3,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 38,
         ["categoryID"] = 3,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 39,
         ["categoryID"] = 3,
         ["category"] = "",
-        ["found"] = true,
+        ["found"] = false,
         ["name"] = "",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 0,
+        ["levelReq"] = 0
     },
     {
         ["itemID"] = 40,
@@ -754,7 +835,10 @@ items = {
         ["name"] = "Spicy",
         ["ID"] = "SPICY",
         ["description"] = "Complex flavors with hints of heat.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 2,
+        ["levelReq"] = 5,
+        ["shopItem"] = true
     },
     {
         ["itemID"] = 41,
@@ -764,7 +848,10 @@ items = {
         ["name"] = "Sweet",
         ["ID"] = "SWEET",
         ["description"] = "Makes any dessert perfect.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 2,
+        ["levelReq"] = 0,
+        ["shopItem"] = true
     },
     {
         ["itemID"] = 42,
@@ -774,7 +861,10 @@ items = {
         ["name"] = "Savory",
         ["ID"] = "SAVORY",
         ["description"] = "Homestyle flavors to warm any heart.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 2,
+        ["levelReq"] = 0,
+        ["shopItem"] = true
     },
     {
         ["itemID"] = 43,
@@ -784,7 +874,10 @@ items = {
         ["name"] = "Tangy",
         ["ID"] = "TANGY",
         ["description"] = "As if lemmies weren't sour enough.",
-        ["quantity"] = 0
+        ["quantity"] = 0,
+        ["price"] = 2,
+        ["levelReq"] = 10,
+        ["shopItem"] = true
     },
 
 }

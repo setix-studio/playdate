@@ -20,6 +20,7 @@ import "scripts/recipes"
 
 
 import "scripts/PauseScene"
+import "scripts/ShopScene"
 
 import "scripts/HomeScene"
 import "scripts/loading"
