@@ -16,6 +16,23 @@ import "scripts/enemy"
 import "scripts/barrel"
 import "scripts/collision"
 
+playdate.scoreboards.getScores("highscores", function(status, result)
+    print(result)
+    printTable(result)
+    GLOBAL_SCOREBOARD = result.scores
+    
+   
+end)
+
+function updateScoreboard(board)
+ 
+        playdate.scoreboards.getScores("highscores", function(status, result)
+            printTable(result)
+            GLOBAL_SCOREBOARD = result.scores
+            -- drawScores("High Scores", result.scores, highscore_sprite)
+        end)
+ 
+end
 class('HomeScene').extends(Room)
 
 function HomeScene:init()
@@ -25,16 +42,25 @@ function HomeScene:init()
     music:setVolume(0.8)
     music:play(0)
     currentScore = 0
-    getMyBoard()
-    getMyScore()
+    if GLOBAL_SCORE == nil then
+        if HIGH_SCORE == nil then
+            HIGH_SCORE = 0
+        else
+            HIGH_SCORE = HIGH_SCORE
+        end
+        GLOBAL_SCORE = HIGH_SCORE
+    else
+        GLOBAL_SCORE = GLOBAL_SCORE
+    end
 end
 
 function HomeScene:update()
     gfx.setBackgroundColor(playdate.graphics.kColorWhite)
     gfx.setColor(gfx.kColorBlack)
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    gfx.setFont(font2)
-    gfx.drawTextAligned("High Score: " .. HIGH_SCORE, 383, 5, kTextAlignment.right)
+    gfx.setFont(fontScore)
+    gfx.drawTextAligned("High Score: " .. HIGH_SCORE, 16, 5, kTextAlignment.left)
+    gfx.drawTextAligned("Global High Score: " .. GLOBAL_SCORE, 383, 5, kTextAlignment.right)
     if demo == true then
         gfx.drawTextAligned("Demo", 15, 5, kTextAlignment.left)
     end

@@ -1,5 +1,6 @@
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+local gfxp <const> = GFXP
 
 class('BattleScene').extends(Room)
 
@@ -12,7 +13,7 @@ function BattleScene:enter()
     BattleSceneImage()
     playerTurn = true
     battlecopy = ""
-    -- BattleVisual()
+    BattleVisual()
     -- PlayerBattleImage()
     EnemyBattleImage()
     battleTrack = math.random(1, 5)
@@ -36,9 +37,19 @@ function BattleScene:enter()
     elseif enemyType == "Gather" then
         actionType = "Attack"
     end
-    battleoptions = { tostring(actionType), "Item", "Wait", "Run" }
-    itemoptions = { "Heal" }
+    battleoptions = { tostring(actionType), "Item", "Run" }
+    itemoptions = {}
     options = battleoptions
+    itemcount = 0
+    for _, row in ipairs(recipes) do
+        if row["category"] == "Snacks" then
+            if row["quantity"] > 0 then
+                itemcount = itemcount + row["quantity"]
+
+                table.insert(itemoptions, row.name .. " " .. itemcount)
+            end
+        end
+    end
 
 
     winnings = math.random(2, enemyMaxHP)
@@ -46,11 +57,12 @@ function BattleScene:enter()
     totalDamage = 0
     itemAdded = false
     print(enemyHP)
+    playerBattleMenu:setSelectedRow(1)
 end
 
 function BattleScene:update()
     gfx.setBackgroundColor(playdate.graphics.kColorWhite)
-
+    itemcount = itemcount
     PlayerRound()
     EnemyRound()
     textbox.currentText = battlecopy
@@ -97,32 +109,47 @@ function BattleScene:update()
         gfx.fillRect(277, 40, 70, 5)
         gfx.setDitherPattern(0, gfx.image.kDitherTypeBayer8x8)
         gfx.fillRect(277, 40, enemyHP / enemyMaxHP * 70, 5)
-        gfx.drawTextAligned(enemyName, 275, 25, kTextAlignment.left)
+        gfx.drawTextAligned(enemyName, 275, 23, kTextAlignment.left)
         -- gfx.drawTextAligned(playerLevel, 15, 25, kTextAlignment.left)
         -- gfx.drawTextAligned(playerXP, 15, 45, kTextAlignment.left)
         -- gfx.drawTextAligned(playerNextLevel, 15, 65, kTextAlignment.left)
+        gfx.setFont(font2)
     end
 
     if playerHP <= 0 then
-        playerHP = 0
-        exitBattle()
+        playerHP      = 0
+        previouslevel = location
+        battlemusic:stop()
+        limamusic:setVolume(0.5)
+        lavenmusic:setVolume(0.5)
+        spacemusic:setVolume(0.5)
+        hudShow       = false
+        paused        = true
+        levelNum      = 1
+        gfx.sprite.removeAll()
+        returnX = 9 * 16
+        returnY = 9 * 16
+        playerHP      = 10
+        roomNumber = 1
+        manager:push(levelScene)
     end
 end
 
-playerBattleMenu = pd.ui.gridview.new(90, 20)
+playerBattleMenu = pd.ui.gridview.new(90, 27)
 
 class('BattleVisual').extends(gfx.sprite)
 
 function BattleVisual:init()
-    local battleImage = gfx.image.new("assets/images/battlemask")
+    battleMaskIndex = math.random(1, 9)
+    local battleImage = gfx.image.new("assets/images/battlemask" .. battleMaskIndex)
 
-    self.x = 200
-    self.y = -7
+    self.x = 0
+    self.y = 0
     self:moveTo(self.x, self.y)
 
 
     self:setImage(battleImage)
-    self:setZIndex(-5)
+    self:setZIndex(-8)
     self:setCenter(0, 0)
     self:add()
 end
@@ -133,10 +160,21 @@ end
 
 class('BattleSceneImage').extends(gfx.sprite)
 function BattleSceneImage:init()
-    local bgImage = gfx.image.new("assets/images/testbattle")
+    battleBGIndex = math.random(1, 9)
+    backgroundDir = math.random(1, 3)
+    local bgImage = gfx.image.new("assets/images/fightbg" .. battleBGIndex)
     self.speed = .25
-    self.x = 0
-    self.y = 0
+    if backgroundDir == 1 then
+        self.x = 0
+        self.y = 0
+    elseif backgroundDir == 2 then
+        self.x = 0
+        self.y = -16
+    elseif backgroundDir == 3 then
+        self.x = 0
+        self.y = 0
+    end
+
     self:moveTo(self.x, self.y)
 
 
@@ -147,55 +185,35 @@ function BattleSceneImage:init()
 end
 
 function BattleSceneImage:update()
-    self.x -= self.speed
+    if backgroundDir == 1 then
+        self.x -= self.speed
 
-    if enemyAttack == true then
-        self:setScale(math.random(1, 2))
-    else
-        self:setScale(1)
+        if self.x <= -16 then
+            self.x = 0
+        end
+    elseif backgroundDir == 2 then
+        self.y += self.speed
+
+        if self.y >= 0 then
+            self.y = -16
+        end
+    elseif backgroundDir == 3 then
+        self.x -= self.speed
+        self.y += self.speed
+
+        if self.y >= 0 then
+            self.x = 0
+            self.y = -16
+        end
     end
-    if self.x <= -16 then
-        self.x = 0
-    end
+
+
 
     self:moveTo(self.x, self.y)
 end
 
 --Top Section
 
-class('PlayerBattleImage').extends(AnimatedSprite)
-
-function PlayerBattleImage:init()
-    playerBattleImageTable = gfx.imagetable.new("assets/images/playerbattle-table-200-120")
-
-    -- State Machine
-
-    PlayerBattleImage.super.init(self, playerBattleImageTable)
-
-    self:addState("idle", 1, 4, { tickStep = 6 })
-    self:addState("moving", 1, 1, { tickStep = 2 })
-
-    self.currentState = "idle"
-    self:playAnimation()
-    self:setZIndex(900)
-    self.speed = 5
-    self.x = 80
-    self.y = 0
-    self:moveTo(self.x, self.y)
-    self:setCenter(0, 0)
-    print(enemyName)
-end
-
-function PlayerBattleImage:update()
-    self:updateAnimation()
-    self.x += self.speed
-
-    if self.x >= 210 then
-        self.x = 210
-    end
-
-    self:moveTo(self.x, self.y)
-end
 
 class('EnemyBattleImage').extends(AnimatedSprite)
 
@@ -211,6 +229,8 @@ function EnemyBattleImage:init()
     self:addState("Brusselfly", 9, 12, { tickStep = 6 })
     self:addState("Timid Toma", 13, 16, { tickStep = 6 })
     self:addState("Cool Shroom", 17, 20, { tickStep = 6 })
+    self:addState("Loony Legume", 21, 24, { tickStep = 6 })
+    self:addState("Banana Bro", 25, 28, { tickStep = 6 })
 
 
     self.currentState = enemyName
@@ -219,7 +239,7 @@ function EnemyBattleImage:init()
 
     self.speed = 5
     self.x = 200
-    self.y = 0
+    self.y = 16
     self:moveTo(self.x, self.y)
     self:setCenter(0, 0)
 end
@@ -251,7 +271,7 @@ textbox:setSize(400, 88)
 textbox:moveTo(0, 136)
 textbox:setCenter(0, 0)
 textbox:setZIndex(900)
-gfx.setFont(font2)
+
 
 textbox.text = ""       -- this is blank for now; we can set it at any point
 textbox.currentChar = 1 -- we'll use these for the animation
@@ -308,10 +328,11 @@ end
 
 function PlayerRound()
     playerAttacked = false
+
+
+
     if playerTurn == true then
-        gfx.setFont(font2)
-
-
+        gfx.setFont(fontHud)
 
         playerBattleMenu:drawInRect(265, 130, 105, 100)
 
@@ -324,10 +345,13 @@ function PlayerRound()
 
         function playerBattleMenu:drawCell(section, row, column, selected, x, y, width, height)
             if selected then
-                gfx.setColor(gfx.kColorBlack)
+                gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
 
-                gfx.fillRoundRect(x, y, width, height, 2)
-                gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+
+                            gfx.setLineWidth(2)
+                            gfx.drawLine(x + 20, y + height - 5, x + width - 20, y + height - 5)
+                            gfx.setDitherPattern(1, gfx.image.kDitherTypeBayer8x8)
+                            gfx.setLineWidth(1)
                 gfx.setImageDrawMode(gfx.kDrawModeNXOR)
             else
                 gfx.setImageDrawMode(gfx.kDrawModeNXOR)
@@ -347,6 +371,7 @@ function PlayerRound()
         if options == itemoptions then
             if pd.buttonJustPressed(pd.kButtonB) then
                 options = battleoptions
+                playerBattleMenu:setSelectedRow(1)
             end
         end
         if enemyHP > 0 then
@@ -363,8 +388,6 @@ function PlayerRound()
             elseif playerBattleMenu:getSelectedRow() == 2 then
                 battlecopy = "Use an item."
             elseif playerBattleMenu:getSelectedRow() == 3 then
-                battlecopy = "Wait it out."
-            elseif playerBattleMenu:getSelectedRow() == 4 then
                 if battlecopyRun == true then
                     battlecopy = "Ran away, but lost any items you gathered."
                 else
@@ -372,7 +395,7 @@ function PlayerRound()
                 end
             end
         else
-
+            gfx.setFont(fontHud)
         end
         if pd.buttonJustReleased(pd.kButtonA) then
             if playerBattleMenu:getSelectedRow() == 1 then
@@ -385,9 +408,10 @@ function PlayerRound()
                         if playerDamage > 0 then
                             playerhit:play(1)
                             if playerDamage > 1 then
-                                battlecopy = "You picked " .. playerDamage .. " " .. enemyItem .. "!"
+                                battlecopy = "You attack for 1 damage!"
+                                battlecopy = "You attack for " .. playerDamage .. " damage!"
                             else
-                                battlecopy = "You picked 1 " .. enemyItem .. "!"
+                                battlecopy = "You attack for 1 damage!"
                             end
                             totalDamage = totalDamage + playerDamage
                             if totalDamage > enemyMaxHP then
@@ -404,8 +428,29 @@ function PlayerRound()
                         battlecopy = "Full  Health!"
                     else
                         playerHP = playerHP + 5
+                        if playerHP > playerMaxHP then
+                            playerHP = playerMaxHP
+                        end
                         playerheal:play(1)
                         playerAttacked = true
+                        Recipes:useItem(recipeItem)
+                        itemcount = itemcount - 1
+                        for _, row in ipairs(recipes) do
+                            if row["category"] == "Snacks" then
+                                if row["quantity"] > 0 then
+                                    row["quantity"] = row["quantity"] - 1
+                                    table.remove(itemoptions, row.row)
+                                    table.insert(itemoptions, row.name .. " " .. row["quantity"])
+                                end
+
+
+                                recipeItem = row.name
+                                if itemcount <= 0 then
+                                    table.remove(itemoptions, row.row)
+                                    itemoptions = itemoptions
+                                end
+                            end
+                        end
                     end
                 end
 
@@ -421,14 +466,12 @@ function PlayerRound()
                 end
             elseif playerBattleMenu:getSelectedRow() == 2 then
                 if options == battleoptions then
-                    playerBattleMenu:selectPreviousRow(true)
-                    options = itemoptions
+                    if itemcount > 0 then
+                        playerBattleMenu:setSelectedRow(1)
+                        options = itemoptions
+                    end
                 end
             elseif playerBattleMenu:getSelectedRow() == 3 then
-                enemyTurn = true
-
-                enemyAttacked = false
-            elseif playerBattleMenu:getSelectedRow() == 4 then
                 battlecopyRun = true
                 runEndTimer()
             end
@@ -478,12 +521,12 @@ function enemyAttackTimer()
         if enemyAttacked == false then
             enemyChance = math.random(0, 100)
 
-            if enemyChance >= enemyAttackChance then
+            if enemyChance >= math.random(0, enemyAttackChance) then
                 battlecopy = "The " ..
                     enemyName .. " attacks!"
-                    playerhit:play(1)
+                playerhit:play(1)
 
-                playerHP = playerHP - 3
+                playerHP = playerHP - math.random(1, enemyAttackPower)
             end
             enemyAttacked = true
         end
@@ -523,16 +566,20 @@ function battleEndTimer()
     end
     battlemusic:stop()
     battlemusicend:play(1)
-    
+
     playerXP = playerXP + enemyMaxHP * 8
     if playerNextLevel - playerXP <= 0 then
         battlecopy = "Level up! You are now level " ..
             playerLevel + 1 ..
             "!\nThe " ..
-            enemyName .. " has been defeated! You picked a total of " .. totalDamage .. " " .. enemyItem .. " and won " .. winnings .. " credits!"
+            enemyName ..
+            " has been defeated! You picked a total of " ..
+            math.ceil(totalDamage / 2) .. " " .. enemyItem .. " and won " .. winnings .. " credits!"
     else
         battlecopy = "The " ..
-            enemyName .. " has been defeated! You picked a total of " .. totalDamage .. " " .. enemyItem .. " and won " .. winnings .. " credits!"
+            enemyName ..
+            " has been defeated! You picked a total of " ..
+            math.ceil(totalDamage / 2) .. " " .. enemyItem .. " and won " .. winnings .. " credits!"
     end
 
     if itemAdded == false then
@@ -540,9 +587,9 @@ function battleEndTimer()
         if itemQty > enemyMaxHP then
             itemQty = enemyMaxHP
         end
-        
+
         credits = credits + winnings
-        Items:addItem(enemyItem, itemQty)
+        Items:addItem(enemyItem, math.ceil(totalDamage / 2))
         itemAdded = true
     end
 
@@ -559,7 +606,7 @@ function runEndTimer()
     battlecopy = "Ran away, but lost the items you gathered."
 
 
-    battleTimerEndStart = pd.timer.performAfterDelay(3500, function()
+    battleTimerEndStart = pd.timer.performAfterDelay(1500, function()
         exitBattle()
     end)
 end
@@ -578,7 +625,7 @@ function exitBattle()
 
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
-
+fromPop = true
     paused = false
 
 
@@ -592,33 +639,52 @@ end
 function enemyInit()
     if enemyName == "Meaty" then
         enemyType = "Gather"
-        enemyHP = math.random(8, 10)
-        enemyAttackChance = math.random(30,50)
+        enemyHP = math.ceil(math.random(8, 10) * playerLevel / 2)
+        enemyAttackChance = 20
+        enemyAttackPower = 8
         enemyStartCopy = " narrows its gaze."
         enemyThinkCopy = " is wobbling carelessly."
     elseif enemyName == "Bush" then
         enemyType = "Gather"
-        enemyHP = math.random(6, 10)
-        enemyAttackChance = math.random(40,60)
+        enemyHP = math.ceil(math.random(8, 10) * playerLevel / 2)
+        enemyAttackChance = 30
+        enemyAttackPower = 5
         enemyStartCopy = " readies its stance."
         enemyThinkCopy = " is rustling cautiously."
     elseif enemyName == "Timid Toma" then
         enemyType = "Gather"
-        enemyHP = math.random(4, 6)
-        enemyAttackChance = math.random(30,60)
+        enemyHP = math.ceil(math.random(8, 10) * playerLevel / 2)
+        enemyAttackChance = 30
+        enemyAttackPower = 7
         enemyStartCopy = " shakes in suspicion."
         enemyThinkCopy = " hopes nothing happens."
     elseif enemyName == "Brusselfly" then
         enemyType = "Gather"
-        enemyHP = math.random(7, 9)
-        enemyAttackChance = math.random(30,60)
+        enemyHP = math.ceil(math.random(8, 10) * playerLevel / 2)
+        enemyAttackChance = 20
+        enemyAttackPower = 5
         enemyStartCopy = " flutters around."
         enemyThinkCopy = " strategizes its plan."
     elseif enemyName == "Cool Shroom" then
         enemyType = "Gather"
-        enemyHP = math.random(4, 6)
-        enemyAttackChance = math.random(40,60)
+        enemyHP = math.ceil(math.random(8, 10) * playerLevel / 2)
+        enemyAttackChance = 20
+        enemyAttackPower = 5
         enemyStartCopy = " narrows its gaze."
         enemyThinkCopy = " is wobbling carelessly."
+    elseif enemyName == "Loony Legume" then
+        enemyType = "Gather"
+        enemyHP = math.ceil(math.random(8, 12) * playerLevel / 2)
+        enemyAttackChance = 30
+        enemyAttackPower = 6
+        enemyStartCopy = " jumps around precariously."
+        enemyThinkCopy = " is uncertain."
+    elseif enemyName == "Banana Bro" then
+        enemyType = "Gather"
+        enemyHP = math.ceil(math.random(6, 9) * playerLevel / 2)
+        enemyAttackChance = 40
+        enemyAttackPower = 8
+        enemyStartCopy = " jams to its tunes."
+        enemyThinkCopy = " contemplates its next move."
     end
 end

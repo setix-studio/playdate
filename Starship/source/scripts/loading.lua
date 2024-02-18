@@ -11,40 +11,47 @@ function LoadingScene:init()
         levelNum = 0
     end
     if levelNum == 0 then
-        ldtk_file ="levels/world.ldtk"
+        ldtk_file = "levels/world.ldtk"
         use_ldtk_fastloading = true
         levelScene = GameScene()
     elseif levelNum == 1 then
         use_ldtk_fastloading = true
         ldtk_file = "levels/world_lima.ldtk"
-        
-        
         levelScene = Lima()
+        levelName = "Level_1"
     elseif levelNum == 2 then
-        ldtk_file ="levels/planet_laven.ldtk"
+        ldtk_file = "levels/planet_laven.ldtk"
         use_ldtk_fastloading = true
         levelScene = Laven()
     elseif levelNum == 5 then
-        ldtk_file ="levels/ship.ldtk"
+        ldtk_file = "levels/ship.ldtk"
         use_ldtk_fastloading = true
         levelScene = InteriorShip()
+    elseif levelNum == 6 then
+        ldtk_file = "levels/interiors.ldtk"
+        use_ldtk_fastloading = true
+        levelScene = InteriorBuildings()
+    elseif levelNum == 7 then
+        ldtk_file = "levels/ship.ldtk"
+        use_ldtk_fastloading = true
+        levelScene = CampfireScene()
     end
 
-    
+
     changeTimer = pd.timer.performAfterDelay(000, function()
         if not use_ldtk_fastloading then
-            LDtk.load( ldtk_file )
-        
-        -- To speed up loading times, you can export you levels as lua files and load them precompiled
+            LDtk.load(ldtk_file)
+
+            -- To speed up loading times, you can export you levels as lua files and load them precompiled
         else
             if playdate.isSimulator then
                 -- In the simulator, we load the ldtk file and export the levels as lua files
                 -- You need to copy the lua files in your project
-                LDtk.load( ldtk_file )
+                LDtk.load(ldtk_file)
                 LDtk.export_to_lua_files()
             else
                 -- On device, we tell the library to load using the lua files
-                LDtk.load( ldtk_file, use_ldtk_fastloading )
+                LDtk.load(ldtk_file, use_ldtk_fastloading)
             end
         end
         manager:enter(levelScene)

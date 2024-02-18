@@ -152,7 +152,10 @@ function GameScene:update()
         else
             HIGH_SCORE = HIGH_SCORE
         end
-        reportScore(HIGH_SCORE)
+        playdate.scoreboards.addScore("highscores", HIGH_SCORE, function(status, result)
+            printTable(result)
+            updateScoreboard("high")
+        end)
         saveGameData()
         music:stop()
         sfxBackup:stop()

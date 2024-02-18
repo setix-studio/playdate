@@ -21,34 +21,40 @@ function Items:init(x, y, entity)
         self.enemyName = "Meaty"
     elseif self.itemName == "Berries" then
         itemChance = 20
-        imagetable = gfx.imagetable.new("assets/images/crema-table-32-32")
+        imagetable = gfx.imagetable.new("assets/images/bush-table-32-32")
         self:setCollideRect(6, 11, 20, 10)
         self.itemPName = "Berries"
         self.enemyName = "Bush"
     elseif self.itemName == "Tomas" then
         itemChance = 20
         imagetable = gfx.imagetable.new("assets/images/tomas-table-32-32")
-        self:setCollideRect(6, 11, 20, 10)
+        self:setCollideRect(4, 4, 26, 26)
         self.itemPName = "Tomas"
         self.enemyName = "Timid Toma"
     elseif self.itemName == "Brusselfly" then
         itemChance = 20
-        imagetable = gfx.imagetable.new("assets/images/crema-table-32-32")
+        imagetable = gfx.imagetable.new("assets/images/brusselfly-table-32-32")
         self:setCollideRect(6, 11, 20, 10)
         self.itemPName = "Brussels"
         self.enemyName = "Brusselfly"
     elseif self.itemName == "CoolShroom" then
         itemChance = 20
-        imagetable = gfx.imagetable.new("assets/images/tomas-table-16-16")
-        self:setCollideRect(2, 2, 10, 12)
+        imagetable = gfx.imagetable.new("assets/images/shrooma-table-32-32")
+        self:setCollideRect(8, 8, 16, 16)
         self.itemPName = "Shroomas"
         self.enemyName = "Cool Shroom"
-    elseif self.itemName == "Doughball" then
+    elseif self.itemName == "Nuts" then
         itemChance = 20
-        imagetable = gfx.imagetable.new("assets/images/tomas-table-16-16")
+        imagetable = gfx.imagetable.new("assets/images/legume-table-32-32")
         self:setCollideRect(2, 2, 10, 12)
-        self.itemPName = "Doughball"
-        self.enemyName = "Doughboy"
+        self.itemPName = "Nuts"
+        self.enemyName = "Loony Legume"
+    elseif self.itemName == "Nanners" then
+        itemChance = 20
+        imagetable = gfx.imagetable.new("assets/images/banana-table-32-32")
+        self:setCollideRect(2, 2, 10, 12)
+        self.itemPName = "Nanners"
+        self.enemyName = "Banana Bro"
     else
         imagetable = gfx.imagetable.new("images/interactUp-table-16-16")
     end
@@ -61,7 +67,7 @@ function Items:init(x, y, entity)
         self.fields.Hidden = true
     end
     Items.super.init(self, imagetable)
-    self:addState("idle", 1, 4, { tickStep = math.random(6, 8) })
+    self:addState("idle", 1, 4, { tickStep = math.random(8, 12) })
     self.currentState = "idle"
 
     self:setImage(image)
@@ -72,28 +78,109 @@ function Items:init(x, y, entity)
     self:playAnimation()
 
 
-    self:setZIndex(Z_INDEXES.Pickup)
+    self:setZIndex(self.y)
     self:setTag(TAGS.Pickup)
-    self:interactable()
 
 
+    self.enemySpeedX = 0
+    self.enemySpeedY = 0
 
+    self:enemywaitCounter()
 
 
     hudItemTable = {}
 end
 
-function Items:update()
-    self:updateAnimation()
-    cosmoSortOrder(self)
+function Items:collisionResponse(other)
+    local tag = other:getTag()
+    if tag == TAGS.Pickup or tag == TAGS.Hazard or tag == TAGS.Prop or tag == TAGS.Laser or tag == TAGS.Door then
+        return gfx.sprite.kCollisionTypeOverlap
+    end
+    return gfx.sprite.kCollisionTypeSlide
 end
 
-function Items:interactable()
-    if self.itemName == "TextBox" then
-        self:setCenter(0, 0)
-        self:moveTo(self.x, self.y - 20)
-        self:setCollideRect(0, 20, 12, 12)
-        self:add()
+function Items:enemywaitCounter()
+    local randomTime = math.random(100, 1000)
+
+    enemyWait = pd.timer.performAfterDelay(randomTime, function()
+        self.enemySpeedX = 0
+        self.enemySpeedY = 0
+        self:enemywalkCounter()
+    end)
+end
+
+function Items:enemywalkCounter()
+    local randomTime = math.random(100, 1000)
+
+
+    enemyWalk = pd.timer.performAfterDelay(randomTime, function()
+        self.enemySpeedX = math.random(-1, 1)
+        self.enemySpeedY = math.random(-1, 1)
+        self:enemywaitCounter()
+    end)
+end
+
+function Items:update()
+    self:setZIndex(self.y)
+
+    if paused == false then
+        self:updateAnimation()
+        self:handleMovementAndCollisions()
+
+        enemySightLine = pd.geometry.distanceToPoint(self.x, self.y, cosmoX, cosmoY)
+
+        if enemySightLine <= 72 then
+            enemySpeed = 1
+            if cosmoX >= self.x and cosmoY >= self.y then
+                self.x += enemySpeed
+                self.y += enemySpeed
+            elseif cosmoX >= self.x and cosmoY <= self.y then
+                self.x += enemySpeed
+                self.y -= enemySpeed
+            elseif cosmoX <= self.x and cosmoY >= self.y then
+                self.x -= enemySpeed
+                self.y += enemySpeed
+            elseif cosmoX <= self.x and cosmoY <= self.y then
+                self.x -= enemySpeed
+                self.y -= enemySpeed
+            end
+        else
+            if self.touchingWall == true or self.touchingCeiling == true or self.touchingGround == true then
+                self.x -= self.enemySpeedX / 4
+                self.y -= self.enemySpeedY / 4
+            else
+                self.x += self.enemySpeedX / 4
+                self.y += self.enemySpeedY / 4
+            end
+        end
+        self:moveTo(self.x, self.y)
+    end
+end
+
+function Items:handleMovementAndCollisions()
+    local _, _, collisions, length = self:moveWithCollisions(self.x + self.enemySpeedX, self.y + self.enemySpeedY)
+
+    self.touchingGround = false
+    self.touchingCeiling = false
+    self.touchingWall = false
+
+    for i = 1, length do
+        local collision = collisions[i]
+        local collisionType = collision.type
+        local collisionObject = collision.other
+        local collisionTag = collisionObject:getTag()
+
+        if collisionType == gfx.sprite.kCollisionTypeSlide then
+            if collision.normal.y == -1 then
+                self.touchingGround = true
+            elseif collision.normal.y == 1 then
+                self.touchingCeiling = true
+            end
+
+            if collision.normal.x ~= 0 then
+                self.touchingWall = true
+            end
+        end
     end
 end
 
@@ -114,6 +201,62 @@ function Items:checkQuantity()
     for i in pairs(items) do
         itemName = items[i]["name"]
         totalItems = items[i]["quantity"]
+    end
+end
+
+function invItemsQty()
+    if recipelistInv:getSelectedRow() == 1 or recipelistInv:getSelectedRow() == #recipes then
+        invItems = ""
+    elseif recipelistInv:getSelectedRow() == 2 then
+        invItems = items[1].quantity ..
+            "\n" ..
+            items[10].quantity .. "\n" .. items[27].quantity .. "\n" .. items[30].quantity .. "\n" .. items[40].quantity
+    elseif recipelistInv:getSelectedRow() == 3 then
+        invItems = items[2].quantity .. "\n" .. items[13].quantity .. "\n" .. items[42].quantity
+    elseif recipelistInv:getSelectedRow() == 4 then
+        invItems = items[3].quantity .. "\n" .. items[42].quantity
+    elseif recipelistInv:getSelectedRow() == 5 then
+        invItems = items[1].quantity ..
+            "\n" ..
+            items[10].quantity .. "\n" .. items[30].quantity .. "\n" .. items[26].quantity .. "\n" .. items[42].quantity
+    elseif recipelistInv:getSelectedRow() == 6 then
+        invItems = items[9].quantity ..
+            "\n" ..
+            items[10].quantity .. "\n" .. items[30].quantity .. "\n" .. items[26].quantity .. "\n" .. items[40].quantity
+    elseif recipelistInv:getSelectedRow() == 7 then
+        invItems = items[1].quantity ..
+            "\n" ..
+            items[10].quantity .. "\n" .. items[8].quantity .. "\n" .. items[26].quantity .. "\n" .. items[31].quantity
+    elseif recipelistInv:getSelectedRow() == 8 then
+        invItems = items[30].quantity ..
+            "\n" .. items[31].quantity .. "\n" .. items[10].quantity .. "\n" .. items[26].quantity
+    elseif recipelistInv:getSelectedRow() == 9 then
+        invItems = items[27].quantity .. "\n" .. items[30].quantity .. "\n" .. items[29].quantity
+    elseif recipelistInv:getSelectedRow() == 10 then
+        invItems = items[8].quantity .. "\n" .. items[31].quantity .. "\n" .. items[42].quantity
+    elseif recipelistInv:getSelectedRow() == 11 then
+        invItems = items[1].quantity ..
+            "\n" .. items[9].quantity .. "\n" .. items[8].quantity .. "\n" .. items[42].quantity
+    elseif recipelistInv:getSelectedRow() == 12 then
+        invItems = items[10].quantity .. "\n" .. items[29].quantity .. "\n" .. items[42].quantity
+    elseif recipelistInv:getSelectedRow() == 13 then
+        invItems = items[1].quantity ..
+            "\n" ..
+            items[8].quantity .. "\n" .. items[27].quantity .. "\n" .. items[28].quantity .. "\n" .. items[42].quantity
+    elseif recipelistInv:getSelectedRow() == 14 then
+        invItems = items[6].quantity .. "\n" .. items[26].quantity .. "\n" .. items[41].quantity
+    elseif recipelistInv:getSelectedRow() == 15 then
+        invItems = items[26].quantity .. "\n" .. items[41].quantity
+    elseif recipelistInv:getSelectedRow() == 16 then
+        invItems = items[11].quantity .. "\n" .. items[29].quantity .. "\n" .. items[41].quantity
+    elseif recipelistInv:getSelectedRow() == 17 then
+        invItems = items[12].quantity .. "\n" .. items[42].quantity
+    elseif recipelistInv:getSelectedRow() == 18 then
+        invItems = items[1].quantity ..
+            "\n" ..
+            items[15].quantity .. "\n" .. items[6].quantity .. "\n" .. items[11].quantity .. "\n" .. items[40].quantity
+    elseif recipelistInv:getSelectedRow() == 19 then
+        invItems = items[9].quantity .. "\n" .. items[31].quantity .. "\n" .. items[42].quantity
     end
 end
 

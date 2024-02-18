@@ -5,21 +5,14 @@ local shopgrid = pd.ui.gridview.new(128, 32)
 
 
 
-shopgrid:setNumberOfSections(1)
-shopgrid:setNumberOfRowsInSection(1, #filter(items, { shopItem = true }))
-shopgrid:setSectionHeaderHeight(10)
+
+shopgrid:setNumberOfRows(#filter(items, { shopItem = true }))
 shopgrid:setCellPadding(2, 2, 2, 2)
 
-shopgrid.backgroundImage = gfx.nineSlice.new("assets/images/menuBackground", 7, 7, 18, 18)
-shopgrid:setContentInset(5, 5, 5, 5)
+shopgrid.backgroundImage = gfx.nineSlice.new("assets/images/textBackground", 6, 6, 18, 18)
+shopgrid:setContentInset(2, 2, 2, 2)
 
-function shopgrid:drawSectionHeader(section, x, y, width, height)
-    if section == 1 then
-        categoryTitle = "Item Shop"
-   
-    end
-    gfx.drawText(categoryTitle, x + 10, y)
-end
+
 
 local shopgridSprite = gfx.sprite.new()
 shopgridSprite:setCenter(0, 0)
@@ -32,35 +25,29 @@ class('ShopScene').extends(PauseRoom)
 
 function ShopScene:init()
     gfx.setDrawOffset(0, 0)
-
-    for i in pairs(items) do
-        if items[i]["found"] == true then
-            items[i]["name"] = items[i]["name"]
-            items[i]["price"] = items[i]["price"]
-            items[i]["description"] = items[i]["description"]
-        elseif items[i]["found"] == false then
-            items[i]["name"] = "??????"
-            items[i]["price"] = "??"
-            items[i]["description"] = "??????"
-        end
-    end
-
-    itemsShop = filter(items, { shopItem = true})
+    itemsShop = filter(items, { shopItem = true })
     itemsDairy = filter(items, { categoryID = 3 })
     itemsFlavor = filter(items, { categoryID = 4 })
+    shopImage()
+    shopBackground()
+purchaseSFX = pd.sound.fileplayer.new('assets/sounds/purchase')
+shopgrid:setSelectedRow(1)
+shopgrid:setScrollPosition(0,0)
+
 end
 
 function ShopScene:update()
-    gfx.setBackgroundColor(gfx.kColorWhite)
-
-    gfx.setColor(gfx.kColorWhite)
-    gfx.fillRect(0, 0, 400, 240)
     gfx.setColor(gfx.kColorBlack)
+    gfx.setFont(font1)
+    gfx.drawTextInRect(itemDesc, 208, 160, 160, 48, nil, nil, kTextAlignment.center)
+    gfx.drawTextAligned("$" .. credits, 384, 16, kTextAlignment.right)
 
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     gfx.setFont(font2)
 
-    shopgrid:drawInRect(12, 12, 380, 220)
+
+
+    shopgrid:drawInRect(16, 16, 160, 208)
 
     if pd.buttonJustPressed(pd.kButtonUp) then
         shopgrid:selectPreviousRow(true)
@@ -73,6 +60,8 @@ function ShopScene:update()
             print(itemsShop[i]["name"])
             if pd.buttonJustPressed(pd.kButtonA) then
                 if credits >= itemsShop[i]["price"] then
+purchaseSFX:play(1)
+
                     credits = credits - itemsShop[i]["price"]
                     Items:addItem(itemsShop[i]["name"], 1)
                 end
@@ -101,7 +90,7 @@ function ShopScene:update()
         textboxActive = false
         hudShow = true
         shopMenuShow = false
-
+        shopImageShow = false
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
 
@@ -122,28 +111,61 @@ end
 function shopgrid:drawCell(section, row, column, selected, x, y, width, height)
     local fontHeight = gfx.getSystemFont():getHeight()
     if selected then
-        gfx.fillRoundRect(x, y, width, height, 4)
-        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+        gfx.drawLine(x + 20, y +height - 5, x + width, y+height - 5)
+        itemDesc = itemsShop[row]["description"]
+        gfx.setFont(font2)
+        imageIndex = itemsShop[row]["itemID"]
     else
-        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        gfx.setFont(font1)
     end
 
     function ownedItem(first, second)
         return first.found and not second.found
     end
 
-        gfx.drawTextInRect(itemsShop[row]["name"] .. " ....  $" .. tostring(itemsShop[row]["price"]), x - 10,
-            y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
-            kTextAlignment.right)
+    gfx.drawTextInRect(itemsShop[row]["name"] .. " $" .. tostring(itemsShop[row]["price"]), x + 10,
+        y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
+        kTextAlignment.center)
+end
 
-    if selected then
-        gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+class('shopImage').extends(gfx.sprite)
+function shopImage:init()
+    imageIndex = 1
+    itemImage = gfx.image.new("assets/images/shopItem" .. imageIndex)
+    self:setImage(itemImage)
 
+    self:setCenter(0, 0)
+    self:moveTo(224, 32)
+    self:add()
+    self:setZIndex(800)
+end
 
-                gfx.drawTextInRect(itemsShop[row]["description"], 160,
-                    170, 220, 70, nil, nil,
-                    kTextAlignment.left)
-       
-        
+function shopImage:update()
+    if shopImageShow == true then
+        itemImage = gfx.image.new("assets/images/shopItem" .. imageIndex)
+        self:setImage(itemImage)
+    else
+        itemImage = gfx.image.new("assets/images/shopItem1")
+        self:setImage(recipeImage)
+    end
+end
+
+class('shopBackground').extends(gfx.sprite)
+function shopBackground:init()
+    shopBGImage = gfx.image.new("assets/images/shopBG")
+    self:setImage(shopBGImage)
+
+    self:setZIndex(300)
+    self:setCenter(0, 0)
+    self:moveTo(0, 0)
+    self:add()
+end
+
+function shopBackground:update()
+    if shopImageShow == true then
+        self:moveTo(0, 0)
+    else
+        self:remove()
+
     end
 end

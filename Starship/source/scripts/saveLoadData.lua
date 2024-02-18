@@ -17,14 +17,12 @@ function loadGameData()
         if gameData.items then
             items = gameData.items
         else
-            items = items 
-            
+            items = items
         end
         if gameData.recipes then
             recipes = gameData.recipes
         else
-            recipes = recipes 
-            
+            recipes = recipes
         end
         if gameData.levelNum then
             levelNum = gameData.levelNum
@@ -40,6 +38,16 @@ function loadGameData()
             cosmoY = gameData.cosmoY
         else
             cosmoY = cosmoY
+        end
+        if gameData.returnRoomNumber then
+            returnRoomNumber = gameData.returnRoomNumber
+        else
+            returnRoomNumber = returnRoomNumber
+        end
+        if gameData.roomNumber then
+            roomNumber = gameData.roomNumber
+        else
+            roomNumber = roomNumber
         end
         if gameData.returnX then
             returnX = gameData.returnX
@@ -94,13 +102,15 @@ function saveGameData()
         saveData = saveData,
         quests = quests,
         items = items,
-        recipes =recipes, 
+        recipes = recipes,
         levelNum = levelNum,
-        -- cosmoX = cosmoX,
-        -- cosmoY = cosmoY,
-        -- returnX = returnX,
-        -- returnY = returnY,
+        cosmoX = cosmoX,
+        cosmoY = cosmoY,
+        returnX = returnX,
+        returnY = returnY,
         playerHP = playerHP,
+        roomNumber = roomNumber,
+        returnRoomNumber = returnRoomNumber,
         playerMaxHP = playerMaxHP,
         playerLevel = playerLevel,
         playerXP = playerXP,

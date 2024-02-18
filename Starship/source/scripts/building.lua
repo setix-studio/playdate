@@ -8,26 +8,27 @@ function Building:init(x, y, entity)
     self.fields = entity.fields
 
     self.buildingType = self.fields.buildingtype
-    buildingImageTable = gfx.imagetable.new("assets/images/building-table-96-72")
+    buildingImageTable = gfx.imagetable.new("assets/images/building-table-128-92")
 
 
     Building.super.init(self, buildingImageTable)
 
 
     self:addState("shop", 1, 4, { tickStep = 4 })
-    self:addState("hut", 5, 5)
+    self:addState("hut", 5,5)
     if self.buildingType == "Shop" then
         self.currentState = "shop"
         self:setTag(TAGS.Shop)
 
-        self:setCollideRect(7, 55, 73, 5)
+        self:setCollideRect(7, 55, 73, 15)
     elseif self.buildingType == "Hut" then
         self.currentState = "hut"
         self:setTag(TAGS.Building)
 
-        self:setCollideRect(16, 55, 57, 5)
+        self:setCollideRect(3, 64, 120, 24)
     end
-    self:setZIndex(10)
+    self:setZIndex(self.y)
+    print(self.y)
     self:setCenter(0.5, 0.5)
     self:moveTo(x, y)
     self:add()
@@ -35,7 +36,7 @@ function Building:init(x, y, entity)
     newX = 0
     newY = 0    
     textboxActive = false
-    if self.buildingType ~= "Shop" then
+    if self.buildingType ~= "Shop" then --Code to enter buidlings
     doorWay(self.x, self.y)
     end
     doorWayName = "Interior_1"
@@ -46,8 +47,25 @@ function Building:collisionResponse(other)
 end
 
 function Building:update()
-    cosmoSortOrder(self)
+    -- cosmoSortOrder(self)
     self:updateAnimation()
+    self:setZIndex(self.y)
+    if intDoor == true then
+        limamusic:stop()
+            lavenmusic:stop()
+            previouslevel = location
+
+            hudShow       = false
+            paused        = true
+            levelNum      = 6
+            returnX = cosmoX
+            returnY = cosmoY + 16
+            gfx.sprite.removeAll()
+
+            manager:enter(LoadingScene())
+
+            intDoor = false
+    end
     if self.buildingType == "Shop" then
         shopSightLine = pd.geometry.distanceToPoint(self.x - 208, self.y - 92, newX, newY)
         if shopSightLine <= 32 then
@@ -69,6 +87,8 @@ function Building:update()
         end
     end
 end
+
+
 
 function ShopText()
     showIntBtn = false
@@ -112,7 +132,8 @@ function ShopText()
                     lavenmusic:setVolume(0.2)
                     paused = true
     gfx.setDrawOffset(0, 0)
-                   
+    shopImageShow = true
+  
                     manager:push(ShopScene())
                 end)
             end
@@ -132,9 +153,9 @@ function doorWay:init(x, y)
     self:setCenter(0, 0)
     self:moveTo(x, y)
     self:add()
-    self:setTag(TAGS.Door)
+    self:setTag(TAGS.intDoor)
 
-    self:setCollideRect(-16, 16, 16, 16)
+    self:setCollideRect(-40, 28, 16, 16)
 
 end
 

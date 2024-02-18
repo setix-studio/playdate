@@ -1,7 +1,7 @@
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
-local gridview = pd.ui.gridview.new(128, 32)
+local questlist = pd.ui.gridview.new(128, 32)
 
 -- ["ID"] = 1,
 -- ["intro"] = false,
@@ -14,10 +14,10 @@ local gridview = pd.ui.gridview.new(128, 32)
 -- ["reward"] = "Berry Tart"
 
 
-gridview:setCellPadding(2, 2, 2, 2)
+questlist:setCellPadding(2, 2, 2, 2)
 
-gridview.backgroundImage = gfx.nineSlice.new("assets/images/menuBackground", 7, 7, 18, 18)
-gridview:setContentInset(5, 5, 5, 5)
+questlist.backgroundImage = gfx.nineSlice.new("assets/images/menuBackground", 7, 7, 18, 18)
+questlist:setContentInset(5, 5, 5, 5)
 
 local gridviewSprite = gfx.sprite.new()
 gridviewSprite:setCenter(0, 0)
@@ -35,7 +35,8 @@ function questScene:init()
         end 
     end 
 
-gridview:setNumberOfRows(formCount)
+questlist:setNumberOfRows(formCount)
+questlist:setScrollPosition(0,0)
 end
 
 function questScene:update()
@@ -46,22 +47,22 @@ function questScene:update()
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRect(0, 0, 400, 240)
     gfx.setColor(gfx.kColorBlack)
-
+    
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     gfx.setFont(font2)
-
-    gridview:drawInRect(12, 12, 380, 220)
+    
+    questlist:drawInRect(12, 12, 380, 220)
 
     if pd.buttonJustPressed(pd.kButtonUp) then
-        gridview:selectPreviousRow(true)
+        questlist:selectPreviousRow(true)
     elseif pd.buttonJustPressed(pd.kButtonDown) then
-        gridview:selectNextRow(true)
+        questlist:selectNextRow(true)
     end
     if pd.buttonJustPressed(pd.kButtonA) then
-        -- if gridview:getSelectedRow() == 1 then
+        -- if questlist:getSelectedRow() == 1 then
         --     levelNum = 1
         --     manager:push(LoadingScene())
-        -- elseif gridview:getSelectedRow() == 2 then
+        -- elseif questlist:getSelectedRow() == 2 then
         --     levelNum = 2
         --     manager:push(LoadingScene())
         -- end
@@ -70,18 +71,21 @@ function questScene:update()
 
     local crankTicks = pd.getCrankTicks(2)
     if crankTicks == 1 then
-        gridview:selectNextRow(true)
+        questlist:selectNextRow(true)
     elseif crankTicks == -1 then
-        gridview:selectPreviousRow(true)
+        questlist:selectPreviousRow(true)
     end
 
-    if gridview.needsDisplay then
+    if questlist.needsDisplay then
         local gridviewImage = gfx.image.new(142, 100)
         gfx.pushContext(gridviewImage)
-        gridview:drawInRect(0, 0, 142, 100)
+        questlist:drawInRect(0, 0, 142, 100)
         gfx.popContext()
         gridviewSprite:setImage(gridviewImage)
     end
+    
+   
+
     if playdate.buttonJustPressed(playdate.kButtonB) then
         -- if location == "Lima" then
         --     limamusic:play(0)
@@ -116,7 +120,7 @@ function questScene:update()
     end
 end
 
-function gridview:drawCell(section, row, column, selected, x, y, width, height)
+function questlist:drawCell(section, row, column, selected, x, y, width, height)
     local fontHeight = gfx.getSystemFont():getHeight()
     if selected then
         gfx.fillRoundRect(x, y, width, height, 4)

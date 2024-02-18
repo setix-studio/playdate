@@ -8,8 +8,9 @@ function NPC:init(x, y, entity)
     self.fields = entity.fields
     npcImageTable = gfx.imagetable.new("assets/images/npc-table-32-32")
     self.QuestID = self.fields.QuestID
+    self.NPCImage = self.fields.NPCImage
     NPC.super.init(self, npcImageTable)
-    self:addState("idle", 1, 1)
+    self:addState("idle", self.NPCImage, self.NPCImage)
     self.currentState = "idle"
     self:setZIndex(10)
 

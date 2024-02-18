@@ -12,18 +12,20 @@ function Recipes:init(x, y)
     self:setImage(recipeImage)
 
     self:setCenter(0, 0)
-    self:moveTo(272, 16)
+    self:moveTo(x, y)
     self:add()
-    self:setZIndex(Z_INDEXES.Pickup)
-    for i in pairs(recipes) do
-        if recipes[i]["found"] == true then
-            recipes[i]["name"] = recipes[i]["name"]
-            recipes[i]["description"] = recipes[i]["description"]
-            recipes[i]["requiredItems"] = recipes[i]["requiredItems"]
-        elseif recipes[i]["found"] == false then
-            recipes[i]["name"] = "??????"
-            recipes[i]["description"] = "??????"
-            recipes[i]["requiredItems"] = "??????"
+    self:setZIndex(900)
+    for _, recipe in pairs(recipes) do
+        if recipe.found then
+            recipe.name = recipe.name
+            recipe.description = recipe.description
+            recipe.requiredItems = recipe.requiredItems
+            recipe.index = recipe.index
+        else
+            recipe.name = "??????"
+            recipe.description = "??????"
+            recipe.requiredItems = " ?? ?????"
+            recipe.index = 1
         end
     end
 end
@@ -32,9 +34,14 @@ function Recipes:update()
     if showImage == true then
         recipeImage = gfx.image.new("assets/images/recipes" .. imageIndex)
         self:setImage(recipeImage)
-    else
+    elseif showImage == false then
         recipeImage = gfx.image.new("assets/images/recipes1")
         self:setImage(recipeImage)
+
+        
+    end
+    if removeRecipes == true then
+        self:remove()
     end
 end
 
@@ -48,391 +55,131 @@ end
 function Recipes:addRecipe(recipeItem)
     self.itemPName = recipeItem
 
+    local recipeData = {
+        ["Meatball Special"] = { ID = "MEATBALL SPECIAL", name = "Meatball Special", description = "Just like grandma used to make. Pasta in rich toma sauce with meatballs.", requiredItems = "/ 5 Meaty Chunks\n/ 10 Tomas\n/ 1 Noodles\n/ 2 Mozzerell\n/ 1 Spicy", index = 2 },
+        ["Grilled Fish"] = { ID = "GRILLED FISH", name = "Grilled Fish", description = "Straight from the Air to the grill, lemmy fresh.", requiredItems = "/ 4 Flying Fish\n/ 2 Lemmies\n/ 1 Savory", index = 3 },
+        ["Fried Chop"] = { ID = "FRIED CHOP", name = "Fried Chop", description = "Fried to pork-fection.", requiredItems = "/ 2 Big Chop\n/ 1 Savory", index = 4 },
+        ["Meaty Sando"] = { ID = "MEATY SANDO", name = "Meaty Sando", description = "Chunks of meat, tomas and cheddah in a savory sando.", requiredItems = "/ 5 Meaty Chunks\n/ 3 Tomas\n/ 2 Cheddah\n/ 2 Doughball\n/ 1 Savory", index = 5 },
+        ["Veggie Sando"] = { ID = "VEGGIE SANDO", name = "Veggie Sando", description = "Brussels, tomas and cheddah in a spicy sando.", requiredItems = "/ 3 Brussels\n/ 3 Tomas\n/ 2 Cheddah\n/ 2 Doughball\n/ 1 Spicy", index = 6 },
+        ["Meaty Pizza"] = { ID = "MEATY PIZZA", name = "Meaty Pizza", description = "Chunks of meat, tomas, shrooma and mozzerell on a thin crust.", requiredItems = "/ 4 Meaty Chunks\n/ 3 Tomas\n/ 3 Shrooma\n/ 4 Mozzerell\n/ 2 Doughball", index = 7 },
+        ["Cheesy Pizza"] = { ID = "CHEESY PIZZA", name = "Cheesy Pizza", description = "Cheddah, mozzerell and tomas on a thin crust.", requiredItems = "/ 4 Cheddah\n/ 4 Mozzerell\n/ 3 Tomas\n/ 2 Doughball", index = 8 },
+        ["Mac n Cheese"] = { ID = "MAC N CHEESE", name = "Mac n Cheese", description = "Little noodles in a creamy, cheesy sauce", requiredItems = "/ 10 Noodles\n/ 4 Cheddah\n/ 2 Crema", index = 9 },
+        ["Mushroom Soup"] = { ID = "MUSHROOM SOUP", name = "Mushroom Soup", description = "Baked to berry perfection.", requiredItems = "/ 10 Berries\n/ 2 Doughball\n/ 1 Sweet", index = 10 },
+        ["Meaty Stew"] = { ID = "MEATY STEW", name = "Meaty Stew", description = "Savory stew to warm any tum", requiredItems = "/ 5 Meaty Chunks\n/ 3 Brussels\n/ 5 Shrooma\n/ 1 Savory", index = 11 },
+        ["Toma Soup"] = { ID = "TOMA SOUP", name = "Toma Soup", description = "Savory tomas in a creamy soup", requiredItems = "/ 10 Tomas\n/ 5 Crema\n/ 1 Savory", index = 12 },
+        ["Ramen"] = { ID = "RAMEN", name = "Ramen", description = "Rich broth with noodles, meat, shrooma and topped with eggies", requiredItems = "/ 4 Meaty Chunks\n/ 4 Shrooma\n/ 10 Noodles\n/ 2 Eggies\n/ 1 Savory", index = 13 },
+        ["Berry Tart"] = { ID = "BERRY TART", name = "Berry Tart", description = "Baked to berry perfection.", requiredItems = "/ 10 Berries\n/ 2 Doughball\n/ 1 Sweet", index = 14 },
+        ["Cookies"] = { ID = "COOKIES", name = "Cookies", description = "Warm and chewy", requiredItems = "/ 12 Doughball\n/ 1 Sweet", index = 15 },
+        ["Nanner Puddin"] = { ID = "NANNER PUDDIN", name = "Nanner Puddin", description = "Chunks of nanners in a creamy pudding", requiredItems = "/ 10 Nanners\n/ 4 Crema\n/ 1 Sweet", index = 16 },
+        ["Fries"] = { ID = "FRIES", name = "Fries", description = "Fried Taters with savory seasoning", requiredItems = "/ 10 Taters\n/ 1 Savory", index = 17 },
+        ["Trail Mix"] = { ID = "TRAIL MIX", name = "Trail Mix", description = "Spicy mix of various snacks", requiredItems = "/ 5 Meaty Chunks\n/ 5 Nuts\n/ 5 Berries\n/ 5 Nanners\n/ 1 Spicy", index = 18 },
+        ["Brussel Bites"] = { ID = "BRUSSEL BITES", name = "Brussel Bites", description = "Fried Brussels topped with mozzerell and savory seasoning", requiredItems = "/ 10 Brussels\n/ 5 Mozzerrel\n/ 1 Savory", index = 19 }
+    }
 
-    if self.itemPName == "Meatball Special" then
-        for i in pairs(recipes) do
-            if recipes[i]["ID"] == "MEATBALL SPECIAL" then
+    local recipe = recipeData[self.itemPName]
+
+    if recipe then
+        for i, data in pairs(recipes) do
+            if data["ID"] == recipe.ID then
                 recipes[i]["found"] = true
-                recipes[i]["name"] = "Meatball Special"
-                recipes[i]["description"] = "Just like grandma used to make. Pasta in rich toma sauce with meatballs."
+                recipes[i]["name"] = recipe.name
+                recipes[i]["description"] = recipe.description
+                recipes[i]["requiredItems"] = recipe.requiredItems
+                recipes[i]["index"] = recipe.index
+                break
             end
         end
-    elseif self.itemPName == "Grilled Fish" then
-        for i in pairs(recipes) do
-            if recipes[i]["ID"] == "GRILLED FISH" then
-                recipes[i]["found"] = true
-                recipes[i]["name"] = "Grilled Fish"
-                recipes[i]["description"] = "Straight from the Air to the grill, lemmy fresh."
+    end
+end
+
+function Recipes:useItem(recipeItem)
+    for i in pairs(recipes) do
+        if recipes[i]["name"] == recipeItem then
+            if recipes[i]["quantity"] > 0 then
+                recipes[i]["quantity"] = recipes[i]["quantity"] - 1
             end
         end
-    elseif self.itemPName == "Berry Tart" then
-        for i in pairs(recipes) do
-            if recipes[i]["ID"] == "BERRY TART" then
-                recipes[i]["found"] = true
-                recipes[i]["name"] = "Berry Tart"
-                recipes[i]["description"] = "Baked to berry perfection."
+    end
+end
+
+function Recipes:addInventory(recipeItem)
+     function checkAndRemoveItems(itemIndex, requiredQuantities)
+        for itemID, requiredQuantity in pairs(requiredQuantities) do
+            if items[itemID].quantity < requiredQuantity then
+                return false
             end
         end
+
+        for itemID, requiredQuantity in pairs(requiredQuantities) do
+            Items:addItem(items[itemID].name, -requiredQuantity)
+      
+        end
+
+        recipes[itemIndex].quantity = recipes[itemIndex].quantity + 1
+        print("success")
+        return true
+    end
+
+     function checkAndExecute(recipeIndex, requiredItems)
+        if recipes[recipeIndex].index == recipeIndex and recipes[recipeIndex].found then
+            return checkAndRemoveItems(recipeIndex, requiredItems)
+        end
+        return false
+    end
+
+     function tryRecipe(recipeIndex, requiredItems)
+        if checkAndExecute(recipeIndex, requiredItems) then
+            return true
+        end
+        return false
+    end
+
+    if recipeItem == "Meatball Special" then
+        return tryRecipe(2, { [1] = 5, [10] = 10, [27] = 1, [31] = 2, [40] = 1 })
+    elseif recipeItem == "Grilled Fish" then
+        return tryRecipe(3, { [2] = 4, [13] = 2, [42] = 1 })
+    elseif recipeItem == "Fried Chop" then
+        return tryRecipe(4, { [3] = 2, [42] = 1 })
+    elseif recipeItem == "Meaty Sando" then
+        return tryRecipe(5, { [1] = 5, [10] = 3, [30] = 2, [26] = 2, [42] = 1 })
+    elseif recipeItem == "Veggie Sando" then
+        return tryRecipe(6, { [9] = 3, [10] = 3, [30] = 2, [26] = 2, [42] = 1 })
+    elseif recipeItem == "Meaty Pizza" then
+        return tryRecipe(7, { [1] = 4, [10] = 3, [8] = 3, [26] = 4, [31] = 2 })
+    elseif recipeItem == "Cheesy Pizza" then
+        return tryRecipe(8, { [30] = 4, [31] = 4, [10] = 3, [26] = 2 })
+    elseif recipeItem == "Mac n Cheese" then
+        return tryRecipe(9, { [27] = 10, [30] = 4, [29] = 2 })
+    elseif recipeItem == "Mushroom Soup" then
+        return tryRecipe(10, { [8] = 10, [31] = 5, [42] = 1 })
+    elseif recipeItem == "Meaty Stew" then
+        return tryRecipe(11, { [1] = 5, [9] = 3, [8] = 5, [42] = 1 })
+    elseif recipeItem == "Toma Soup" then
+        return tryRecipe(12, { [10] = 10, [29] = 5, [42] = 1 })
+    elseif recipeItem == "Ramen" then
+        return tryRecipe(13, { [1] = 4, [8] = 4, [27] = 10, [28] = 2, [42] = 1 })
+    elseif recipeItem == "Berry Tart" then
+        return tryRecipe(14, { [6] = 10, [26] = 2, [41] = 1 })
+    elseif recipeItem == "Cookies" then
+        return tryRecipe(15, { [26] = 12, [41] = 1 })
+    elseif recipeItem == "Nanner Puddin" then
+        return tryRecipe(16, { [11] = 10, [29] = 4, [41] = 1 })
+    elseif recipeItem == "Fries" then
+        return tryRecipe(17, { [12] = 12, [42] = 1 })
+    elseif recipeItem == "Trail Mix" then
+  
+        return tryRecipe(18, { [1] = 5, [15] = 5, [6] = 5, [11] = 5, [40] = 1 })
+        
+    elseif recipeItem == "Brussel Bites" then
+        return tryRecipe(19, { [9] = 10, [31] = 5, [42] = 1 })
+    else
+    
+        print("fail")
     end
 end
 
 --testing Recipes:addInventory("Meatball Special")
-function Recipes:addInventory(recipeItem)
-    if recipeItem == "Meatball Special" then --5 Meaty Chunks\n/ 10 Tomas\n/ 1 Noodles\n/ 2 Mozzerell\n/ 1 Spicy
-        if recipes[2].index == 2 then
-            if recipes[2].found == true then
-                if items[1].quantity >= 5 then
-                    if items[10].quantity >= 10 then
-                        if items[27].quantity >= 1 then
-                            if items[31].quantity >= 2 then
-                                if items[40].quantity >= 1 then
-                                    Items:addItem(items[1].name, -5)
-                                    Items:addItem(items[10].name, -10)
-                                    Items:addItem(items[27].name, -1)
-                                    Items:addItem(items[31].name, -2)
-                                    Items:addItem(items[40].name, -1)
-                                    recipes[2].quantity = recipes[2].quantity + 1
 
-                                    print("success")
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Grilled Fish" then --4 Flying Fish\n/ 2 Lemmies\n/ 1 Savory
-        if recipes[3].index == 3 then
-            if recipes[3].found == true then
-                if items[2].quantity >= 4 then
-                    if items[13].quantity >= 2 then
-                        if items[42].quantity >= 1 then
-                            Items:addItem(items[2].name, -4)
-                            Items:addItem(items[13].name, -2)
-                            Items:addItem(items[42].name, -1)
-                            recipes[3].quantity = recipes[3].quantity + 1
-
-                            print("success")
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Fried Chop" then --2 Big Chop\n/ 1 Savory
-        if recipes[4].index == 4 then
-            if recipes[4].found == true then
-                if items[3].quantity >= 2 then
-                    if items[42].quantity >= 1 then
-                        Items:addItem(items[3].name, -2)
-                        Items:addItem(items[42].name, -1)
-                        recipes[4].quantity = recipes[4].quantity + 1
-
-                        print("success")
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Meaty Sando" then --5 Meaty Chunks\n/ 3 Tomas\n/ 2 Cheddah\n/ 2 Doughball\n/ 1 Savory
-        if recipes[5].index == 5 then
-            if recipes[5].found == true then
-                if items[1].quantity >= 5 then
-                    if items[10].quantity >= 3 then
-                        if items[30].quantity >= 2 then
-                            if items[26].quantity >= 2 then
-                                if items[42].quantity >= 1 then
-                                    Items:addItem(items[1].name, -5)
-                                    Items:addItem(items[10].name, -3)
-                                    Items:addItem(items[30].name, -2)
-                                    Items:addItem(items[26].name, -2)
-                                    Items:addItem(items[42].name, -1)
-                                    recipes[5].quantity = recipes[5].quantity + 1
-
-                                    print("success")
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Veggie Sando" then --3 Brussels\n/ 3 Tomas\n/ 2 Cheddah\n/ 2 Doughball\n/ 1 Spicy
-        if recipes[6].index == 6 then
-            if recipes[6].found == true then
-                if items[9].quantity >= 3 then
-                    if items[10].quantity >= 3 then
-                        if items[30].quantity >= 2 then
-                            if items[26].quantity >= 2 then
-                                if items[42].quantity >= 1 then
-                                    Items:addItem(items[9].name, -3)
-                                    Items:addItem(items[10].name, -3)
-                                    Items:addItem(items[30].name, -2)
-                                    Items:addItem(items[26].name, -2)
-                                    Items:addItem(items[40].name, -1)
-                                    recipes[6].quantity = recipes[6].quantity + 1
-
-                                    print("success")
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Meaty Pizza" then --4 Meaty Chunks\n/ 3 Tomas\n/ 3 Shrooma\n/ 4 Mozzerell\n/ 2 Doughball
-        if recipes[7].index == 7 then
-            if recipes[7].found == true then
-                if items[1].quantity >= 4 then
-                    if items[10].quantity >= 3 then
-                        if items[8].quantity >= 3 then
-                            if items[26].quantity >= 4 then
-                                if items[31].quantity >= 2 then
-                                    Items:addItem(items[1].name, -3)
-                                    Items:addItem(items[10].name, -3)
-                                    Items:addItem(items[8].name, -2)
-                                    Items:addItem(items[26].name, -2)
-                                    Items:addItem(items[31].name, -1)
-                                    recipes[7].quantity = recipes[7].quantity + 1
-
-                                    print("success")
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Cheesy Pizza" then --4 Cheddah\n/ 4 Mozzerell\n/ 3 Tomas\n/ 2 Doughball
-        if recipes[8].index == 8 then
-            if recipes[8].found == true then
-                if items[30].quantity >= 4 then
-                    if items[31].quantity >= 4 then
-                        if items[10].quantity >= 3 then
-                            if items[26].quantity >= 2 then
-                                Items:addItem(items[30].name, -4)
-                                Items:addItem(items[31].name, -4)
-                                Items:addItem(items[10].name, -3)
-                                Items:addItem(items[26].name, -2)
-
-                                recipes[8].quantity = recipes[8].quantity + 1
-
-                                print("success")
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Mac n Cheese" then --10 Noodles\n/ 4 Cheddah\n/ 2 Crema
-        if recipes[9].index == 9 then
-            if recipes[9].found == true then
-                if items[27].quantity >= 10 then
-                    if items[30].quantity >= 4 then
-                        if items[29].quantity >= 2 then
-                            Items:addItem(items[27].name, -10)
-                            Items:addItem(items[31].name, -4)
-                            Items:addItem(items[29].name, -2)
-
-                            recipes[9].quantity = recipes[9].quantity + 1
-
-                            print("success")
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Mushroom Soup" then --10 Shrooma\n/ 5 Crema\n/ 1 Savory
-        if recipes[10].index == 10 then
-            if recipes[10].found == true then
-                if items[8].quantity >= 10 then
-                    if items[29].quantity >= 5 then
-                        if items[42].quantity >= 1 then
-                            Items:addItem(items[8].name, -10)
-                            Items:addItem(items[31].name, -5)
-                            Items:addItem(items[42].name, -1)
-
-                            recipes[10].quantity = recipes[10].quantity + 1
-
-                            print("success")
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Meaty Stew" then --5 Meaty Chunks\n/ 3 Brussels\n/ 5 Shrooma\n/ 1 Savory
-        if recipes[11].index == 11 then
-            if recipes[11].found == true then
-                if items[1].quantity >= 5 then
-                    if items[9].quantity >= 3 then
-                        if items[8].quantity >= 5 then
-                            if items[42].quantity >= 1 then
-                                Items:addItem(items[1].name, -5)
-                                Items:addItem(items[9].name, -3)
-                                Items:addItem(items[8].name, -5)
-                                Items:addItem(items[42].name, -1)
-
-                                recipes[11].quantity = recipes[11].quantity + 1
-
-                                print("success")
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Toma Soup" then --10 Tomas\n/ 5 Crema\n/ 1 Savory
-        if recipes[12].index == 12 then
-            if recipes[12].found == true then
-                if items[10].quantity >= 10 then
-                    if items[29].quantity >= 5 then
-                        if items[42].quantity >= 1 then
-                            Items:addItem(items[10].name, -10)
-                            Items:addItem(items[29].name, -5)
-                            Items:addItem(items[42].name, -1)
-
-                            recipes[12].quantity = recipes[12].quantity + 1
-
-                            print("success")
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Ramen" then --4 Meaty Chunks\n/ 4 Shrooma\n/ 10 Noodles\n/ 2 Eggies\n/ 1 Savory
-        if recipes[13].index == 13 then
-            if recipes[13].found == true then
-                if items[1].quantity >= 4 then
-                    if items[8].quantity >= 4 then
-                        if items[27].quantity >= 10 then
-                            if items[28].quantity >= 2 then
-                                if items[42].quantity >= 1 then
-                                    Items:addItem(items[1].name, -4)
-                                    Items:addItem(items[8].name, -4)
-                                    Items:addItem(items[27].name, -10)
-                                    Items:addItem(items[28].name, -2)
-                                    Items:addItem(items[42].name, -1)
-
-                                    recipes[13].quantity = recipes[13].quantity + 1
-
-                                    print("success")
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Berry Tart" then --10 Berries\n/ 2 Doughball\n/ 1 Sweet
-        if recipes[14].index == 14 then
-            if recipes[14].found == true then
-                if items[6].quantity >= 10 then
-                    if items[26].quantity >= 2 then
-                        if items[41].quantity >= 1 then
-                            Items:addItem(items[6].name, -10)
-                            Items:addItem(items[26].name, -2)
-                            Items:addItem(items[41].name, -1)
-
-                            recipes[14].quantity = recipes[14].quantity + 1
-
-                            print("success")
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Cookies" then --12 Doughball\n/ 1 Sweet
-        if recipes[15].index == 15 then
-            if recipes[15].found == true then
-                if items[26].quantity >= 12 then
-                    if items[41].quantity >= 1 then
-                        Items:addItem(items[26].name, -12)
-                        Items:addItem(items[41].name, -1)
-
-                        recipes[15].quantity = recipes[15].quantity + 1
-
-                        print("success")
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Nanner Puddin" then --10 Nanners\n/ 4 Crema\n/ 1 Sweet
-        if recipes[16].index == 16 then
-            if recipes[16].found == true then
-                if items[11].quantity >= 10 then
-                    if items[29].quantity >= 4 then
-                        if items[41].quantity >= 1 then
-                            Items:addItem(items[11].name, -10)
-                            Items:addItem(items[29].name, -4)
-                            Items:addItem(items[41].name, -1)
-
-                            recipes[16].quantity = recipes[16].quantity + 1
-
-                            print("success")
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Fries" then --10 Taters\n/ 1 Savory
-        if recipes[17].index == 17 then
-            if recipes[17].found == true then
-                if items[12].quantity >= 12 then
-                    if items[42].quantity >= 1 then
-                        Items:addItem(items[12].name, -12)
-                        Items:addItem(items[42].name, -1)
-
-                        recipes[17].quantity = recipes[17].quantity + 1
-
-                        print("success")
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Trail Mix" then --5 Meaty Chunks\n/ 5 Nuts\n/ 5 Berries\n/ 5 Nanners\n/ 1 Spicy
-        if recipes[18].index == 18 then
-            if recipes[18].found == true then
-                if items[1].quantity >= 5 then
-                    if items[15].quantity >= 5 then
-                        if items[6].quantity >= 5 then
-                            if items[11].quantity >= 5 then
-                                if items[40].quantity >= 1 then
-                                    Items:addItem(items[1].name, -5)
-                                    Items:addItem(items[15].name, -5)
-                                    Items:addItem(items[6].name, 5)
-                                    Items:addItem(items[11].name, -5)
-                                    Items:addItem(items[40].name, -1)
-
-                                    recipes[18].quantity = recipes[18].quantity + 1
-
-                                    print("success")
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    elseif recipeItem == "Brussel Bites" then --10 Brussels\n/ 5 Mozzerrel\n/ 1 Savory
-        if recipes[19].index == 19 then
-            if recipes[19].found == true then
-                if items[9].quantity >= 10 then
-                    if items[31].quantity >= 5 then
-                        if items[42].quantity >= 1 then
-                            Items:addItem(items[9].name, -10)
-                            Items:addItem(items[31].name, -5)
-                            Items:addItem(items[42].name, -1)
-
-                            recipes[19].quantity = recipes[19].quantity + 1
-
-                            print("success")
-                        end
-                    end
-                end
-            end
-        end
-    else
-        print("fail")
-    end
-end
 
 --recipes
 
@@ -443,11 +190,12 @@ recipes = {
         ["index"] = 1,
         ["category"] = "Main Dish",
         ["found"] = true,
-        ["name"] = "",
+        ["name"] = "...",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = "",
+        ["quantity"] = 0,
         ["requiredItems"] = "",
+        ["border"] = true,
     },
     {
         ["categoryID"] = 1,
@@ -459,6 +207,7 @@ recipes = {
         ["description"] = "Just like grandma used to make. Pasta in rich toma sauce with meatballs.",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 5 Meaty Chunks\n/ 10 Tomas\n/ 1 Noodles\n/ 2 Mozzerell\n/ 1 Spicy",
+        ["border"] = false,
 
     },
     {
@@ -471,6 +220,7 @@ recipes = {
         ["description"] = "Straight from the air to the grill, lemmy fresh.",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 4 Flying Fish\n/ 2 Lemmies\n/ 1 Savory",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 1,
@@ -482,6 +232,7 @@ recipes = {
         ["description"] = "Fried to pork-fection.",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 2 Big Chop\n/ 1 Savory",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 1,
@@ -493,6 +244,7 @@ recipes = {
         ["description"] = "Chunks of meat, tomas and cheddah in a savory sando.",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 5 Meaty Chunks\n/ 3 Tomas\n/ 2 Cheddah\n/ 2 Doughball\n/ 1 Savory",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 1,
@@ -504,6 +256,7 @@ recipes = {
         ["description"] = "Brussels, tomas and cheddah in a spicy sando.",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 3 Brussels\n/ 3 Tomas\n/ 2 Cheddah\n/ 2 Doughball\n/ 1 Spicy",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 1,
@@ -515,6 +268,7 @@ recipes = {
         ["description"] = "Chunks of meat, tomas, shrooma and mozzerell on a thin crust.",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 4 Meaty Chunks\n/ 3 Tomas\n/ 3 Shrooma\n/ 4 Mozzerell\n/ 2 Doughball",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 1,
@@ -526,6 +280,7 @@ recipes = {
         ["description"] = "Cheddah, mozzerell and tomas on a thin crust.",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 4 Cheddah\n/ 4 Mozzerell\n/ 3 Tomas\n/ 2 Doughball",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 1,
@@ -537,6 +292,7 @@ recipes = {
         ["description"] = "Little noodles in a creamy, cheesy sauce",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 10 Noodles\n/ 4 Cheddah\n/ 2 Crema",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 2,
@@ -548,6 +304,7 @@ recipes = {
         ["description"] = "Savory mushrooms in a creamy soup",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 10 Shrooma\n/ 5 Crema\n/ 1 Savory",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 2,
@@ -559,6 +316,7 @@ recipes = {
         ["description"] = "Savory stew to warm any tum",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 5 Meaty Chunks\n/ 3 Brussels\n/ 5 Shrooma\n/ 1 Savory",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 2,
@@ -570,6 +328,7 @@ recipes = {
         ["description"] = "Savory tomas in a creamy soup",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 10 Tomas\n/ 5 Crema\n/ 1 Savory",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 2,
@@ -581,6 +340,7 @@ recipes = {
         ["description"] = "Rich broth with noodles, meat, shrooma and topped with eggies",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 4 Meaty Chunks\n/ 4 Shrooma\n/ 10 Noodles\n/ 2 Eggies\n/ 1 Savory",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 3,
@@ -592,6 +352,7 @@ recipes = {
         ["description"] = "Baked to berry perfection",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 10 Berries\n/ 2 Doughball\n/ 1 Sweet",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 3,
@@ -603,6 +364,7 @@ recipes = {
         ["description"] = "Warm and chewy",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 12 Doughball\n/ 1 Sweet",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 3,
@@ -614,6 +376,7 @@ recipes = {
         ["description"] = "Chunks of nanners in a creamy pudding",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 10 Nanners\n/ 4 Crema\n/ 1 Sweet",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 4,
@@ -625,17 +388,19 @@ recipes = {
         ["description"] = "Fried Taters with savory seasoning",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 10 Taters\n/ 1 Savory",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 4,
         ["index"] = 18,
         ["category"] = "Snacks",
-        ["found"] = false,
+        ["found"] = true,
         ["name"] = "Trail Mix",
         ["ID"] = "TRAIL MIX",
         ["description"] = "Spicy mix of various snacks",
-        ["quantity"] = 0,
+        ["quantity"] = 10,
         ["requiredItems"] = "/ 5 Meaty Chunks\n/ 5 Nuts\n/ 5 Berries\n/ 5 Nanners\n/ 1 Spicy",
+        ["border"] = false,
     },
     {
         ["categoryID"] = 4,
@@ -647,17 +412,21 @@ recipes = {
         ["description"] = "Fried Brussels topped with mozzerell and savory seasoning",
         ["quantity"] = 0,
         ["requiredItems"] = "/ 10 Brussels\n/ 5 Mozzerrel\n/ 1 Savory",
+        ["border"] = false,
+
     },
     {
         ["categoryID"] = 1,
         ["index"] = 20,
         ["category"] = "Main Dish",
         ["found"] = true,
-        ["name"] = "",
+        ["name"] = "...",
         ["ID"] = "",
         ["description"] = "",
-        ["quantity"] = "",
+        ["quantity"] = 0,
         ["requiredItems"] = "",
+        ["border"] = true,
+
     },
 
 }

@@ -17,7 +17,7 @@ function Ship:init(x, y, entity)
     self:add()
     self:setCollideRect(7, 50, 70,  20)
     self:playAnimation()
-    self:setTag(TAGS.Ship)
+    self:setZIndex(self.y)
     cosmoX = 0
     cosmoY = 0
 end
@@ -28,7 +28,7 @@ end
 
 function Ship:update()
     self:updateAnimation()
-  
+    self:setZIndex(self.y)
     shipLine = pd.geometry.distanceToPoint(self.x, self.y, cosmoX, cosmoY)
 
 
@@ -39,18 +39,19 @@ function Ship:update()
             limamusic:stop()
             lavenmusic:stop()
             previouslevel = location
-
+            returnRoom = "Level_1"
             hudShow       = false
             paused        = true
             levelNum      = 5
             gfx.sprite.removeAll()
-
+            returnX = cosmoX
+            returnY =cosmoY 
             manager:enter(LoadingScene())
         end
     elseif shipLine > 64 then
         showIntBtn = false
     end
-    cosmoSortOrder(self)
+    -- cosmoSortOrder(self)
 end
 
 

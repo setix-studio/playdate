@@ -27,18 +27,19 @@ function Cosmo:init(x, y, gameManager)
 
 
 
-  
+
     -- self:setCenter(0, 0)
 
     cosmoX = self.x
     cosmoY = self.y
     self:playAnimation()
-
+walking = false
+walkingCounter = 0
     bMenuShow = false
     showIntBtn = false
     -- Sprite properties
     self:moveTo(x, y)
-    self:setZIndex(11)
+    self:setZIndex(self.y)
     self:setCollideRect(11, 20, 10, 10)
     self:setTag(TAGS.Cosmo)
 
@@ -107,7 +108,7 @@ end
 
 function Cosmo:collisionResponse(other)
     local tag = other:getTag()
-    if tag == TAGS.Pickup or tag == TAGS.Hazard or tag == TAGS.Prop or tag == TAGS.Laser or tag == TAGS.Door then
+    if tag == TAGS.Pickup or tag == TAGS.Hazard or tag == TAGS.Prop or tag == TAGS.intDoor or tag == TAGS.Door then
         return gfx.sprite.kCollisionTypeOverlap
     end
     return gfx.sprite.kCollisionTypeSlide
@@ -115,11 +116,14 @@ end
 
 function footSteps(self)
     if self.xVelocity ~= 0 or self.yVelocity ~= 0 then
+        walking = true
         if (isPlaying == false) then
             playersteps:play()
             isPlaying = true
         end
         stepTimer += 1
+    else
+        walking = false
     end
 
     if stepTimer >= 10 then
@@ -139,6 +143,7 @@ function Cosmo:update()
     end
     footSteps(self)
     cosmoHUD()
+    self:setZIndex(self.y)
     if _G.paused == false then
         self:handleState()
         self:handleMovementAndCollisions()
@@ -165,6 +170,15 @@ function Cosmo:update()
                     self.yVelocity = 0
 
                     manager:push(questScene())
+                end
+                if playdate.buttonJustPressed(playdate.kButtonUp) then
+                    limamusic:setVolume(0.2)
+                    lavenmusic:setVolume(0.2)
+                    paused = true
+                    self.xVelocity = 0
+                    self.yVelocity = 0
+
+                    manager:push(rolodexScene())
                 end
             elseif pd.buttonJustReleased(pd.kButtonB) then
                 bMenuShow = false
@@ -252,10 +266,10 @@ function Cosmo:handleMovementAndCollisions()
 
         if collisionTag == TAGS.Ship then
 
-
-
         elseif collisionTag == TAGS.Door then
             doorEnter = true
+        elseif collisionTag == TAGS.intDoor then
+            intDoor = true
         elseif collisionTag == TAGS.Pickup then
             collisionObject:pickUp(self)
         end
@@ -273,10 +287,6 @@ function Cosmo:handleMovementAndCollisions()
     if died then
         self:die()
     end
-end
-
-function Cosmo:damage(amount)
-
 end
 
 function Cosmo:die()
@@ -405,12 +415,14 @@ function CosmoInteractBtn:init(x, y)
 
     self:setCenter(0.5, 0.5)
     self:add()
-    self:setZIndex(11)
+    self:setZIndex(cosmoY)
     self:moveTo(-100, -100)
 end
 
 function CosmoInteractBtn:update()
     self:updateAnimation()
+    self:setZIndex(cosmoY)
+
     if showIntBtn == true then
         self:moveTo(cosmoX, cosmoY - 24)
     elseif showIntBtn == false then
@@ -496,12 +508,12 @@ end
 
 class('BattleFadeImage').extends(gfx.sprite)
 function BattleFadeImage:init(x, y)
-    local loadingImage = gfx.image.new("assets/images/testbattle")
+    local loadingImage = gfx.image.new("assets/images/battleintro1")
     self:setZIndex(1000)
     self:setImage(loadingImage)
     self.speed = 4.8
     self.x = -cameraX + 400
-    self.y = -cameraY - 100
+    self.y = -cameraY
     self:moveTo(self.x, self.y)
     self:setCenter(0, 0)
     self:add()
@@ -515,8 +527,8 @@ function BattleFadeImage:update()
         returnY = cosmoY
         returnRoom = levelName
         self.x -= self.speed
-        if self.x <= cosmoX - 200 then
-            self.x = cosmoX - 200
+        if self.x <= cosmoX - 300 then
+            self.x = cosmoX - 300
             battlestartmusic:stop()
             manager:push(BattleScene())
         end
@@ -534,39 +546,58 @@ function cosmoHUD()
         cameraY = 0
     end
     if hudShow == true then
-        gfx.setColor(gfx.kColorWhite)
-        gfx.fillRect(255 + -cameraX, 200 + -cameraY, 136, 30)
-        gfx.setColor(gfx.kColorBlack)
-        gfx.drawRect(256 + -cameraX, 201 + -cameraY, 128, 28)
-        gfx.drawRect(383 + -cameraX, 201 + -cameraY, 7, 28)
-        gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(383 + -cameraX, 201 + -cameraY, 7, 28)
-        gfx.setDitherPattern(0, gfx.image.kDitherTypeBayer8x8)
-
-        gfx.setFont(fontHud)
-        --player healthbar
-        gfx.drawRect(290 + -cameraX, 208 + -cameraY, 74, 9)
-        gfx.drawRect(363 + -cameraX, 208 + -cameraY, 6, 9)
-        gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(363 + -cameraX, 208 + -cameraY, 6, 9)
-        gfx.setDitherPattern(.25, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(292 + -cameraX, 210 + -cameraY, 70, 5)
-        gfx.setDitherPattern(0, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(292 + -cameraX, 210 + -cameraY, playerHP / playerMaxHP * 70, 5)
-
-
-        --player level bar
-        gfx.drawRect(290 + -cameraX, 216 + -cameraY, 54, 7)
-        gfx.drawRect(343 + -cameraX, 216 + -cameraY, 5, 7)
-        gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(343 + -cameraX, 216 + -cameraY, 5, 7)
-        gfx.setDitherPattern(.25, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(292 + -cameraX, 218 + -cameraY, 50, 3)
-        gfx.setDitherPattern(0, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(292 + -cameraX, 218 + -cameraY, playerXP / playerNextLevel * 50, 3)
-            gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-            gfx.setColor(gfx.kColorBlack)
-        gfx.drawTextAligned("lv: " .. playerLevel, 285 + -cameraX, 212 + -cameraY, kTextAlignment.right)
-        gfx.drawTextAligned("credits: " .. credits, 285 + -cameraX, 188 + -cameraY, kTextAlignment.right)
+        if walking == false then
+            walkingCounter += 2
+           if walkingCounter >= 100 then
+            walkingCounter = 100
+            hudUI()
+           end
+        else walkingCounter = 0
+        end
     end
+end
+
+function hudUI()
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRect(255 + -cameraX, 200 + -cameraY, 136, 30)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRect(256 + -cameraX, 201 + -cameraY, 128, 28)
+    gfx.drawRect(383 + -cameraX, 201 + -cameraY, 7, 28)
+    gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(383 + -cameraX, 201 + -cameraY, 7, 28)
+    gfx.setDitherPattern(0, gfx.image.kDitherTypeBayer8x8)
+
+    gfx.setFont(fontHud)
+    --player healthbar
+    gfx.drawRect(290 + -cameraX, 208 + -cameraY, 74, 9)
+    gfx.drawRect(363 + -cameraX, 208 + -cameraY, 6, 9)
+    gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(363 + -cameraX, 208 + -cameraY, 6, 9)
+    gfx.setDitherPattern(.25, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(292 + -cameraX, 210 + -cameraY, 70, 5)
+    gfx.setDitherPattern(0, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(292 + -cameraX, 210 + -cameraY, playerHP / playerMaxHP * 70, 5)
+
+
+    --player level bar
+    gfx.drawRect(290 + -cameraX, 216 + -cameraY, 54, 7)
+    gfx.drawRect(343 + -cameraX, 216 + -cameraY, 5, 7)
+    gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(343 + -cameraX, 216 + -cameraY, 5, 7)
+    gfx.setDitherPattern(.25, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(292 + -cameraX, 218 + -cameraY, 50, 3)
+    gfx.setDitherPattern(0, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(292 + -cameraX, 218 + -cameraY, playerXP / playerNextLevel * 50, 3)
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawTextAligned("lv:" .. playerLevel, 285 + -cameraX, 213 + -cameraY, kTextAlignment.right)
+    gfx.drawTextAligned("$" .. credits, 285 + -cameraX, 201 + -cameraY, kTextAlignment.right)
+
+    gfx.fillRect(288 + -cameraX, 183 + -cameraY, 94, 18)
+    gfx.setColor(gfx.kColorWhite)
+
+
+    gfx.drawRect(290 + -cameraX, 185 + -cameraY, 90, 16)
+
+    gfx.drawTextAligned(tostring(areaName), 295 + -cameraX, 185 + -cameraY, kTextAlignment.left)
 end

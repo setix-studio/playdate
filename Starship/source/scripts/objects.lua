@@ -26,12 +26,12 @@ function Objects:init(x, y, entity)
     self:playAnimation()
 
 
-    self:setZIndex(Z_INDEXES.Pickup)
+    self:setZIndex(self.y)
     self:setTag(TAGS.Object)
     self:setCollideRect(18, 37, 11, 5)
 end
 
 function Objects:update()
     self:updateAnimation()
-    cosmoSortOrder(self)
+    -- cosmoSortOrder(self)
 end

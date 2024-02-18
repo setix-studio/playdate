@@ -53,6 +53,7 @@ function GameScene:enter()
     lavensightRadius = 0
     garlielsightRadius = 0
     mushroosightRadius = 0
+
     SpaceImage()
     StarImage()
     LimaNavArrow()
@@ -127,11 +128,28 @@ function GameScene:goToLevel(levelName)
 end
 
 function GameScene:update()
+    randX = math.random(newX,400 + newX)
+    randY = math.random(newY,240 + newY)
+ 
+    -- gfx.setColor(gfx.kColorWhite)
+    -- playdate.graphics.drawPixel(randX, randY)
+    -- playdate.graphics.drawPixel(randX, randY)
+    -- playdate.graphics.drawPixel(randX, randY)
+    -- playdate.graphics.drawPixel(randX, randY)
+    -- playdate.graphics.drawPixel(randX, randY)
+    -- playdate.graphics.drawPixel(randX, randY)
+    -- playdate.graphics.drawPixel(randX, randY)
+    -- playdate.graphics.drawPixel(randX, randY)
+    -- playdate.graphics.drawPixel(randX, randY)
+    -- playdate.graphics.drawPixel(randX, randY)
+    -- playdate.graphics.drawPixel(randX, randY)
+    -- playdate.graphics.drawPixel(randX, randY)
+
     if landing == false then
         gfx.setColor(gfx.kColorWhite)
         gfx.setFont(fontHud)
         gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-        gfx.drawTextAligned(string.upper(location), 345 + newX, 214 + newY, kTextAlignment.center)
+        gfx.drawTextAligned(string.upper(location), 345 + newX, 210 + newY, kTextAlignment.center)
     end
     if pd.isCrankDocked() then
         pd.ui.crankIndicator:update()
@@ -262,4 +280,13 @@ function StarImage:update()
     end
 
     self:moveTo(newX + self.counter, newY + self.counter)
+end
+
+class('StarBG').extends()
+function StarBG:init()
+    
+end
+
+function StarBG:update()
+    
 end

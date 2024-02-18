@@ -10,6 +10,11 @@ function loadGameData()
         else
             HIGH_SCORE = 0
         end
+        if gameData.globalscore then
+            GLOBAL_SCORE = gameData.globalscore
+        else
+            GLOBAL_SCORE = HIGH_SCORE
+        end
         
        
     end
@@ -18,7 +23,8 @@ end
 
 function saveGameData()
     local gameData = {
-        highscore = HIGH_SCORE
+        highscore = HIGH_SCORE,
+        globalscore = GLOBAL_SCORE
     }
     pd.datastore.write(gameData)
 end

@@ -1,7 +1,7 @@
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
-local gridview = pd.ui.gridview.new(128, 32)
+local gridview = pd.ui.gridview.new(160, 16)
 
 
 
@@ -10,11 +10,12 @@ gridview:setNumberOfRowsInSection(1, #filter(items, { category = "Meat" }))
 gridview:setNumberOfRowsInSection(2, #filter(items, { category = "Fruits and Vegetables" }))
 gridview:setNumberOfRowsInSection(3, #filter(items, { category = "Bread and Dairy" }))
 gridview:setNumberOfRowsInSection(4, #filter(items, { category = "Flavors" }))
-gridview:setSectionHeaderHeight(10)
+gridview:setSectionHeaderHeight(12)
+gridview:setSectionHeaderPadding(8, 0, 4, 4)
 gridview:setCellPadding(2, 2, 2, 2)
 
-gridview.backgroundImage = gfx.nineSlice.new("assets/images/menuBackground", 7, 7, 18, 18)
-gridview:setContentInset(5, 5, 5, 5)
+gridview.backgroundImage = gfx.nineSlice.new("assets/images/textBackground", 6, 6, 18, 18)
+gridview:setContentInset(2, 2, 2, 2)
 
 function gridview:drawSectionHeader(section, x, y, width, height)
     if section == 1 then
@@ -26,7 +27,7 @@ function gridview:drawSectionHeader(section, x, y, width, height)
     elseif section == 4 then
         categoryTitle = "Flavors"
     end
-    gfx.drawText(categoryTitle, x + 10, y)
+    gfx.drawText(categoryTitle, x, y)
 end
 
 local gridviewSprite = gfx.sprite.new()
@@ -38,7 +39,7 @@ class('PauseScene').extends(PauseRoom)
 
 function PauseScene:init()
     gfx.setDrawOffset(0, 0)
-    
+
     for i in pairs(items) do
         if items[i]["found"] == true then
             items[i]["name"] = items[i]["name"]
@@ -53,20 +54,25 @@ function PauseScene:init()
     itemsFV = filter(items, { categoryID = 2 })
     itemsDairy = filter(items, { categoryID = 3 })
     itemsFlavor = filter(items, { categoryID = 4 })
-
+    gridview:setSelectedRow(1)
+    gridview:setScrollPosition(0,0)
 end
 
 function PauseScene:update()
-    gfx.setBackgroundColor(gfx.kColorWhite)
+    gfx.setFont(fontHud)
 
-    gfx.setColor(gfx.kColorWhite)
+
+    gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(0, 0, 400, 240)
     gfx.setColor(gfx.kColorBlack)
 
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    gfx.setFont(font2)
+    gfx.setFont(font1)
+    gfx.drawTextInRect(itemDesc, 208, 160, 160, 48, nil, nil, kTextAlignment.center)
+    gfx.setFont(fontHud)
 
-    gridview:drawInRect(12, 12, 380, 220)
+
+    gridview:drawInRect(16, 16, 160, 208)
 
     if pd.buttonJustPressed(pd.kButtonUp) then
         gridview:selectPreviousRow(true)
@@ -91,13 +97,13 @@ function PauseScene:update()
         gridview:selectPreviousRow(true)
     end
 
-    if gridview.needsDisplay then
-        local gridviewImage = gfx.image.new(142, 100)
-        gfx.pushContext(gridviewImage)
-        gridview:drawInRect(0, 0, 142, 100)
-        gfx.popContext()
-        gridviewSprite:setImage(gridviewImage)
-    end
+    -- if gridview.needsDisplay then
+    --     local gridviewImage = gfx.image.new(142, 100)
+    --     gfx.pushContext(gridviewImage)
+    --     gridview:drawInRect(16, 16, 192, 80)
+    --     gfx.popContext()
+    --     gridviewSprite:setImage(gridviewImage)
+    -- end
     if playdate.buttonJustPressed(playdate.kButtonB) then
         -- if location == "Lima" then
         --     limamusic:play(0)
@@ -135,10 +141,15 @@ end
 function gridview:drawCell(section, row, column, selected, x, y, width, height)
     local fontHeight = gfx.getSystemFont():getHeight()
     if selected then
-        gfx.fillRoundRect(x, y, width, height, 4)
-        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+        gfx.setColor(gfx.kColorBlack)
+        gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
+
+        gfx.setFont(fontHud)
+        gfx.setLineWidth(2)
+        gfx.drawLine(x + 16, y + height - 3, x + width - 32, y + height - 3)
+        gfx.setDitherPattern(1, gfx.image.kDitherTypeBayer8x8)
+        gfx.setLineWidth(1)
     else
-        gfx.setImageDrawMode(gfx.kDrawModeCopy)
     end
 
     function ownedItem(first, second)
@@ -146,50 +157,36 @@ function gridview:drawCell(section, row, column, selected, x, y, width, height)
     end
 
     -- table.sort(items, ownedItem)
-  
 
-    -- gfx.drawTextInRect(filter(items, { categoryID = section })[row]["name"] .. " ....  " .. tostring(filter(items, { categoryID = section })[row]["quantity"]), x - 10,
-    --     y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
-    --     kTextAlignment.right)
     if section == 1 then
-        
-        gfx.drawTextInRect(itemsMeat[row]["name"] .. " ....  " .. tostring(itemsMeat[row]["quantity"]), x - 10,
-        y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
-        kTextAlignment.right)
-  
-    elseif section == 2 then 
-        gfx.drawTextInRect(itemsFV[row]["name"] .. " ....  " .. tostring(itemsFV[row]["quantity"]), x - 10,
-        y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
-        kTextAlignment.right)
-    elseif section == 3 then 
-        gfx.drawTextInRect(itemsDairy[row]["name"] .. " ....  " .. tostring(itemsDairy[row]["quantity"]), x - 10,
-        y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
-        kTextAlignment.right)
-    elseif section == 4 then 
-        gfx.drawTextInRect(itemsFlavor[row]["name"] .. " ....  " .. tostring(itemsFlavor[row]["quantity"]), x - 10,
-        y + (height / 2 - fontHeight / 2) + 8, width, height, nil, nil,
-        kTextAlignment.right)
+        gfx.drawTextInRect(itemsMeat[row]["quantity"] .. " " .. tostring(itemsMeat[row]["name"]), x + 16,
+            y + (height / 2 - fontHeight / 2) + 0, width, height, nil, nil,
+            kTextAlignment.left)
+    elseif section == 2 then
+        gfx.drawTextInRect(itemsFV[row]["quantity"] .. " " .. tostring(itemsFV[row]["name"]), x + 16,
+            y + (height / 2 - fontHeight / 2) + 0, width, height, nil, nil,
+            kTextAlignment.left)
+    elseif section == 3 then
+        gfx.drawTextInRect(itemsDairy[row]["quantity"] .. " " .. tostring(itemsDairy[row]["name"]), x + 16,
+            y + (height / 2 - fontHeight / 2) + 0, width, height, nil, nil,
+            kTextAlignment.left)
+    elseif section == 4 then
+        gfx.drawTextInRect(itemsFlavor[row]["quantity"] .. " " .. tostring(itemsFlavor[row]["name"]), x + 16,
+            y + (height / 2 - fontHeight / 2) + 0, width, height, nil, nil,
+            kTextAlignment.left)
     end
-   
+
     if selected then
         gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-        
+
         if section == 1 then
-        gfx.drawTextInRect(itemsMeat[row]["description"], 160,
-            170, 220, 70, nil, nil,
-            kTextAlignment.left)
+            itemDesc = itemsMeat[row]["description"]
         elseif section == 2 then
-            gfx.drawTextInRect(itemsFV[row]["description"], 160,
-                170, 220, 70, nil, nil,
-                kTextAlignment.left)
+            itemDesc = itemsFV[row]["description"]
         elseif section == 3 then
-                    gfx.drawTextInRect(itemsDairy[row]["description"], 160,
-                        170, 220, 70, nil, nil,
-                        kTextAlignment.left)
+            itemDesc = itemsDairy[row]["description"]
         elseif section == 4 then
-                            gfx.drawTextInRect(itemsFlavor[row]["description"], 160,
-                                170, 220, 70, nil, nil,
-                                kTextAlignment.left)
+            itemDesc = itemsFlavor[row]["description"]
         end
     end
 end

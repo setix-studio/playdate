@@ -27,7 +27,7 @@ function InteriorShip:enter()
     gfx.setDrawOffset(0, 0)
     shipmusic:play(0)
     shipmusic:setVolume(0.5)
-
+    enterCamp = true
     paused = false
     self.levelName = levelName
     self:goToLevel("Level_0")
@@ -40,11 +40,14 @@ function InteriorShip:enter()
     kitchenMenuShow = false
     recipeMenu = false
     shipDoor()
+    removeRecipes = false
     showImage = false
     Recipes(280, 16)
+    recipelistInv = kitchenMainMenu
+    fromPop = true
 
-    returnX = nil
-    returnY = nil
+    kitchenMainMenu:setSelectedRow(1)
+    kitchenMainMenu:setScrollPosition(0, 0)
 end
 
 shiptextbox = gfx.sprite.new()
@@ -184,40 +187,30 @@ function InteriorShip:update()
 
             function kitchenMainMenu:drawCell(section, row, column, selected, x, y, width, height)
                 if selected then
-                    playdate.graphics.setColor(1)
-                    playdate.graphics.setDitherPattern(1, playdate.graphics.image.kDitherTypeNone)
+                    if kitchenMainMenu:getSelectedRow() > 1 then
+                        if kitchenMainMenu:getSelectedRow() < #recipes then
+                            gfx.setColor(gfx.kColorBlack)
+                            gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
 
 
-                    playdate.graphics.fillRect(20, 40, 160, 10)
-                    if kitchenMainMenu:getSelectedRow() == 1 then
-
-                    elseif kitchenMainMenu:getSelectedRow() ~= 1 or kitchenMainMenu:getSelectedRow() ~= #recipes then
-
-                    elseif kitchenMainMenu:getSelectedRow() >= 18 then
-                        playdate.graphics.setDitherPattern(0.5, playdate.graphics.image.kDitherTypeBayer8x8)
+                            gfx.setLineWidth(2)
+                            gfx.drawLine(x + 20, y + height - 5, x + width - 20, y + height - 5)
+                            gfx.setDitherPattern(1, gfx.image.kDitherTypeBayer8x8)
+                            gfx.setLineWidth(1)
+                        end
                     end
                     reqItems = recipes[row]["requiredItems"]
                     itemDesc = recipes[row]["description"]
-                    invItemsQty()
+                    if recipes[row]["found"] == true then
+                        invItemsQty()
+                    else
+                        invItems = "? / "
+                    end
                     recipes = recipes
                     gfx.setFont(font2)
                     imageIndex = recipes[row]["index"]
                 else
                     gfx.setFont(font1)
-                    -- playdate.graphics.setColor(1)
-                    -- playdate.graphics.setDitherPattern(0.5, playdate.graphics.image.kDitherTypeBayer8x8)
-
-
-                    -- if kitchenMainMenu:getSelectedRow() == 1 then
-                    --     playdate.graphics.fillRect(20, 40, 160, 20)
-                    --     playdate.graphics.fillRect(20, 60, 160, 20)
-                    -- elseif kitchenMainMenu:getSelectedRow() ~= 1 or kitchenMainMenu:getSelectedRow() ~= #recipes then
-                    --     playdate.graphics.fillRect(20, 20, 160, 20)
-                    --     playdate.graphics.fillRect(20, 60, 160, 20)
-                    -- elseif kitchenMainMenu:getSelectedRow() >= 18 then
-                    --     playdate.graphics.fillRect(20, 20, 160, 60)
-                    --     playdate.graphics.fillRect(20, 40, 160, 30)
-                    -- end
                 end
 
 
@@ -226,7 +219,7 @@ function InteriorShip:update()
                 local fontHeight = gfx.getSystemFont():getHeight()
 
 
-                kitchenlist = gfx.drawTextInRect(recipes[row]["name"] .. " ... " .. recipes[row]["quantity"], x,
+                kitchenlist = gfx.drawTextInRect(recipes[row]["name"] .. " " .. recipes[row]["quantity"], x,
                     y + (height / 2 - fontHeight / 2) + 3,
                     width,
                     height, nil, nil,
@@ -358,6 +351,7 @@ function InteriorShip:update()
 
     if doorEnter == true then
         shipmusic:stop()
+
         if previouslevel == "Lima" then
             levelNum = 1
         elseif previouslevel == "Laven" then
@@ -402,7 +396,8 @@ function InteriorShip:goToLevel(levelName)
 
     gfx.sprite.removeAll()
 
-
+    cosmoX = returnX
+    cosmoY = returnY
 
     _G.isMoving = false
     for layerName, layer in pairs(ldtk.get_layers(levelName)) do
@@ -411,13 +406,13 @@ function InteriorShip:goToLevel(levelName)
             if levelName == "Level_1" then
                 roomNumber = 1
             elseif levelName == "Level_2" then
-                roomNumber = 2
+                roomNumber = 1
             elseif levelName == "Level_3" then
-                roomNumber = 3
+                roomNumber = 1
             elseif levelName == "Level_4" then
-                roomNumber = 4
+                roomNumber = 1
             elseif levelName == "Level_5" then
-                roomNumber = 5
+                roomNumber = 1
             end
             local layerSprite = gfx.sprite.new()
             layerSprite:setTilemap(tilemap)
@@ -489,53 +484,5 @@ function shipDoor:update()
         self:setTag(TAGS.Door)
 
         self:changeState("open")
-    end
-end
-
-function invItemsQty()
-    if kitchenMainMenu:getSelectedRow() == 1  or kitchenMainMenu:getSelectedRow() == #recipes then
-        invItems = ""
-    elseif kitchenMainMenu:getSelectedRow() == 2 then
-        invItems = items[1].quantity ..
-            "\n" ..
-            items[10].quantity .. "\n" .. items[27].quantity .. "\n" .. items[30].quantity .. "\n" .. items[40].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 3 then
-        invItems = items[2].quantity .. "\n" .. items[13].quantity .. "\n" .. items[42].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 4 then
-        invItems = items[3].quantity .. "\n" .. items[42].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 5 then
-        invItems = items[1].quantity ..
-            "\n" ..
-            items[10].quantity .. "\n" .. items[30].quantity .. "\n" .. items[26].quantity .. "\n" .. items[42].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 6 then
-        invItems = items[9].quantity ..
-            "\n" ..
-            items[10].quantity .. "\n" .. items[30].quantity .. "\n" .. items[26].quantity .. "\n" .. items[40].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 7 then
-        invItems = items[1].quantity .. "\n" .. items[10].quantity .. "\n" .. items[8].quantity .. "\n" .. items[26].quantity .. "\n" .. items[31].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 8 then
-        invItems = items[30].quantity .. "\n" .. items[31].quantity .. "\n" .. items[10].quantity .. "\n" .. items[26].quantity 
-    elseif kitchenMainMenu:getSelectedRow() == 9 then
-        invItems = items[27].quantity .. "\n" .. items[30].quantity .. "\n" .. items[29].quantity 
-    elseif kitchenMainMenu:getSelectedRow() == 10 then
-        invItems = items[8].quantity .. "\n" .. items[31].quantity .. "\n" .. items[42].quantity 
-    elseif kitchenMainMenu:getSelectedRow() == 11 then
-        invItems = items[1].quantity .. "\n" .. items[9].quantity .. "\n" .. items[8].quantity .. "\n" .. items[42].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 12 then
-        invItems = items[10].quantity .. "\n" .. items[29].quantity .. "\n" .. items[42].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 13 then
-        invItems = items[1].quantity .. "\n" .. items[8].quantity .. "\n" .. items[27].quantity .. "\n" .. items[28].quantity .. "\n" .. items[42].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 14 then
-        invItems = items[6].quantity .. "\n" .. items[26].quantity .. "\n" .. items[41].quantity 
-    elseif kitchenMainMenu:getSelectedRow() == 15 then
-        invItems = items[26].quantity .. "\n" .. items[41].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 16 then
-        invItems = items[11].quantity .. "\n" .. items[29].quantity .. "\n" .. items[41].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 17 then
-        invItems = items[12].quantity .. "\n" .. items[42].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 18 then
-        invItems = items[1].quantity .. "\n" .. items[15].quantity .. "\n" .. items[6].quantity .. "\n" .. items[11].quantity .. "\n" .. items[40].quantity
-    elseif kitchenMainMenu:getSelectedRow() == 19 then
-        invItems = items[9].quantity .. "\n" .. items[31].quantity .. "\n" .. items[42].quantity
     end
 end

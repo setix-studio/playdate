@@ -11,7 +11,9 @@ import "CoreLibs/animation"
 
 -- Libraries
 import "scripts/libraries/AnimatedSprite"
+import "scripts/libraries/gfxp"
 import "scripts/libraries/LDtk"
+import "scripts/libraries/sequence"
 
 --scripts
 
@@ -41,27 +43,31 @@ import "scripts/pdDialogue"
 import "scripts/playout"
 import "scripts/pdParticles"
 import "scripts/ship"
+import "scripts/Campfire"
 import "scripts/insideShip"
+import "scripts/insideBuildings"
 import "scripts/gameOverScene"
 import "scripts/objects"
 import "scripts/NPC"
 import "scripts/quests"
 import "scripts/questScene"
+import "scripts/reciperolodex"
+import "scripts/CampfireScene"
 
 import "scripts/sceneManager"
 
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
-font1 = gfx.font.new("font/dpaint_8")
-font1:setLeading(5)
+font1 = gfx.font.new("font/CourierPrime-Regular-11")
+font1:setLeading(-1)
 font1:setTracking(1)
-font2 = gfx.font.new("font/topaz_11")
-font2:setLeading(5)
+font2 = gfx.font.new("font/CourierPrime-Regular-11")
+font2:setLeading(-1)
 font2:setTracking(1)
-fontHud = gfx.font.new("font/dpaint_8")
-fontHud:setLeading(3)
-fontHud:setTracking(1)
+fontHud = gfx.font.new("font/CourierPrime-Regular-9")
+fontHud:setLeading(0)
+fontHud:setTracking(0)
 
 manager = Manager()
 manager:hook()
@@ -90,7 +96,7 @@ pdDialogue.setup({
 
 
 
-TAGS               = {
+TAGS      = {
     Pickup = 1,
     Player = 5,
     Cosmo = 5,
@@ -105,10 +111,11 @@ TAGS               = {
     Object = 11,
     Door = 12,
     DoorOpen = 13,
-    NPC = 14
+    NPC = 14,
+    intDoor = 15
 }
 
-Z_INDEXES          = {
+Z_INDEXES = {
     BG = -100,
     Prop = 5,
     Enemy = 5,
@@ -123,6 +130,7 @@ Z_INDEXES          = {
 function pd.update()
     gfx.sprite.update()
     pd.timer.updateTimers()
+    sequence.update()
 
     pdDialogue.update()
     --playdate.drawFPS(0, 0) -- FPS widget
