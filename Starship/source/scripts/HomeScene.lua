@@ -62,11 +62,19 @@ gridviewSprite:moveTo(100, 70)
 gridviewSprite:add()
 
 function gridview:drawCell(section, row, column, selected, x, y, width, height)
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     if selected then
-        gfx.fillRoundRect(x, y, width, height, 4)
-        gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+        
+                gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
+                gfx.setLineWidth(2)
+                gfx.drawLine(x + 20, y + height - 5, x + width - 20, y + height - 5)
+                gfx.setDitherPattern(1, gfx.image.kDitherTypeBayer8x8)
+                gfx.setLineWidth(1)
+       
+        gfx.setFont(font2)
+       
     else
-        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+        gfx.setFont(font1)
     end
     local fontHeight = gfx.getSystemFont():getHeight()
     gfx.drawTextInRect(options[row], x, y + (height / 2 - fontHeight / 2) + 5, width, height, nil, nil,

@@ -1,7 +1,7 @@
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
-local gridview = pd.ui.gridview.new(160, 16)
+local gridview = pd.ui.gridview.new(150, 16)
 
 
 

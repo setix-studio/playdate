@@ -3,6 +3,7 @@ local gfx <const> = playdate.graphics
 
 local ldtk <const> = LDtk
 
+
 class('CampfireScene').extends(Room)
 
 function CampfireScene:enter()
@@ -25,8 +26,8 @@ function CampfireScene:enter()
     recipeMain = filter(recipes, { categoryID = 1 })
     levelX = levelWidth
     gfx.setDrawOffset(0, 0)
-    shipmusic:play(0)
-    shipmusic:setVolume(0.5)
+    campmusic:play(0)
+    campmusic:setVolume(0.5)
     enterCamp = false
     paused = false
     self.levelName = levelName
@@ -41,7 +42,9 @@ function CampfireScene:enter()
     shipDoor()
     removeRecipes = false
     showImage = false
-
+infoText = ""
+infoX = -16
+infoY = -16
     recipelistInv = kitchenMainMenu
     fromPop = true
 end
@@ -125,6 +128,9 @@ function CampfireScene:update()
             items[15].quantity .. "\n" .. items[6].quantity .. "\n" .. items[11].quantity .. "\n" .. items[40].quantity
         gfx.drawTextInRect(invItems, 266, 144, 192, 96, nil, nil, kTextAlignment.left)
         gfx.drawTextInRect(reqItems, 282, 144, 192, 96, nil, nil, kTextAlignment.left)
+        gfx.drawTextAligned(infoText, infoX, infoY, kTextAlignment.left)
+        gfx.drawTextAligned("$" .. credits, 384, 16, kTextAlignment.right)
+
         gfx.setImageDrawMode(gfx.kDrawModeXOR)
         function saveMenu:drawCell(section, row, column, selected, x, y, width, height)
             if selected then
@@ -155,13 +161,12 @@ function CampfireScene:update()
             saveMenu:selectNextRow(true)
         end
 
+        gfx.setColor(gfx.kColorWhite)
 
-
+        
 
         if saveMenu:getSelectedRow() == 1 then
-            if pd.buttonJustPressed(pd.kButtonA) and showCampMenu == true then
-                shiptextbox:add()
-
+            if pd.buttonJustReleased(pd.kButtonA) and showCampMenu == true then
                 stockedIng = false
                 if items[1].quantity > 5 and
                     items[15].quantity > 5 and
@@ -174,52 +179,58 @@ function CampfireScene:update()
 
                 if stockedIng == true then
                     Recipes:addInventory("Trail Mix")
-                    shiptextbox.currentText = "+1 Trail Mix"
+                    infoText = "+1 Trail Mix"
+                    infoX = 16
+                    infoY = 16
+                        textboxTimer = pd.timer.performAfterDelay(1000, function()
+                            textboxActive = false
+                            infoText = ""
+                            stockedIng = false
+                            infoX = -16
+                    infoY = -16
+                        end)
 
-
-                    shiptextclose = pd.timer.performAfterDelay(2000, function()
-                        stockedIng = false
-
-                        shiptextbox.currentText = ""
-
-                        shiptextbox:remove()
-
-                        paused = false
-                    end)
+                   
                 elseif stockedIng == false then
-                    shiptextbox.currentText = "Not enough ingredients"
+        infoText = "Not Enough Ingredients."
+        infoX = 16
+        infoY = 16
 
                     shiptextclose = pd.timer.performAfterDelay(2000, function()
                         shiptextbox.currentText = ""
                         stockedIng = false
-
-                        shiptextbox:remove()
-
+                        infoText = ""
+                        infoX = -16
+                    infoY = -16
                         paused = false
                     end)
                 end
+                shiptextbox:add()
             end
         elseif saveMenu:getSelectedRow() == 2 then
-            if pd.buttonJustPressed(pd.kButtonA) and showCampMenu == true then
+            if pd.buttonJustReleased(pd.kButtonA) and showCampMenu == true then
                 saveData = true
 
+                infoText = "Game Saved."
+                infoX = 16
+                infoY = 16
 
-                shiptextbox:add()
 
                 saveGameData()
+                
 
-                shiptextbox.currentText = "Game Saved."
-                playerHP                = playerMaxHP
-                returnRoom              = levelName
-                roomNumber              = returnRoomNumber
-                shiptextclose           = pd.timer.performAfterDelay(2000, function()
+                playerHP      = playerMaxHP
+                returnRoom    = levelName
+                roomNumber    = returnRoomNumber
+                shiptextclose = pd.timer.performAfterDelay(2000, function()
                     showCampMenu = false
                     shiptextbox.currentText = ""
-
+                    infoText = ""
                     shiptextbox:remove()
-
+                    infoX = -16
+                    infoY = -16
                     paused = false
-                    shipmusic:stop()
+                    campmusic:stop()
 
                     if previouslevel == "Lima" then
                         levelNum = 1
@@ -245,7 +256,7 @@ function CampfireScene:update()
                 shiptextbox:remove()
 
                 paused = false
-                shipmusic:stop()
+                campmusic:stop()
 
                 if previouslevel == "Lima" then
                     levelNum = 1

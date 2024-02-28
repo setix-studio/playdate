@@ -12,7 +12,7 @@ function NPC:init(x, y, entity)
     NPC.super.init(self, npcImageTable)
     self:addState("idle", self.NPCImage, self.NPCImage)
     self.currentState = "idle"
-    self:setZIndex(10)
+    self:setZIndex(self.y + 2)
 
 
 
@@ -27,11 +27,6 @@ function NPC:init(x, y, entity)
     cosmoY = 0
 
     queststartSFX = pd.sound.fileplayer.new('assets/sounds/queststart')
-
-    for i in pairs(quests) do
-        quests[i]["introCopy"] = quests[i]["introCopy"]
-        quests[i]["inProgressCopy"] = quests[i]["inProgressCopy"]
-    end
 end
 
 function NPC:collisionResponse(other)
@@ -40,6 +35,7 @@ end
 
 function NPC:update()
     self:updateAnimation()
+    self:setZIndex(self.y + 2)
     npcLine = pd.geometry.distanceToPoint(self.x, self.y, cosmoX, cosmoY)
 
     if npcLine <= 32 then
@@ -59,7 +55,6 @@ function NPC:update()
     else
         showIntBtn = false
     end
-    cosmoSortOrder(self)
 end
 
 function NPCText(self)
@@ -99,6 +94,7 @@ function NPCText(self)
 end
 
 function questStart(self, i)
+    quests[i]["found"] = true
     quests[i]["intro"] = true
     quests[i]["inProgress"] = true
 
@@ -122,56 +118,104 @@ function questStart(self, i)
 end
 
 function questInProgress(self, i)
-    for j in pairs(items) do
-        if quests[i]["gatherItem"] == items[j]["name"] then
-            if items[j]["quantity"] >= quests[i]["quantity"] then
-                pdDialogue.say(quests[i]["turninCopy"],
-                    {
-                        width = 360,
-                        height = 60,
-                        x = -cameraX + 20,
-                        y = -cameraY + 160,
-                        padding = 10,
-                        nineSlice = textbg,
-                        onClose = function()
-                            textboxTimer = pd.timer.performAfterDelay(1000, function()
-                                textboxActive = false
-                                hudShow = true
-                            end)
-                        end
-                    })
-                items[j]["quantity"] = items[j]["quantity"] - quests[i]["quantity"]
-                print("Quest Complete")
-                quests[i]["complete"] = true
-                quests[i]["inProgress"] = false
-            else
-                pdDialogue.say(quests[i]["inProgressCopy"],
-                    {
-                        width = 360,
-                        height = 60,
-                        x = -cameraX + 20,
-                        y = -cameraY + 160,
-                        padding = 10,
-                        nineSlice = textbg,
-                        onClose = function()
-                            textboxTimer = pd.timer.performAfterDelay(1000, function()
-                                textboxActive = false
-                                hudShow = true
-                                print("Quest In Progress")
-                            end)
-                        end
-                    })
+    if quests[i]["type"] == "gather" then
+        for j in pairs(items) do
+            if quests[i]["gatherItemID"] == items[j]["itemID"] then
+                if items[j]["quantity"] >= quests[i]["quantity"] then
+                    pdDialogue.say(quests[i]["turninCopy"],
+                        {
+                            width = 360,
+                            height = 60,
+                            x = -cameraX + 20,
+                            y = -cameraY + 160,
+                            padding = 10,
+                            nineSlice = textbg,
+                            onClose = function()
+                                textboxTimer = pd.timer.performAfterDelay(1000, function()
+                                    textboxActive = false
+                                    hudShow = true
+                                end)
+                            end
+                        })
+                    items[j]["quantity"] = items[j]["quantity"] - quests[i]["quantity"]
+                    print("Quest Complete")
+                    quests[i]["complete"] = true
+                    quests[i]["inProgress"] = false
+                else
+                    pdDialogue.say(quests[i]["inProgressCopy"],
+                        {
+                            width = 360,
+                            height = 60,
+                            x = -cameraX + 20,
+                            y = -cameraY + 160,
+                            padding = 10,
+                            nineSlice = textbg,
+                            onClose = function()
+                                textboxTimer = pd.timer.performAfterDelay(1000, function()
+                                    textboxActive = false
+                                    hudShow = true
+                                    print("Quest In Progress")
+                                end)
+                            end
+                        })
+                end
+            end
+        end
+    elseif quests[i]["type"] == "craft" then
+        for j in pairs(recipes) do
+            if quests[i]["gatherItem"] == recipes[j]["name"] then
+                if recipes[j]["quantity"] >= quests[i]["quantity"] then
+                    pdDialogue.say(quests[i]["turninCopy"],
+                        {
+                            width = 360,
+                            height = 60,
+                            x = -cameraX + 20,
+                            y = -cameraY + 160,
+                            padding = 10,
+                            nineSlice = textbg,
+                            onClose = function()
+                                textboxTimer = pd.timer.performAfterDelay(1000, function()
+                                    textboxActive = false
+                                    hudShow = true
+                                end)
+                            end
+                        })
+                    recipes[j]["quantity"] = recipes[j]["quantity"] - quests[i]["quantity"]
+                    print("Quest Complete")
+                    quests[i]["complete"] = true
+                    quests[i]["inProgress"] = false
+                else
+                    pdDialogue.say(quests[i]["inProgressCopy"],
+                        {
+                            width = 360,
+                            height = 60,
+                            x = -cameraX + 20,
+                            y = -cameraY + 160,
+                            padding = 10,
+                            nineSlice = textbg,
+                            onClose = function()
+                                textboxTimer = pd.timer.performAfterDelay(1000, function()
+                                    textboxActive = false
+                                    hudShow = true
+                                    print("Quest In Progress")
+                                end)
+                            end
+                        })
+                end
             end
         end
     end
-
     if quests[i]["complete"] == true then
         if quests[i]["rewardReceived"] == false then
             if quests[i]["recipeReceived"] == false then
                 Recipes:addRecipe(quests[i]["reward"])
                 quests[i]["recipeReceived"] = true
             end
-            Items:addItem(quests[i]["reward"], quests[i]["rewardQty"])
+            if quests[i]["type"] == "gather" then
+                Items:addItem(quests[i]["reward"], quests[i]["rewardQty"])
+            elseif quests[i]["type"] == "craft" then
+                credits = credits + quests[i]["rewardCredits"]
+            end
             quests[i]["rewardReceived"] = true
         end
     end

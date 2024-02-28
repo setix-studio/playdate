@@ -108,18 +108,20 @@ function rolodex:drawCell(section, row, column, selected, x, y, width, height)
                         invItems = "? / "
                     end
         imageIndex = rolodexCards[row]["index"]
-        
+        rolodexAlignment = kTextAlignment.center
+        rolodexX = 0
     else
-    
+        rolodexAlignment = kTextAlignment.left
+        rolodexX = 10
         gfx.setFont(fonthud)
     end
-    gfx.drawLine(x, y + height, x + width, y + height)
+    gfx.drawLine(x, y + height, x + width - 5, y + height)
 
     
 
-    gfx.drawTextInRect(rolodexCards[row]["name"], x,
+    gfx.drawTextInRect(rolodexCards[row]["name"], x + rolodexX,
         y + (height / 2 - fontHeight / 2), width, height, nil, nil,
-        kTextAlignment.center)
+        rolodexAlignment)
 end
 
 class('rolodexBackground').extends(gfx.sprite)

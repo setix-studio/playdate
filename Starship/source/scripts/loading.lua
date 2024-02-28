@@ -8,7 +8,7 @@ function LoadingScene:init()
     gfx.sprite.removeAll()
 
     if levelNum == nil then
-        levelNum = 0
+        levelNum = 1
     end
     if levelNum == 0 then
         ldtk_file = "levels/world.ldtk"
@@ -20,7 +20,7 @@ function LoadingScene:init()
         levelScene = Lima()
         levelName = "Level_1"
     elseif levelNum == 2 then
-        ldtk_file = "levels/planet_laven.ldtk"
+        ldtk_file = "levels/world_lima.ldtk"
         use_ldtk_fastloading = true
         levelScene = Laven()
     elseif levelNum == 5 then

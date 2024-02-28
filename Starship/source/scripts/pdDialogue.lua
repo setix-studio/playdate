@@ -21,7 +21,7 @@ function pdDialogue.wrap(lines, width, font)
     width: the maximum width of each line (in pixels)
     font: the font to use (optional, uses default font if not provided)
     ]]
-       --
+    --
     font = font or gfx.getFont()
 
     local result = {}
@@ -64,7 +64,7 @@ function pdDialogue.window(text, startIndex, height, font)
     height: the height (in pixels) of the window
     font: the font to use (optional, uses default font if not provided)
     ]]
-       --
+    --
 
     font = font or gfx.getFont()
 
@@ -89,7 +89,7 @@ function pdDialogue.paginate(lines, height, font)
         height: height to limit text (in pixels)
         font: optional, will get current font if not provided
     ]]
-       --
+    --
 
     local result = {}
     local currentLine = {}
@@ -134,7 +134,7 @@ function pdDialogue.process(text, width, height, font)
     height: height to limit text (in pixels)
     font: optional, will get current font if not provided
     ]]
-       --
+    --
     local lines = {}
     font = font or gfx.getFont()
 
@@ -174,7 +174,7 @@ function pdDialogueSprite:init(dialogue)
     --[[
         dialogue: an instance of pdDialogueBox
     ]]
-       --
+    --
     pdDialogueSprite.super.init(self)
     self.image = gfx.image.new(dialogue.width, dialogue.height)
     self:setImage(self.image)
@@ -235,7 +235,7 @@ function pdDialogueBox:init(text, width, height, font)
         height: height of dialogue box (in pixels)
         font: font to use for drawing text
     ]]
-       --
+    --
 
     pdDialogueBox.super.init(self)
     self.speed = 0.5 -- char per frame
@@ -750,7 +750,7 @@ function pdDialogue.say(text, config)
     text: string (can be multiline) to say
     config: optional table, will provide temporary overrides for this one dialogue box
     ]]
-       --
+    --
     if config ~= nil then
         pdDialogue.DialogueBox_Say_Default, pdDialogue.DialogueBox_Say_Nils = pdDialogue.setup(config)
     end

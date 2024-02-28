@@ -33,8 +33,8 @@ function Cosmo:init(x, y, gameManager)
     cosmoX = self.x
     cosmoY = self.y
     self:playAnimation()
-walking = false
-walkingCounter = 0
+    walking = false
+    walkingCounter = 0
     bMenuShow = false
     showIntBtn = false
     -- Sprite properties
@@ -66,7 +66,7 @@ walkingCounter = 0
     self.TextboxShow = false
     playersteps = pd.sound.fileplayer.new('assets/sounds/step_3')
     playerheal = pd.sound.fileplayer.new('assets/sounds/heal')
-    playersteps:setVolume(.2)
+    playersteps:setVolume(.1)
     stepTimer = 0
 
     --SFX
@@ -101,7 +101,17 @@ walkingCounter = 0
     else
         playerHP = playerHP
     end
+    itemcount = 0
+    itemoptions = {}
+    for _, row in ipairs(recipes) do
+        if row["category"] == "Snacks" then
+            if row["quantity"] > 0 then
+                itemcount = itemcount + row["quantity"]
 
+                table.insert(itemoptions, row.name .. " " .. itemcount)
+            end
+        end
+    end
     CosmoInteractBtn()
     bMenu()
 end
@@ -179,6 +189,32 @@ function Cosmo:update()
                     self.yVelocity = 0
 
                     manager:push(rolodexScene())
+                end
+                if playdate.buttonJustPressed(playdate.kButtonRight) then
+                    if playerHP < playerMaxHP then
+                        playerHP = playerHP + math.ceil(playerMaxHP / 10)
+                        if playerHP > playerMaxHP then
+                            playerHP = playerMaxHP
+                        end
+                        playerheal:play(1)
+                        itemcount = itemcount - 1
+                        for _, row in ipairs(recipes) do
+                            if row["category"] == "Snacks" then
+                                if row["quantity"] > 0 then
+                                    row["quantity"] = row["quantity"] - 1
+                                    table.remove(itemoptions, row.row)
+                                    table.insert(itemoptions, row.name .. " " .. row["quantity"])
+                                end
+
+
+                                recipeItem = row.name
+                                if itemcount <= 0 then
+                                    table.remove(itemoptions, row.row)
+                                    itemoptions = itemoptions
+                                end
+                            end
+                        end
+                    end
                 end
             elseif pd.buttonJustReleased(pd.kButtonB) then
                 bMenuShow = false
@@ -479,7 +515,7 @@ function bMenu:init(x, y)
 
     self:setCenter(0.5, 0.5)
     self:add()
-    self:setZIndex(Z_INDEXES.Player)
+    self:setZIndex(800)
     self:moveTo(-100, -100)
 end
 
@@ -487,7 +523,7 @@ function bMenu:update()
     self:updateAnimation()
     if paused == false then
         if bMenuShow == true then
-            self:moveTo(cosmoX, cosmoY - 32)
+            self:moveTo(cosmoX, cosmoY)
         elseif bMenuShow == false then
             self:moveTo(-100, -100)
         end
@@ -497,10 +533,11 @@ end
 function BattleTimer()
     battleFade = true
     returnRoomNumber = roomNumber
-    battlestartmusic:play()
+    --battlestartmusic:setRate(1.5)
+    battlestartmusic:play(1)
     returnX = cosmoX
     returnY = cosmoY
-    battlestartmusic:setVolume(0.5)
+    battlestartmusic:setVolume(.5)
     BattleEnterTimer = pd.timer.performAfterDelay(2300, function()
 
     end)
@@ -511,7 +548,7 @@ function BattleFadeImage:init(x, y)
     local loadingImage = gfx.image.new("assets/images/battleintro1")
     self:setZIndex(1000)
     self:setImage(loadingImage)
-    self.speed = 4.8
+    self.speed = 10
     self.x = -cameraX + 400
     self.y = -cameraY
     self:moveTo(self.x, self.y)
@@ -527,8 +564,8 @@ function BattleFadeImage:update()
         returnY = cosmoY
         returnRoom = levelName
         self.x -= self.speed
-        if self.x <= cosmoX - 300 then
-            self.x = cosmoX - 300
+        if self.x <= -cameraX - 20 then
+            self.x = -cameraX - 20
             battlestartmusic:stop()
             manager:push(BattleScene())
         end
@@ -548,11 +585,12 @@ function cosmoHUD()
     if hudShow == true then
         if walking == false then
             walkingCounter += 2
-           if walkingCounter >= 100 then
-            walkingCounter = 100
-            hudUI()
-           end
-        else walkingCounter = 0
+            if walkingCounter >= 100 then
+                walkingCounter = 100
+                hudUI()
+            end
+        else
+            walkingCounter = 0
         end
     end
 end

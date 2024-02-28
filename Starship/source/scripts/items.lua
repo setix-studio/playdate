@@ -15,8 +15,8 @@ function Items:init(x, y, entity)
 
     if self.itemName == "MeatyChunks" then
         itemChance = 30
-        imagetable = gfx.imagetable.new("assets/images/meatstalk-table-16-16")
-        self:setCollideRect(2, 2, 10, 12)
+        imagetable = gfx.imagetable.new("assets/images/meatstalk-table-32-32")
+        self:setCollideRect(6, 8, 17, 17)
         self.itemPName = "Meaty Chunks"
         self.enemyName = "Meaty"
     elseif self.itemName == "Berries" then
@@ -46,13 +46,13 @@ function Items:init(x, y, entity)
     elseif self.itemName == "Nuts" then
         itemChance = 20
         imagetable = gfx.imagetable.new("assets/images/legume-table-32-32")
-        self:setCollideRect(2, 2, 10, 12)
+        self:setCollideRect(9, 5, 13, 20)
         self.itemPName = "Nuts"
         self.enemyName = "Loony Legume"
     elseif self.itemName == "Nanners" then
         itemChance = 20
         imagetable = gfx.imagetable.new("assets/images/banana-table-32-32")
-        self:setCollideRect(2, 2, 10, 12)
+        self:setCollideRect(10, 5, 11, 20)
         self.itemPName = "Nanners"
         self.enemyName = "Banana Bro"
     else
@@ -140,9 +140,12 @@ function Items:update()
             elseif cosmoX <= self.x and cosmoY >= self.y then
                 self.x -= enemySpeed
                 self.y += enemySpeed
+
+                self:setImageFlip(gfx.kImageFlippedX)
             elseif cosmoX <= self.x and cosmoY <= self.y then
                 self.x -= enemySpeed
                 self.y -= enemySpeed
+                self:setImageFlip(gfx.kImageFlippedX)
             end
         else
             if self.touchingWall == true or self.touchingCeiling == true or self.touchingGround == true then

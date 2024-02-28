@@ -166,6 +166,10 @@ function InteriorShip:update()
         end
     end
     if activeArea == "kitchen" then
+        if pd.buttonJustPressed(pd.kButtonA) then
+             showMenu = true
+        paused = true
+        end
         if showMenu == true then
             showImage = true
             kitchenMainMenu:drawInRect(16, 16, 192, 80)
@@ -178,7 +182,7 @@ function InteriorShip:update()
 
             gfx.setImageDrawMode(gfx.kDrawModeNXOR)
 
-            gfx.setFont(font1)
+            gfx.setFont(fontHud)
 
             gfx.drawTextInRect(invItems, 16, 160, 192, 96, nil, nil, kTextAlignment.left)
             gfx.drawTextInRect(reqItems, 32, 160, 192, 96, nil, nil, kTextAlignment.left)
@@ -257,6 +261,10 @@ function InteriorShip:update()
 
 
     if activeArea == "bed" then
+        if pd.buttonJustReleased(pd.kButtonA) then
+            showMenu = true
+       paused = true
+       end
         if showMenu == true then
             saveoptions = { "Save" }
             saveMenu:drawInRect(20, 190, 102, 30)
@@ -269,6 +277,8 @@ function InteriorShip:update()
 
 
             function saveMenu:drawCell(section, row, column, selected, x, y, width, height)
+            gfx.setFont(fontHud)
+
                 if selected then
                     gfx.setColor(gfx.kColorBlack)
 
@@ -296,7 +306,7 @@ function InteriorShip:update()
             if saveMenu:getSelectedRow() == 1 then
                 if pd.buttonJustPressed(pd.kButtonA) and showMenu == true then
                     saveData = true
-
+                
 
                     shiptextbox:add()
 
@@ -325,10 +335,7 @@ function InteriorShip:update()
             end
         end
     end
-    if pd.buttonJustPressed(pd.kButtonA) and showMenu == false and activeArea ~= "cockpit" then
-        showMenu = true
-        paused = true
-    end
+    
     -- if pd.buttonJustPressed(pd.kButtonB) and showMenu == false then
     --     if previouslevel == "Lima" then
     --         levelNum = 1

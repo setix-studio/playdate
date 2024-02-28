@@ -10,8 +10,10 @@ function Objects:init(x, y, entity)
 
     if self.objectName == "Tree" then
         imagetable = gfx.imagetable.new("assets/images/tree-table-48-48")
-    else
-        imagetable = gfx.imagetable.new("assets/images/tree-table-48-48")
+        self:setCollideRect(18, 37, 11, 5)
+    elseif self.objectName == "StaticBush" then
+        imagetable = gfx.imagetable.new("assets/images/bush-table-32-32")
+        self:setCollideRect(1, 15, 30, 5)
     end
 
     Objects.super.init(self, imagetable)
@@ -28,7 +30,7 @@ function Objects:init(x, y, entity)
 
     self:setZIndex(self.y)
     self:setTag(TAGS.Object)
-    self:setCollideRect(18, 37, 11, 5)
+    
 end
 
 function Objects:update()

@@ -28,7 +28,7 @@ function Lima:enter()
     limamusic:play(0)
     limamusic:setVolume(0.5)
     print(returnX, returnY)
-enterCamp = true
+    enterCamp = true
     bannerTimer = true
     areaName = "Hanger"
 
@@ -52,7 +52,7 @@ enterCamp = true
             roomNumber = i
         end
     end
-   
+
 
     textY = 0
     self:goToLevel("Level_" .. returnRoomNumber)
@@ -66,7 +66,7 @@ end
 
 function Lima:update()
     cosmoHUD()
-   
+
     if doorEnter == true then
         self:goToLevel(doorWayName)
         self.cosmo = Cosmo(16 * 10, 16 * 9, self)
@@ -83,7 +83,7 @@ function Lima:enterRoom(direction)
     self.cosmo:add()
     CosmoInteractBtn()
     hudShow = true
-  
+
     enterCamp = true
 
     textY = 0
@@ -211,6 +211,8 @@ function Lima:goToLevel(levelName)
             NPC(entityX, entityY, entity)
         elseif entityName == "Campfire" then
             Campfire(entityX, entityY, entity)
+        elseif entityName == "Blockade" then
+            Blockade(entityX, entityY, entity)
         end
     end
 end
@@ -223,53 +225,52 @@ function playdate.gameWillPause()
         location = location
     end
     gfx.lockFocus(img)
-    if location == "Lima" then
-        local bgRect = playdate.geometry.rect.new(10, 10, 180, 220)
-        local bgRectBorder = playdate.geometry.rect.new(15, 15, 170, 210)
-        local limaRoom1 = playdate.geometry.rect.new(62, 74, 48, 32)
-        local limaRoom2 = playdate.geometry.rect.new(109, 74, 32, 48)
-        local limaRoom3 = playdate.geometry.rect.new(62, 121, 48, 32)
-        local limaRoom4 = playdate.geometry.rect.new(109, 121, 32, 24)
-        local limaRoom5 = playdate.geometry.rect.new(109, 144, 24, 32)
-        local limaRoom6 = playdate.geometry.rect.new(110, 121, 24, 32)
-        local limaRoom7 = playdate.geometry.rect.new(110, 121, 24, 32)
-        gfx.setColor(gfx.kColorBlack)
-        gfx.fillRoundRect(bgRect, 5)
-        gfx.setLineWidth(1)
-        gfx.setColor(gfx.kColorWhite)
-        gfx.drawRoundRect(bgRectBorder, 5)
+    --if location == "Lima" then
+    --     local bgRect = playdate.geometry.rect.new(10, 10, 180, 220)
+    --     local bgRectBorder = playdate.geometry.rect.new(15, 15, 170, 210)
+    --     local limaRoom1 = playdate.geometry.rect.new(62, 74, 48, 32)
+    --     local limaRoom2 = playdate.geometry.rect.new(109, 74, 32, 48)
+    --     local limaRoom3 = playdate.geometry.rect.new(62, 121, 48, 32)
+    --     local limaRoom4 = playdate.geometry.rect.new(109, 121, 32, 24)
+    --     local limaRoom5 = playdate.geometry.rect.new(109, 144, 24, 32)
+    --     local limaRoom6 = playdate.geometry.rect.new(110, 121, 24, 32)
+    --     local limaRoom7 = playdate.geometry.rect.new(110, 121, 24, 32)
+    --     gfx.setColor(gfx.kColorBlack)
+    --     gfx.fillRoundRect(bgRect, 5)
+    --     gfx.setLineWidth(1)
+    --     gfx.setColor(gfx.kColorWhite)
+    --     gfx.drawRoundRect(bgRectBorder, 5)
 
-        gfx.setFont(fontHud)
-        gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-        gfx.drawTextAligned(string.upper(location), 101, 50, kTextAlignment.center)
+    --     gfx.setFont(fontHud)
+    --     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    --     gfx.drawTextAligned(string.upper(location), 101, 50, kTextAlignment.center)
 
 
-        gfx.drawRect(limaRoom1)
-        gfx.drawRect(limaRoom2)
-        gfx.drawRect(limaRoom3)
-        gfx.drawRect(limaRoom4)
-        gfx.drawRect(limaRoom5)
-        gfx.drawRect(limaRoom6)
-        gfx.drawRect(limaRoom7)
+    --     gfx.drawRect(limaRoom1)
+    --     gfx.drawRect(limaRoom2)
+    --     gfx.drawRect(limaRoom3)
+    --     gfx.drawRect(limaRoom4)
+    --     gfx.drawRect(limaRoom5)
+    --     gfx.drawRect(limaRoom6)
+    --     gfx.drawRect(limaRoom7)
 
-        if roomNumber == 1 then
-            gfx.fillRect(limaRoom1)
-        elseif roomNumber == 2 then
-            gfx.fillRect(limaRoom2)
-        elseif roomNumber == 3 then
-            gfx.fillRect(limaRoom3)
-        elseif roomNumber == 4 then
-            gfx.fillRect(limaRoom4)
-        elseif roomNumber == 5 then
-            gfx.fillRect(limaRoom5)
-        elseif roomNumber == 6 then
-            gfx.fillRect(limaRoom6)
-        elseif roomNumber == 7 then
-            gfx.fillRect(limaRoom7)
-        end
-    end
+    --     if roomNumber == 1 then
+    --         gfx.fillRect(limaRoom1)
+    --     elseif roomNumber == 2 then
+    --         gfx.fillRect(limaRoom2)
+    --     elseif roomNumber == 3 then
+    --         gfx.fillRect(limaRoom3)
+    --     elseif roomNumber == 4 then
+    --         gfx.fillRect(limaRoom4)
+    --     elseif roomNumber == 5 then
+    --         gfx.fillRect(limaRoom5)
+    --     elseif roomNumber == 6 then
+    --         gfx.fillRect(limaRoom6)
+    --     elseif roomNumber == 7 then
+    --         gfx.fillRect(limaRoom7)
+    --     end
+    -- end
 
     gfx.unlockFocus()
     playdate.setMenuImage(img, 0)
 end
-

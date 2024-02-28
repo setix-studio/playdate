@@ -147,6 +147,7 @@ function shopImage:update()
     else
         itemImage = gfx.image.new("assets/images/shopItem1")
         self:setImage(recipeImage)
+        self:remove()
     end
 end
 

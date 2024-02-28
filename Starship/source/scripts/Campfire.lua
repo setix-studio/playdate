@@ -36,15 +36,15 @@ function Campfire:update()
         if campLine <= 24 then
             showIntBtn = true
 
-            if pd.buttonJustReleased(pd.kButtonA) then
+            if pd.buttonJustPressed(pd.kButtonA) then
                 limamusic:stop()
                 lavenmusic:stop()
-                previouslevel = location
-                returnRoom    = levelName
+                previouslevel    = location
+                returnRoom       = levelName
                 returnRoomNumber = roomNumber
-                hudShow       = false
-                paused        = true
-                levelNum      = 7
+                hudShow          = false
+                paused           = true
+                levelNum         = 7
                 gfx.sprite.removeAll()
                 returnX = cosmoX
                 returnY = cosmoY
@@ -54,9 +54,10 @@ function Campfire:update()
             showIntBtn = false
         end
     else
-        if pd.buttonJustReleased(pd.kButtonA) then
-            showCampMenu = true
-       
+        if pd.buttonJustPressed(pd.kButtonA) then
+            showCampMenuTimer = pd.timer.performAfterDelay(1000, function()
+                showCampMenu = true
+            end)  
         end
     end
     -- cosmoSortOrder(self)
@@ -76,7 +77,7 @@ function CampfireSmoke:init(x, y)
     self:add()
     -- self:setCollideRect(7, 50, 70, 20)
     self:playAnimation()
-    self:setZIndex(810)
+    self:setZIndex(910)
     cosmoX = 0
     cosmoY = 0
 end

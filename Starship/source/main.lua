@@ -53,6 +53,7 @@ import "scripts/quests"
 import "scripts/questScene"
 import "scripts/reciperolodex"
 import "scripts/CampfireScene"
+import "scripts/Blockade"
 
 import "scripts/sceneManager"
 
@@ -77,16 +78,17 @@ manager:enter(IntroScene())
 --audio
 spacemusic = pd.sound.fileplayer.new('assets/sounds/space2')
 shipmusic = pd.sound.fileplayer.new('assets/sounds/shipmusic')
+campmusic = pd.sound.fileplayer.new('assets/sounds/campsite')
 limamusic = pd.sound.fileplayer.new('assets/sounds/lima')
 lavenmusic = pd.sound.fileplayer.new('assets/sounds/laven')
-battlestartmusic = pd.sound.fileplayer.new('assets/sounds/battleintrosound')
+battlestartmusic = pd.sound.fileplayer.new('assets/sounds/battleintro2')
 
 
 textbg = gfx.nineSlice.new("assets/images/textBackground", 7, 7, 18, 18)
 
 
 pdDialogue.setup({
-    font = font2,
+    font = fontHud,
 
     onClose = function()
         directionText = "✛"

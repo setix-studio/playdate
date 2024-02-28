@@ -14,21 +14,21 @@ function Building:init(x, y, entity)
     Building.super.init(self, buildingImageTable)
 
 
-    self:addState("shop", 1, 4, { tickStep = 4 })
+    self:addState("shop", 1, 4, { tickStep = 9 })
     self:addState("hut", 5,5)
     if self.buildingType == "Shop" then
         self.currentState = "shop"
         self:setTag(TAGS.Shop)
 
-        self:setCollideRect(7, 55, 73, 15)
+        self:setCollideRect(14, 64, 62, 16)
     elseif self.buildingType == "Hut" then
         self.currentState = "hut"
         self:setTag(TAGS.Building)
 
-        self:setCollideRect(3, 64, 120, 24)
+        self:setCollideRect(14, 64, 74, 16)
     end
-    self:setZIndex(self.y)
-    print(self.y)
+    self:setZIndex(self.y + 10)
+   
     self:setCenter(0.5, 0.5)
     self:moveTo(x, y)
     self:add()
@@ -49,7 +49,7 @@ end
 function Building:update()
     -- cosmoSortOrder(self)
     self:updateAnimation()
-    self:setZIndex(self.y)
+    self:setZIndex(self.y + 10)
     if intDoor == true then
         limamusic:stop()
             lavenmusic:stop()
@@ -155,7 +155,7 @@ function doorWay:init(x, y)
     self:add()
     self:setTag(TAGS.intDoor)
 
-    self:setCollideRect(-40, 28, 16, 16)
+    self:setCollideRect(-40, 28, 16, 12)
 
 end
 
