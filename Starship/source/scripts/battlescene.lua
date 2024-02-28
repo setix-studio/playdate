@@ -38,18 +38,10 @@ function BattleScene:enter()
         actionType = "Attack"
     end
     battleoptions = { tostring(actionType), "Item", "Run" }
-    itemoptions = {}
-    options = battleoptions
-    itemcount = 0
-    for _, row in ipairs(recipes) do
-        if row["category"] == "Snacks" then
-            if row["quantity"] > 0 then
-                itemcount = itemcount + row["quantity"]
 
-                table.insert(itemoptions, row.name .. " " .. itemcount)
-            end
-        end
-    end
+    options = battleoptions
+
+
 
 
     winnings = math.random(2, enemyMaxHP)
@@ -123,13 +115,13 @@ function BattleScene:update()
         limamusic:setVolume(0.5)
         lavenmusic:setVolume(0.5)
         spacemusic:setVolume(0.5)
-        hudShow       = false
-        paused        = true
-        levelNum      = 1
+        hudShow  = false
+        paused   = true
+        levelNum = 1
         gfx.sprite.removeAll()
-        returnX = 9 * 16
-        returnY = 9 * 16
-        playerHP      = 10
+        returnX    = 9 * 16
+        returnY    = 9 * 16
+        playerHP   = 10
         roomNumber = 1
         manager:push(levelScene)
     end
@@ -140,7 +132,12 @@ playerBattleMenu = pd.ui.gridview.new(90, 27)
 class('BattleVisual').extends(gfx.sprite)
 
 function BattleVisual:init()
-    battleMaskIndex = math.random(1, 9)
+    battleMaskIndex = math.random(1, 8) + 1
+    if battleMaskIndex > 8 then
+        battleMaskIndex = 1
+    elseif battleMaskIndex < 1 then
+        battleMaskIndex = 8
+    end
     local battleImage = gfx.image.new("assets/images/battlemask" .. battleMaskIndex)
 
     self.x = 0
@@ -160,7 +157,7 @@ end
 
 class('BattleSceneImage').extends(gfx.sprite)
 function BattleSceneImage:init()
-    battleBGIndex = math.random(1, 9)
+    battleBGIndex = math.random(1, 8)
     backgroundDir = math.random(1, 3)
     local bgImage = gfx.image.new("assets/images/fightbg" .. battleBGIndex)
     self.speed = .25
@@ -348,10 +345,10 @@ function PlayerRound()
                 gfx.setDitherPattern(.5, gfx.image.kDitherTypeBayer8x8)
 
 
-                            gfx.setLineWidth(2)
-                            gfx.drawLine(x + 20, y + height - 5, x + width - 20, y + height - 5)
-                            gfx.setDitherPattern(1, gfx.image.kDitherTypeBayer8x8)
-                            gfx.setLineWidth(1)
+                gfx.setLineWidth(2)
+                gfx.drawLine(x + 20, y + height - 5, x + width - 20, y + height - 5)
+                gfx.setDitherPattern(1, gfx.image.kDitherTypeBayer8x8)
+                gfx.setLineWidth(1)
                 gfx.setImageDrawMode(gfx.kDrawModeNXOR)
             else
                 gfx.setImageDrawMode(gfx.kDrawModeNXOR)
@@ -427,7 +424,7 @@ function PlayerRound()
                         playerHP = playerMaxHP
                         battlecopy = "Full  Health!"
                     else
-                        playerHP = playerHP + 5
+                        playerHP = playerHP + math.ceil(playerMaxHP / 10)
                         if playerHP > playerMaxHP then
                             playerHP = playerMaxHP
                         end
@@ -625,7 +622,7 @@ function exitBattle()
 
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
-fromPop = true
+    fromPop = true
     paused = false
 
 
