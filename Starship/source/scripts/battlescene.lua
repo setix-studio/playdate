@@ -42,8 +42,8 @@ function BattleScene:enter()
     options = battleoptions
 
 
-
-
+    swipeStatus = "idle"
+    playerSwipe()
     winnings = math.random(2, enemyMaxHP)
     battlecopyRun = false
     totalDamage = 0
@@ -132,7 +132,7 @@ playerBattleMenu = pd.ui.gridview.new(90, 27)
 class('BattleVisual').extends(gfx.sprite)
 
 function BattleVisual:init()
-    battleMaskIndex = math.random(1, 8) + 1
+    battleMaskIndex = 1 --math.random(1, 8) + 1
     if battleMaskIndex > 8 then
         battleMaskIndex = 1
     elseif battleMaskIndex < 1 then
@@ -256,6 +256,52 @@ function EnemyBattleImage:update()
         end
     end
     self.currentState = enemyName
+    self:moveTo(self.x, self.y)
+end
+
+class('playerSwipe').extends(AnimatedSprite)
+
+function playerSwipe:init()
+    playerSwipeImageTable = gfx.imagetable.new("assets/images/swipe-table-200-120")
+
+    playerSwipe.super.init(self, playerSwipeImageTable)
+
+    self:addState("idle", 1, 1, { tickStep = 6 })
+    self:addState("swipe", 2, 16, {
+        tickStep = 1,
+        onLoopFinishedEvent = function()
+            swipeStatus = "idle"
+        end
+    })
+
+
+
+    self.currentState = "idle"
+    self:playAnimation()
+    self:setZIndex(100)
+
+    self.speed = 5
+    self.x = 200
+    self.y = 16
+    self:moveTo(self.x, self.y)
+    self:setCenter(0, 0)
+end
+
+function playerSwipe:update()
+    self:updateAnimation()
+    if enemyHP >= 1 then
+        self.x -= self.speed
+        if self.x <= 40 then
+            self.x = 40
+        end
+    end
+    if enemyHP <= 0 then
+        self.x -= 10
+        if self.x <= -240 then
+            self:remove()
+        end
+    end
+    self.currentState = swipeStatus
     self:moveTo(self.x, self.y)
 end
 
@@ -404,6 +450,8 @@ function PlayerRound()
 
                         if playerDamage > 0 then
                             playerhit:play(1)
+                            swipeStatus = "swipe"
+
                             if playerDamage > 1 then
                                 battlecopy = "You attack for 1 damage!"
                                 battlecopy = "You attack for " .. playerDamage .. " damage!"

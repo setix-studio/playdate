@@ -37,7 +37,7 @@ function Building:init(x, y, entity)
     newY = 0    
     textboxActive = false
     if self.buildingType ~= "Shop" then --Code to enter buidlings
-    doorWay(self.x, self.y)
+    --doorWay(self.x, self.y)
     end
     doorWayName = "Interior_1"
 end

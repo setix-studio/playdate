@@ -29,7 +29,7 @@ function HomeSceneImage:init(x, y)
 
     local homeImageTable = gfx.imagetable.new("assets/images/home-table-400-240")
     HomeSceneImage.super.init(self, homeImageTable)
-    self:addState("idle", 1, 4, { tickStep = 8 })
+    self:addState("idle", 1, 1, { tickStep = 8 })
     self.currentState = "idle"
     self:setZIndex(0)
 
