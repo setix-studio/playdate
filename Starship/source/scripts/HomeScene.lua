@@ -93,7 +93,7 @@ function HomeSceneImage:update()
         if saveData == false then
             
             if gridview:getSelectedRow() == 1 then
-                manager:enter(LoadingScene())
+                manager:enter(Comic1Scene())
             end
         else
             if gridview:getSelectedRow() == 1 then
@@ -131,3 +131,4 @@ function HomeSceneImage:update()
     gfx.sprite.update()
     pd.timer.updateTimers()
 end
+

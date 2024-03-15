@@ -287,7 +287,7 @@ function Player:handleMovementAndCollisions()
                         landing = true
                         ShipLand()
                         levelTimer = pd.timer.performAfterDelay(3500, function()
-                            levelNum = 1
+                            levelNum = 2
                             gfx.sprite.removeAll()
 
                             manager:enter(LoadingScene())

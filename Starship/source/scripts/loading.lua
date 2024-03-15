@@ -20,9 +20,10 @@ function LoadingScene:init()
         levelScene = Lima()
         levelName = "Level_1"
     elseif levelNum == 2 then
-        ldtk_file = "levels/world_lima.ldtk"
+        ldtk_file = "levels/world_laven.ldtk"
         use_ldtk_fastloading = true
         levelScene = Laven()
+        levelName = "Level_1"
     elseif levelNum == 5 then
         ldtk_file = "levels/ship.ldtk"
         use_ldtk_fastloading = true

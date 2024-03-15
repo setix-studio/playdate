@@ -14,6 +14,7 @@ import "scripts/libraries/AnimatedSprite"
 import "scripts/libraries/gfxp"
 import "scripts/libraries/LDtk"
 import "scripts/libraries/sequence"
+import 'libraries/panels/Panels'
 
 --scripts
 
@@ -54,6 +55,13 @@ import "scripts/questScene"
 import "scripts/reciperolodex"
 import "scripts/CampfireScene"
 import "scripts/Blockade"
+
+--comic scenes
+import "scripts/comic01"
+
+
+
+
 
 import "scripts/sceneManager"
 
