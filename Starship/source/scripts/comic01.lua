@@ -29,13 +29,16 @@ function Comic1Scene:init()
       speed = 5
      
 if currentLevel == nil then
-    currentLevel = 1
+    currentLevel = 2
+
 else
     currentLevel = currentLevel
 end
 
 
 Panels.Settings.showMenuOnLaunch = false
+
+startCutscene()
 end
 function Comic1Scene:update()
 
@@ -57,10 +60,7 @@ function Comic1Scene:update()
          x = x - speed
      end
  
-     -- press the A button to complete the level
-     if playdate.buttonJustReleased(playdate.kButtonA) then
-         startCutscene()
-     end
+     
 
     if cutsceneIsPlaying then
         Panels.update()
@@ -76,12 +76,20 @@ end
     scene1 -- single SEQUENCE
 }
 
--- a list of all the cutscenes
- cutscenes = {
-    cutscene1Data
+ cutscene2Data = {
+    scene2a, scene2b -- this scene has two SEQUENCES
 }
 
+ cutscene3Data = {
+    scene3a, scene3b -- this scene has two SEQUENCES
+}
 
+ cutscene4Data = {
+    scene4 -- single SEQUENCE
+}
+local cutscenes = {
+    cutscene1Data, cutscene2Data, cutscene3Data, cutscene4Data
+}
 -- -------------------------------
 -- MAIN GAME
 -- -------------------------------
@@ -117,12 +125,7 @@ function cutsceneDidFinish(target)
     cosmoY = returnY
     roomNumber = returnRoomNumber
     manager:push(LoadingScene())
-    -- reapply inputHandlers for main game (if used)
-    -- playdate.inputHandlers.push(gameInputHandlers)
 
-    -- increment the level
-    -- currentLevel = currentLevel + 1
-    -- if currentLevel > #cutscenes then currentLevel = 1 end -- loop around to the first level
 end
 
 -- called when a level is completed

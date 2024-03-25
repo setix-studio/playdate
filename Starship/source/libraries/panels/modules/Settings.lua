@@ -5,7 +5,7 @@ Panels.Settings = {
 	audioFolder = "audio/",
 	
 	-- project settings
-	defaultFont = nil,
+	defaultFont = font1,
 	defaultFontFamily = nil,
 	menuFontFamily = nil,
 	resetVarsOnGameOver = true,

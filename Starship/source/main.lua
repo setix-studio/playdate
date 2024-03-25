@@ -140,7 +140,7 @@ Z_INDEXES = {
 function pd.update()
     gfx.sprite.update()
     pd.timer.updateTimers()
-    sequence.update()
+   
 
     pdDialogue.update()
     --playdate.drawFPS(0, 0) -- FPS widget

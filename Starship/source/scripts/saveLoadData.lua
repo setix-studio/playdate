@@ -27,7 +27,7 @@ function loadGameData()
         if gameData.levelNum then
             levelNum = gameData.levelNum
         else
-            levelNum = 0
+            levelNum = 1
         end
         if gameData.cosmoX then
             cosmoX = gameData.cosmoX
