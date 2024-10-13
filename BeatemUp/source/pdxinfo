@@ -1,0 +1,8 @@
+name=Beatem Up
+author=setix studio 
+description=space
+bundleID=com.setixstudio.beatemup
+version=0.5
+buildNumber=5
+imagePath=assets/images
+launchSoundPath=assets/sound

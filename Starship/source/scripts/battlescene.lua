@@ -29,7 +29,7 @@ function BattleScene:enter()
 
     enemyType = "Gather"
 
-
+    enemyInPlace = false
     enemyMaxHP = enemyHP
 
     if enemyType == "Creature" then
@@ -247,6 +247,10 @@ function EnemyBattleImage:update()
         self.x -= self.speed
         if self.x <= 40 then
             self.x = 40
+        
+        end
+        if self.x == 40 then
+            enemyInPlace = true
         end
     end
     if enemyHP <= 0 then
@@ -453,8 +457,11 @@ function PlayerRound()
                             swipeStatus = "swipe"
 
                             if playerDamage > 1 then
-                                battlecopy = "You attack for 1 damage!"
-                                battlecopy = "You attack for " .. playerDamage .. " damage!"
+                                if enemyInPlace == false then
+                                    battlecopy = "Suckerpunch!! You attack for " .. playerDamage .. " damage!"
+                                    elseif enemyInPlace == true then
+                                    battlecopy = "You attack for " .. playerDamage .. " damage!"
+                                    end
                             else
                                 battlecopy = "You attack for 1 damage!"
                             end

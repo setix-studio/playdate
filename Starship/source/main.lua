@@ -55,6 +55,7 @@ import "scripts/questScene"
 import "scripts/reciperolodex"
 import "scripts/CampfireScene"
 import "scripts/Blockade"
+import "scripts/QuestBoard"
 
 --comic scenes
 import "scripts/comic01"
@@ -122,7 +123,8 @@ TAGS      = {
     Door = 12,
     DoorOpen = 13,
     NPC = 14,
-    intDoor = 15
+    intDoor = 15,
+    QuestBoard = 16
 }
 
 Z_INDEXES = {

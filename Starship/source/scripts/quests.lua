@@ -3,6 +3,8 @@ local gfx <const> = pd.graphics
 
 
 quests = {
+    -- LIMA QUESTS
+
     {
         ["ID"] = 1,
         ["intro"] = false,
@@ -73,5 +75,171 @@ quests = {
         ["recipeReceived"] = false,
 
     },
+    {
+        ["ID"] = 4,
+        ["intro"] = false,
+        ["found"] = false,
+        ["inProgress"] = false,
+        ["complete"] = false,
+        ["type"] = "gather",
+        ["title"] = "Meatball Special",
+        ["owner"] = "Wuigi",
+        ["introCopy"] =
+        "I'm in need of some meatballs! Can you gather 5 meaty chunks for me?",
+        ["inProgressCopy"] = "I need 5 meaty chunks for my Meatball Special.",
+        ["turninCopy"] = "Thank you, let me whip up the special! Here's the recipe for your troubles.",
+        ["completeCopy"] = "MMM..eatballs.",
+        ["description"] =
+        "Wuigi really wants a Meatball Special, help him by gathering 5 Meaty Chunks.",
+        ["gatherItemID"] = 1,
+        ["gatherItem"] = "Meaty Chunks",
+        ["quantity"] = 5,
+        ["reward"] = "Meatball Special",
+        ["rewardQty"] = 1,
+        ["rewardReceived"] = false,
+        ["recipeReceived"] = false,
 
+    },
+
+
+    {
+        ["ID"] = 5,
+        ["intro"] = false,
+        ["found"] = false,
+        ["inProgress"] = false,
+        ["complete"] = false,
+        ["type"] = "gather",
+        ["title"] = "Pizza Party",
+        ["owner"] = "Humphry",
+        ["introCopy"] = "It's time for the annual Pizza Party, but I have no Tomas for my pizza! Can you bring me 15 Tomas?",
+        ["inProgressCopy"] = "I need those Tomas Cosmo...",
+        ["turninCopy"] = "Thank you, here's the recipe so you can make your own Cheesy Pizza!",
+        ["completeCopy"] = "Thank you!",
+        ["description"] = "Humphry needs 15 Tomas for his annual Pizza Party.",
+        ["gatherItemID"] = 10,
+        ["gatherItem"] = "Tomas",
+        ["quantity"] = 15,
+        ["reward"] = "Cheesy Pizza",
+        ["rewardQty"] = 1,
+        ["rewardReceived"] = false,
+        ["recipeReceived"] = false,
+
+    },
+
+    {
+        ["ID"] = 6,
+        ["intro"] = false,
+        ["found"] = false,
+        ["inProgress"] = false,
+        ["complete"] = false,
+        ["type"] = "gather",
+        ["title"] = "No soup for me",
+        ["owner"] = "Jerry",
+        ["introCopy"] = "I'm was looking forward to a nice Mushroom Soup today, but I'm out of Shroomas. Can you bring me 10 Shroomas?",
+        ["inProgressCopy"] = "I really wanted soup...",
+        ["turninCopy"] = "No soup for me? No soup for you! But here's the recipe so you can make your own Mushroom Soup!",
+        ["completeCopy"] = "Thank you!",
+        ["description"] = "Jerry needs 10 shroomas for his Mushroom Soup.",
+        ["gatherItemID"] = 8,
+        ["gatherItem"] = "Shrooma",
+        ["quantity"] = 10,
+        ["reward"] = "Mushroom Soup",
+        ["rewardQty"] = 1,
+        ["rewardReceived"] = false,
+        ["recipeReceived"] = false,
+
+    },
+
+    {
+        ["ID"] = 7,
+        ["found"] = false,
+        ["intro"] = false,
+        ["inProgress"] = false,
+        ["complete"] = false,
+        ["type"] = "craft",
+        ["title"] = "Mama Mia",
+        ["owner"] = "Janice",
+        ["introCopy"] = "I am craving some local delicacies and I heard that the Meatball Special was a delite. Bring me one pronto, delivery boy.",
+        ["inProgressCopy"] = "That food better be warm when it gets here...",
+        ["turninCopy"] = "Oh, this is delicious... thank you for the delivery, heres your tip.",
+        ["completeCopy"] = "Mmmm... So good..",
+        ["description"] = "Mama Mia, Janice seems to think you are her personal errand boy and requests the Meatball Special, well get to it!",
+        ["gatherItem"] = "Meatball Special",
+        ["quantity"] = 1,
+        ["rewardCredits"] = 350,
+        ["rewardReceived"] = false,
+        ["recipeReceived"] = true,
+
+
+    },
+    {
+        ["ID"] = 8,
+        ["intro"] = false,
+        ["found"] = false,
+        ["inProgress"] = false,
+        ["complete"] = false,
+        ["type"] = "gather",
+        ["title"] = "Laven Bound",
+        ["owner"] = "Georwalt",
+        ["introCopy"] = "I need to take some Mushroom Soup back home to Laven. Can you bring me 20 Shrooma?",
+        ["inProgressCopy"] = "Don't forget, it's 20 Shrooma!",
+        ["turninCopy"] = "Thank you! This Mushroom Soup will be a hit on Laven! Heres one of our recipes, Toma Soup!",
+        ["completeCopy"] = "Thanks!",
+        ["description"] = "Bring Georwalt 20 Shrooma so he can take it to his home planet!",
+        ["gatherItemID"] = 8,
+        ["gatherItem"] = "Shrooma",
+        ["quantity"] = 10,
+        ["reward"] = "Toma Soup",
+        ["rewardQty"] = 1,
+        ["rewardReceived"] = false,
+        ["recipeReceived"] = false,
+
+    },
+    
+    {
+        ["ID"] = 9,
+        ["found"] = false,
+        ["intro"] = false,
+        ["inProgress"] = false,
+        ["complete"] = false,
+        ["type"] = "craft",
+        ["title"] = "Get the Shaft",
+        ["owner"] = "Mulo",
+        ["introCopy"] = "I hear you're off to Laven, but need some work done on your ship before it can fly. Bring me 3 bowls of Toma Soup and I'll get'r up and running",
+        ["inProgressCopy"] = "Once I eat I can get started on your ship!",
+        ["turninCopy"] = "Ah that should do it... now for my end of the deal, I've got your ship up and running, be sure to pull the crank out before you take off! Put it back in to exit the ship. Good ol' safety protocols.",
+        ["completeCopy"] = "Thanks!",
+        ["description"] = "Its time! Bring Mulo 3 bowls of Toma Soup and he will get your ship ready to take off!",
+        ["gatherItem"] = "Toma Soup",
+        ["quantity"] = 3,
+        ["rewardCredits"] = 0,
+        ["rewardReceived"] = false,
+        ["recipeReceived"] = true,
+
+
+    },
+
+    -- LAVEN QUESTS
+    {
+        ["ID"] = 10,
+        ["found"] = false,
+        ["intro"] = false,
+        ["inProgress"] = false,
+        ["complete"] = false,
+        ["type"] = "craft",
+        ["title"] = "Get the Shaft",
+        ["owner"] = "Mulo",
+        ["introCopy"] = "I hear you're off to Laven, but need some work done on your ship before it can fly. Bring me 3 bowls of Toma Soup and I'll get'r up and running",
+        ["inProgressCopy"] = "Once I eat I can get started on your ship!",
+        ["turninCopy"] = "Ah that should do it... now for my end of the deal, I've got your ship up and running, be sure to pull the crank out before you take off! Put it back in to exit the ship. Good ol' safety protocols.",
+        ["completeCopy"] = "Thanks!",
+        ["description"] = "Its time! Bring Mulo 3 bowls of Toma Soup and he will get your ship ready to take off!",
+        ["gatherItem"] = "Toma Soup",
+        ["quantity"] = 3,
+        ["rewardCredits"] = 0,
+        ["rewardReceived"] = false,
+        ["recipeReceived"] = true,
+
+
+    },
 }

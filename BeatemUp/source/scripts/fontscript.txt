@@ -1,0 +1,2 @@
+C:\Users\sensa\Downloads\PDFontTool-main\PDFontTool-main\pdft\bin\x64
+pdft C:\Users\sensa\Downloads\Merriweather\Merriweather-Black.ttf C:\Users\sensa\Downloads\ merriweatherblk14 14

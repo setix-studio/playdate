@@ -39,6 +39,7 @@ function InteriorShip:enter()
     showMenu = false
     kitchenMenuShow = false
     recipeMenu = false
+    
     shipDoor()
     removeRecipes = false
     showImage = false
@@ -134,13 +135,17 @@ function InteriorShip:update()
         else
             showIntBtn = false
         end
-    elseif cockpitSightLine <= 24 and pd.isCrankDocked() == false then
-        if showMenu == false then
-            showIntBtn = true
-            activeArea = "cockpit"
-        else
-            showIntBtn = false
-        end
+    
+    elseif quests[9]["complete"] == true then
+            if cockpitSightLine <= 24 and pd.isCrankDocked() == false then
+                if showMenu == false then
+                showIntBtn = true
+                activeArea = "cockpit"
+                end
+            else
+                showIntBtn = false
+            end
+ 
     else
         activeArea = ""
 
@@ -149,7 +154,7 @@ function InteriorShip:update()
 
 
 
-
+if quests[9]["complete"] == true then
     if activeArea == "cockpit" and pd.isCrankDocked() == false then
         if pd.buttonJustPressed(pd.kButtonA) then
             hudShow = false
@@ -165,6 +170,7 @@ function InteriorShip:update()
             end)
         end
     end
+end
     if activeArea == "kitchen" then
         if pd.buttonJustPressed(pd.kButtonA) then
              showMenu = true
@@ -470,7 +476,8 @@ function shipDoor:init()
 end
 
 function shipDoor:collisionResponse(other)
-    if pd.isCrankDocked() == false then
+    
+          if pd.isCrankDocked() == false then
         return "slide"
     else
 
@@ -478,18 +485,20 @@ function shipDoor:collisionResponse(other)
 
 
     return "overlap"
-end
 
+end
 function shipDoor:update()
     self:updateAnimation()
-
+    
     if pd.isCrankDocked() == false then
         self:setTag(TAGS.DoorOpen)
 
         self:changeState("closed")
     else
+        
         self:setTag(TAGS.Door)
 
         self:changeState("open")
-    end
+        end
+
 end
