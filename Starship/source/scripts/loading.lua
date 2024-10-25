@@ -24,6 +24,11 @@ function LoadingScene:init()
         use_ldtk_fastloading = true
         levelScene = Laven()
         levelName = "Level_1"
+    elseif levelNum == 4 then
+            ldtk_file = "levels/world_mushroo.ldtk"
+            use_ldtk_fastloading = true
+            levelScene = Mushroo()
+            levelName = "Level_1"
     elseif levelNum == 5 then
         ldtk_file = "levels/ship.ldtk"
         use_ldtk_fastloading = true

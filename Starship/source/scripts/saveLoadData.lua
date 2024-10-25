@@ -39,6 +39,16 @@ function loadGameData()
         else
             cosmoY = cosmoY
         end
+        if gameData.currentPlanetX then
+            currentPlanetX = gameData.currentPlanetX
+        else
+            currentPlanetX = currentPlanetX
+        end
+        if gameData.currentPlanetY then
+            currentPlanetY = gameData.currentPlanetY
+        else
+            currentPlanetX = currentPlanetY
+        end
         if gameData.returnRoomNumber then
             returnRoomNumber = gameData.returnRoomNumber
         else
@@ -100,9 +110,6 @@ end
 function saveGameData()
     local gameData = {
         saveData = saveData,
-        quests = quests,
-        items = items,
-        recipes = recipes,
         levelNum = levelNum,
         cosmoX = cosmoX,
         cosmoY = cosmoY,
@@ -116,7 +123,13 @@ function saveGameData()
         playerXP = playerXP,
         playerNextLevel = playerNextLevel,
         previouslevel = previouslevel,
-        credits = credits
+        credits = credits,
+        currentPlanetX = currentPlanetX,
+        currentPlanetY = currentPlanetY,
+
+        quests = quests,
+        recipes = recipes,
+        items = items,
     }
     pd.datastore.write(gameData)
 end

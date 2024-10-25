@@ -15,7 +15,7 @@ function Blockade:init(x, y, entity)
     self:moveTo(x, y)
     self:setCenter(0, 0)
     self:add()
-    self:setCollideRect(0, 0, 32, 32)
+    self:setCollideRect(0, 0, 16, 32)
     self:playAnimation()
     self:setZIndex(self.y)
     cosmoX = 0

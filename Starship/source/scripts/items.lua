@@ -55,6 +55,12 @@ function Items:init(x, y, entity)
         self:setCollideRect(10, 5, 11, 20)
         self.itemPName = "Nanners"
         self.enemyName = "Banana Bro"
+    elseif self.itemName == "BigChop" then
+        itemChance = 20
+        imagetable = gfx.imagetable.new("assets/images/bigchop-table-32-32")
+        self:setCollideRect(10, 5, 11, 20)
+        self.itemPName = "Big Chop"
+        self.enemyName = "Big Chop"
     else
         imagetable = gfx.imagetable.new("images/interactUp-table-16-16")
     end

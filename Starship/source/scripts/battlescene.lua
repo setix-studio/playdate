@@ -228,6 +228,7 @@ function EnemyBattleImage:init()
     self:addState("Cool Shroom", 17, 20, { tickStep = 6 })
     self:addState("Loony Legume", 21, 24, { tickStep = 6 })
     self:addState("Banana Bro", 25, 28, { tickStep = 6 })
+    self:addState("Big Chop", 29, 32, { tickStep = 6 })
 
 
     self.currentState = enemyName
@@ -738,5 +739,13 @@ function enemyInit()
         enemyAttackPower = 8
         enemyStartCopy = " jams to its tunes."
         enemyThinkCopy = " contemplates its next move."
-    end
+
+elseif enemyName == "Big Chop" then
+    enemyType = "Gather"
+    enemyHP = math.ceil(math.random(8, 12) * playerLevel / 2)
+    enemyAttackChance = 55
+    enemyAttackPower = 12
+    enemyStartCopy = " pumps up the jam."
+    enemyThinkCopy = " is ready to smash."
+end
 end

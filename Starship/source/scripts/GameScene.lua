@@ -14,7 +14,6 @@ class('GameScene').extends(Room)
 playdate.ui.crankIndicator:start()
 
 function GameScene:enter()
-    --startSpawner()
     gfx.setBackgroundColor(gfx.kColorBlack)
     self:goToLevel("Level_" .. levelNum)
     if currentPlanetX == nil then
